@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+# Prefer Homebrew Ruby 3.3 so Bundler 4.x + Jekyll gems match Gemfile.lock.
+set -euo pipefail
+ROOT="$(cd "$(dirname "$0")/.." && pwd)"
+cd "$ROOT"
+
+if [[ -d /opt/homebrew/opt/ruby@3.3 ]]; then
+  export PATH="/opt/homebrew/opt/ruby@3.3/bin:/opt/homebrew/lib/ruby/gems/3.3.0/bin:$PATH"
+elif [[ -d /usr/local/opt/ruby@3.3 ]]; then
+  export PATH="/usr/local/opt/ruby@3.3/bin:/usr/local/lib/ruby/gems/3.3.0/bin:$PATH"
+else
+  echo "未找到 ruby@3.3。请先执行: brew install ruby@3.3" >&2
+  echo "然后在 ~/.zshrc 里把 Homebrew 的 ruby@3.3 的 bin 放到 PATH 最前。" >&2
+  exit 1
+fi
+
+exec bundle exec jekyll serve "$@"

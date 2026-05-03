@@ -1,6 +1,6 @@
 ---
 layout: minimal-academic
-permalink: /about/
+permalink: /
 description: "Ph.D. student at National University of Singapore. Research interests: LLM reasoning and alignment, representation learning for LLMs, LLM-based recommender systems."
 author_profile: false
 ---

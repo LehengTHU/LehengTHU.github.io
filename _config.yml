@@ -81,7 +81,7 @@ analytics:
 # Site Author
 author:
   name             : "Leheng Sheng"
-  avatar           : "me.png"
+  avatar           : "avatar.jpg"
   bio              : "First year PhD student at National University of Singapore"
   location         : "China"
   employer         :
@@ -146,6 +146,10 @@ exclude:
   - package.json
   - tmp
   - vendor
+  - .agents
+  - .claude
+  - .cursor
+  - skills
 keep_files:
   - .git
   - .svn

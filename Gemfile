@@ -18,6 +18,11 @@ gem "github-pages", group: :jekyll_plugins
 
 gem "wdm", "~> 0.1.0" if Gem.win_platform?
 
+# Ruby 3.x compatibility for Jekyll/GitHub Pages stack
+gem "csv"
+gem "bigdecimal"
+gem "webrick"
+
 # If you have any plugins, put them here!
 group :jekyll_plugins do
   # gem "jekyll-archives"

@@ -1,4 +1,10 @@
-{% if site.url %}
+{% comment %}
+Use relative paths in local development to avoid broken assets when previewing
+on 127.0.0.1. Keep absolute URL for production/deploy.
+{% endcomment %}
+{% if jekyll.environment == "development" %}
+  {% assign base_path = site.baseurl %}
+{% elsif site.url %}
   {% assign base_path = site.url | append: site.baseurl %}
 {% else %}
   {% assign base_path = site.github.url %}
