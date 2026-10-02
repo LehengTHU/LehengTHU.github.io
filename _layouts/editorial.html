@@ -1,0 +1,62 @@
+---
+layout: null
+---
+{% include base_path %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  {% include seo.html %}
+  <meta name="color-scheme" content="light">
+  <meta name="theme-color" content="#FAFAFA">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='6' fill='%23C6311F'/%3E%3Ctext x='32' y='45' font-family='Georgia,serif' font-size='34' font-weight='700' text-anchor='middle' fill='%23FFFFFF'%3EL%3C/text%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400..700&family=Hanken+Grotesk:ital,wght@0,400..700;1,400..700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ base_path }}/assets/css/editorial.css">
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+
+  <header class="nav" id="top">
+    <div class="nav-inner">
+      <a class="nav-mark" href="{{ base_path }}/" aria-label="Home">L<span>.</span>S<span>.</span></a>
+      <nav class="nav-links" aria-label="Primary">
+        {% if page.permalink == "/" or page.permalink == "/about/" %}
+        <a class="nav-anchor" href="#research">Research</a>
+        <a class="nav-anchor" href="#news">News</a>
+        <a class="nav-anchor" href="#publications">Papers</a>
+        <a class="nav-anchor" href="#experience">Experience</a>
+        {% else %}
+        <a href="{{ base_path }}/">Home</a>
+        {% endif %}
+        <a href="{{ base_path }}/publications/"{% if page.permalink == "/publications/" %} aria-current="page"{% endif %}>All papers</a>
+        <a href="{{ base_path }}/cv/"{% if page.permalink == "/cv/" %} aria-current="page"{% endif %}>CV</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+    {{ content }}
+  </main>
+
+  <footer class="footer">
+    <div class="wrap">
+      <p class="footer-kicker">Say hello</p>
+      <a class="footer-mail" href="mailto:{{ site.author.email }}">{{ site.author.email }}</a>
+      <div class="footer-row">
+        <span>© {{ site.time | date: "%Y" }} Leheng Sheng</span>
+        <span class="footer-links">
+          <a href="https://scholar.google.com/citations?user=j4ZcRakAAAAJ&amp;hl=en">Scholar</a>
+          <a href="https://github.com/LehengTHU">GitHub</a>
+          <a href="#top">Back to top ↑</a>
+        </span>
+      </div>
+      <p class="footer-updated">Last updated {{ site.time | date: "%B %Y" }}</p>
+    </div>
+  </footer>
+
+  <script src="{{ base_path }}/assets/js/editorial.js" defer></script>
+</body>
+</html>

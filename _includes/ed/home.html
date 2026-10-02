@@ -1,0 +1,104 @@
+{% include base_path %}
+{% assign selected = site.data.publications | where: "selected", true %}
+
+<section class="hero wrap">
+  <p class="kicker rise" style="--d:0">Ph.D. Student &nbsp;/&nbsp; National University of Singapore</p>
+  <h1 class="hero-name rise" style="--d:1">Leheng Sheng</h1>
+
+  <div class="hero-grid">
+    <div>
+      <p class="hero-lede rise" style="--d:3">
+        I work on pretraining and mid-training of large language models, and study how they
+        <mark>reason</mark>, how to keep them <mark>aligned</mark>, and what their internal
+        <mark>representations</mark> can do.
+      </p>
+      <p class="hero-now rise" style="--d:4">Currently a research intern at Tencent Hunyuan (Code Pretrain).</p>
+    </div>
+    <div class="hero-meta">
+      <p class="hero-sub rise" style="--d:4">
+        Previously M.S. in Fintech at Tsinghua University and B.E. in Computer Science at Southeast University.
+      </p>
+      <div class="actions rise" style="--d:6">
+        <a class="btn btn-solid" href="mailto:{{ site.author.email }}">Email me</a>
+        <a class="btn" href="https://scholar.google.com/citations?user=j4ZcRakAAAAJ&amp;hl=en">Google Scholar ↗</a>
+        <a class="btn" href="https://github.com/LehengTHU">GitHub ↗</a>
+        <a class="btn" href="{{ base_path }}/cv/">CV</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section wrap" id="research">
+  <header class="section-head reveal">
+    <span class="section-no">01</span>
+    <h2>Research</h2>
+  </header>
+  <div class="themes">
+    <article class="theme reveal">
+      <span class="theme-no">i.</span>
+      <h3>Pretraining &amp; Midtraining</h3>
+      <p>Building reasoning and coding abilities into large language models during pretraining and mid-training, including long-context and pretrain-stage reasoning.</p>
+      <p class="theme-refs"><a href="https://seed.bytedance.com/">ByteDance Seed</a> · <a href="https://hunyuan.tencent.com/">Tencent Hunyuan</a></p>
+    </article>
+    <article class="theme reveal">
+      <span class="theme-no">ii.</span>
+      <h3>Reasoning</h3>
+      <p>How large reasoning models plan their thinking budget, learn from self-evolving rubrics, and reason over long contexts with gated memory.</p>
+      <p class="theme-refs"><a href="https://arxiv.org/abs/2506.08390">NeurIPS ’25</a> · <a href="https://arxiv.org/abs/2602.10560">ICML ’26</a> · <a href="https://arxiv.org/abs/2602.10885">arXiv ’26</a></p>
+    </article>
+    <article class="theme reveal">
+      <span class="theme-no">iii.</span>
+      <h3>Alignment &amp; Representations</h3>
+      <p>Steering behaviour through a model’s internal representations, from refusal steering under null-space constraints to safety alignment with lightweight RL.</p>
+      <p class="theme-refs"><a href="https://arxiv.org/abs/2506.07022">ICLR ’26</a> · <a href="https://arxiv.org/abs/2507.14987">ICLR ’26</a></p>
+    </article>
+  </div>
+</section>
+
+<section class="section wrap" id="news">
+  <header class="section-head reveal">
+    <span class="section-no">02</span>
+    <h2>News</h2>
+  </header>
+  <ol class="news">
+    {% for n in site.data.news limit: 6 %}
+    <li class="reveal">
+      <time>{{ n.date }}</time>
+      <p>{{ n.text | markdownify | remove: "<p>" | remove: "</p>" }}</p>
+    </li>
+    {% endfor %}
+  </ol>
+</section>
+
+<section class="section wrap" id="publications">
+  <header class="section-head reveal">
+    <span class="section-no">03</span>
+    <h2>Selected Papers</h2>
+    <p class="section-note">First and co-first author. * co-first, † corresponding.</p>
+  </header>
+  <ol class="pubs">
+    {% for p in selected %}
+      {% include ed/pub.html p=p %}
+    {% endfor %}
+  </ol>
+  <a class="more reveal" href="{{ base_path }}/publications/">
+    <span>All {{ site.data.publications | size }} papers</span><span class="more-arrow" aria-hidden="true">→</span>
+  </a>
+</section>
+
+<section class="section wrap" id="experience">
+  <header class="section-head reveal">
+    <span class="section-no">04</span>
+    <h2>Experience</h2>
+  </header>
+  <div class="cols">
+    <div>
+      <h3 class="col-title reveal">Education</h3>
+      {% include ed/entries.html items=site.data.experience.education %}
+    </div>
+    <div>
+      <h3 class="col-title reveal">Research &amp; Industry</h3>
+      {% include ed/entries.html items=site.data.experience.work %}
+    </div>
+  </div>
+</section>

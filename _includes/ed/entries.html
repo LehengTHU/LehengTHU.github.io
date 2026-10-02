@@ -1,0 +1,15 @@
+{% include base_path %}
+<ol class="entries">
+  {% for e in include.items %}
+  {% if e.cv_only and include.cv != true %}{% continue %}{% endif %}
+  <li class="entry reveal">
+    <span class="entry-logo"><img src="{{ base_path }}{{ e.logo }}" alt="" loading="lazy"></span>
+    <div class="entry-body">
+      <p class="entry-org">{{ e.org }}</p>
+      <p class="entry-role">{{ e.role }}</p>
+      {% if e.detail %}<p class="entry-detail">{{ e.detail | markdownify | remove: "<p>" | remove: "</p>" }}</p>{% endif %}
+    </div>
+    <span class="entry-period">{{ e.period }}</span>
+  </li>
+  {% endfor %}
+</ol>

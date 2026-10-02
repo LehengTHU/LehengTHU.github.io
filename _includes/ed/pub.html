@@ -1,0 +1,17 @@
+{% assign p = include.p %}
+{% assign lead = p.authors | slice: 0, 12 %}
+<li class="pub reveal" data-topics="{{ p.topics | join: ' ' }}{% if lead == 'Leheng Sheng' or p.authors contains 'Leheng Sheng*' %} first{% endif %}">
+  <div class="pub-venue">
+    {% if include.num %}<span class="pub-num">[{{ include.num }}]</span>{% endif %}
+    <span>{{ p.venue }}{% if p.venue == "arXiv" %} {{ p.year }}{% endif %}</span>
+    {% if p.note %}<em class="pub-badge">{{ p.note }}</em>{% endif %}
+  </div>
+  <div class="pub-body">
+    <h3 class="pub-title"><a href="{{ p.url }}">{{ p.title }}</a></h3>
+    <p class="pub-authors">{{ p.authors | replace: "Leheng Sheng", "<span class='me'>Leheng Sheng</span>" }}</p>
+    <p class="pub-links">
+      <a href="{{ p.url }}">{% if p.url contains "arxiv.org" %}arXiv{% else %}Paper{% endif %} ↗</a>
+      {% if p.code %}<a href="{{ p.code }}">Code ↗</a>{% endif %}
+    </p>
+  </div>
+</li>
