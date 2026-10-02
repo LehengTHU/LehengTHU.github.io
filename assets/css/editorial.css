@@ -1,5 +1,5 @@
 /* ==========================================================================
-   Editorial theme: off-white, ink and vermilion
+   Editorial theme: off-white, ink and blue
    ========================================================================== */
 
 :root {
@@ -9,9 +9,9 @@
   --ink-2: #4D4D4D;
   --ink-3: #8C8C8C;
   --rule: rgba(0, 0, 0, 0.1);
-  --red: #C6311F;
-  --red-ink: #A82614;
-  --on-red: #FFFFFF;
+  --accent: #2456A6;
+  --accent-ink: #1D4A8F;
+  --on-accent: #FFFFFF;
   --logo-bg: #FFFFFF;
   --footer-bg: #F2F2F2;
   --footer-ink: #141414;
@@ -58,7 +58,7 @@ a {
 }
 
 p a, .news a, .page-note a, .theme-refs a, .entry-detail a {
-  color: var(--red-ink);
+  color: var(--accent-ink);
   background: linear-gradient(currentColor, currentColor) 0 100% / 100% 1px no-repeat;
   transition: background-size 0.3s var(--ease);
 }
@@ -66,10 +66,10 @@ p a:hover, .news a:hover, .page-note a:hover, .theme-refs a:hover, .entry-detail
   background-size: 100% 2px;
 }
 
-::selection { background: var(--red); color: var(--on-red); }
+::selection { background: var(--accent); color: var(--on-accent); }
 
 :focus-visible {
-  outline: 2px solid var(--red);
+  outline: 2px solid var(--accent);
   outline-offset: 3px;
   border-radius: 2px;
 }
@@ -107,7 +107,7 @@ p a:hover, .news a:hover, .page-note a:hover, .theme-refs a:hover, .entry-detail
   color: var(--ink-2);
 }
 
-.dot { color: var(--red); font-style: normal; }
+.dot { color: var(--accent); font-style: normal; }
 
 /* ---------- Nav ---------- */
 
@@ -140,7 +140,7 @@ p a:hover, .news a:hover, .page-note a:hover, .theme-refs a:hover, .entry-detail
   letter-spacing: -0.02em;
   flex-shrink: 0;
 }
-.nav-mark span { color: var(--red); }
+.nav-mark span { color: var(--accent); }
 
 .nav-links {
   margin-left: auto;
@@ -165,7 +165,7 @@ p a:hover, .news a:hover, .page-note a:hover, .theme-refs a:hover, .entry-detail
   position: absolute;
   left: 0; right: 0; bottom: 0;
   height: 1.5px;
-  background: var(--red);
+  background: var(--accent);
   transform: scaleX(0);
   transform-origin: right;
   transition: transform 0.35s var(--ease);
@@ -245,7 +245,7 @@ p a:hover, .news a:hover, .page-note a:hover, .theme-refs a:hover, .entry-detail
   transition: background-color 0.25s var(--ease), color 0.25s var(--ease), border-color 0.25s, transform 0.25s var(--ease);
 }
 .btn:hover { background: var(--ink); color: var(--paper); transform: translateY(-2px); }
-.btn-solid { background: var(--red); border-color: var(--red); color: var(--on-red); }
+.btn-solid { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
 .btn-solid:hover { background: var(--ink); border-color: var(--ink); }
 
 /* portrait */
@@ -269,7 +269,7 @@ p a:hover, .news a:hover, .page-note a:hover, .theme-refs a:hover, .entry-detail
   position: relative;
   aspect-ratio: 4 / 5;
   overflow: hidden;
-  background: var(--red);
+  background: var(--accent);
   clip-path: inset(100% 0 0 0);
   animation: wipe 1.2s var(--ease) 0.25s forwards;
 }
@@ -277,7 +277,7 @@ p a:hover, .news a:hover, .page-note a:hover, .theme-refs a:hover, .entry-detail
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: 62% 40%;
+  object-position: 44% 50%;
   transform: scale(1.12);
   animation: settle 1.8s var(--ease) 0.25s forwards;
 }
@@ -326,7 +326,7 @@ p a:hover, .news a:hover, .page-note a:hover, .theme-refs a:hover, .entry-detail
 }
 .section-no {
   font-size: 0.8rem;
-  color: var(--red-ink);
+  color: var(--accent-ink);
   letter-spacing: 0.1em;
 }
 .section-head h2 {
@@ -362,7 +362,7 @@ p a:hover, .news a:hover, .page-note a:hover, .theme-refs a:hover, .entry-detail
   font-family: var(--display);
   font-size: 1.5rem;
   line-height: 1;
-  color: var(--red);
+  color: var(--accent);
   margin-bottom: 16px;
 }
 .theme h3 {
@@ -394,7 +394,7 @@ p a:hover, .news a:hover, .page-note a:hover, .theme-refs a:hover, .entry-detail
   color: var(--ink-3);
   padding-top: 0.3em;
 }
-.news li:first-child time { color: var(--red-ink); }
+.news li:first-child time { color: var(--accent-ink); }
 .news p { margin: 0; font-size: 1.05rem; }
 .news strong { font-weight: 600; }
 .news a { color: var(--ink); background-image: linear-gradient(var(--rule), var(--rule)); }
@@ -416,7 +416,7 @@ p a:hover, .news a:hover, .page-note a:hover, .theme-refs a:hover, .entry-detail
   position: absolute;
   left: 0; top: -1px;
   width: 0; height: 2px;
-  background: var(--red);
+  background: var(--accent);
   transition: width 0.5s var(--ease);
 }
 .pub:hover::before { width: 100%; }
@@ -430,7 +430,7 @@ p a:hover, .news a:hover, .page-note a:hover, .theme-refs a:hover, .entry-detail
   font-size: 0.78rem;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: var(--red-ink);
+  color: var(--accent-ink);
   padding-top: 0.35em;
 }
 .pub-badge {
@@ -439,8 +439,8 @@ p a:hover, .news a:hover, .page-note a:hover, .theme-refs a:hover, .entry-detail
   letter-spacing: 0.1em;
   padding: 3px 9px;
   border-radius: 999px;
-  background: var(--red);
-  color: var(--on-red);
+  background: var(--accent);
+  color: var(--on-accent);
 }
 .pub-title {
   margin: 0 0 8px;
@@ -451,19 +451,19 @@ p a:hover, .news a:hover, .page-note a:hover, .theme-refs a:hover, .entry-detail
   letter-spacing: -0.012em;
 }
 .pub-title a { transition: color 0.2s; }
-.pub-title a:hover { color: var(--red-ink); }
+.pub-title a:hover { color: var(--accent-ink); }
 .pub-authors { margin: 0 0 10px; font-size: 0.93rem; color: var(--ink-2); line-height: 1.55; }
 .pub-authors .me {
   color: var(--ink);
   font-weight: 650;
   text-decoration: underline;
-  text-decoration-color: var(--red);
+  text-decoration-color: var(--accent);
   text-decoration-thickness: 2px;
   text-underline-offset: 3px;
 }
 .pub-links { margin: 0; display: flex; gap: 18px; font-size: 0.76rem; letter-spacing: 0.04em; }
 .pub-links a { color: var(--ink-3); background: none; transition: color 0.2s; }
-.pub-links a:hover { color: var(--red-ink); }
+.pub-links a:hover { color: var(--accent-ink); }
 
 .more {
   display: flex;
@@ -481,7 +481,7 @@ p a:hover, .news a:hover, .page-note a:hover, .theme-refs a:hover, .entry-detail
   font-family: var(--sans);
   transition: transform 0.4s var(--ease);
 }
-.more:hover { color: var(--red-ink); }
+.more:hover { color: var(--accent-ink); }
 .more:hover .more-arrow { transform: translateX(10px); }
 
 /* experience */
@@ -565,7 +565,7 @@ p a:hover, .news a:hover, .page-note a:hover, .theme-refs a:hover, .entry-detail
 }
 .chip:hover { border-color: var(--ink); color: var(--ink); }
 .chip[aria-pressed="true"] { background: var(--ink); border-color: var(--ink); color: var(--paper); }
-.chip-me[aria-pressed="true"] { background: var(--red); border-color: var(--red); color: var(--on-red); }
+.chip-me[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
 
 .pub-years { padding-top: 40px; }
 .year-group {
@@ -587,7 +587,7 @@ p a:hover, .news a:hover, .page-note a:hover, .theme-refs a:hover, .entry-detail
   font-size: clamp(1.6rem, 2.4vw, 2rem);
   letter-spacing: -0.015em;
   line-height: 1;
-  color: var(--red);
+  color: var(--accent);
 }
 .pub-years .pub { grid-template-columns: 150px minmax(0, 1fr); }
 .pub[hidden] { display: none; }
@@ -616,10 +616,10 @@ p a:hover, .news a:hover, .page-note a:hover, .theme-refs a:hover, .entry-detail
   line-height: 1.2;
   letter-spacing: -0.01em;
   word-break: break-all;
-  background: linear-gradient(var(--red), var(--red)) 0 100% / 0% 3px no-repeat;
+  background: linear-gradient(var(--accent), var(--accent)) 0 100% / 0% 3px no-repeat;
   transition: background-size 0.6s var(--ease), color 0.3s;
 }
-.footer-mail:hover { background-size: 100% 3px; color: var(--red); }
+.footer-mail:hover { background-size: 100% 3px; color: var(--accent); }
 .footer-row {
   display: flex;
   flex-wrap: wrap;
@@ -632,7 +632,7 @@ p a:hover, .news a:hover, .page-note a:hover, .theme-refs a:hover, .entry-detail
   opacity: 0.75;
 }
 .footer-links { display: flex; gap: 22px; }
-.footer-links a:hover { color: var(--red); }
+.footer-links a:hover { color: var(--accent); }
 .footer-updated { margin: 10px 0 0; font-size: 0.7rem; opacity: 0.45; }
 
 /* ---------- Responsive ---------- */
