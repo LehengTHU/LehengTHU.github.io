@@ -11,7 +11,7 @@ permalink: /publications/
 <section class="page-head wrap">
   <p class="kicker rise" style="--d:0">{{ total }} papers &nbsp;/&nbsp; 2023 — {{ site.data.publications.first.year }}</p>
   <h1 class="page-title rise" style="--d:1">Publications</h1>
-  <p class="page-note rise" style="--d:2">* co-first author &nbsp;·&nbsp; † corresponding author &nbsp;·&nbsp; Most up-to-date list on <a href="https://scholar.google.com/citations?user=j4ZcRakAAAAJ&amp;hl=en">Google Scholar ↗</a></p>
+  <p class="page-note rise" style="--d:2">* co-first author &nbsp;·&nbsp; † corresponding author &nbsp;·&nbsp; Most up-to-date list on <a href="https://scholar.google.com/citations?user=j4ZcRakAAAAJ&amp;hl=en">Google Scholar</a></p>
   <div class="filters rise" style="--d:3" role="group" aria-label="Filter by topic">
     <button type="button" class="chip" data-filter="all" aria-pressed="true">All</button>
     <button type="button" class="chip" data-filter="reasoning" aria-pressed="false">Reasoning</button>

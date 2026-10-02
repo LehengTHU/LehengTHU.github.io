@@ -10,8 +10,8 @@
     <h3 class="pub-title"><a href="{{ p.url }}">{{ p.title }}</a></h3>
     <p class="pub-authors">{{ p.authors | replace: "Leheng Sheng", "<span class='me'>Leheng Sheng</span>" }}</p>
     <p class="pub-links">
-      <a href="{{ p.url }}">{% if p.url contains "arxiv.org" %}arXiv{% else %}Paper{% endif %} ↗</a>
-      {% if p.code %}<a href="{{ p.code }}">Code ↗</a>{% endif %}
+      <a href="{{ p.url }}">{% if p.url contains "arxiv.org" %}arXiv{% else %}Paper{% endif %}</a>
+      {% if p.code %}<a href="{{ p.code }}">Code</a>{% endif %}
     </p>
   </div>
 </li>
