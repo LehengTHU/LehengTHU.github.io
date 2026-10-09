@@ -1,4 +1,5 @@
 # `cv_only: true` entries appear on /cv/ but not on the home page.
+# `logo` is a site path (/images/...) or a full URL.
 education:
   - org: "National University of Singapore"
     logo: "/images/about/nus.png"
@@ -36,7 +37,7 @@ work:
     role: "Research Intern, Pretrain Team"
     detail: "General & long-context LLM reasoning; pretrain-stage reasoning."
   - org: "NExT++ Lab, NUS"
-    logo: "/images/about/nus.png"
+    logo: "https://avatars.githubusercontent.com/u/57744814?v=4&s=200"
     period: "2023 — 2024"
     role: "Research Intern"
     detail: "LLM-based agent simulation for recommendation; a large-scale LLM agent simulation platform."
