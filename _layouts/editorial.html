@@ -32,6 +32,7 @@ layout: null
         <a href="{{ base_path }}/">Home</a>
         {% endif %}
         <a href="{{ base_path }}/publications/"{% if page.permalink == "/publications/" %} aria-current="page"{% endif %}>All papers</a>
+        <a href="{{ base_path }}/blog/"{% if page.permalink == "/blog/" or page.layout == "post" %} aria-current="page"{% endif %}>Blog</a>
         <a href="{{ base_path }}/cv/"{% if page.permalink == "/cv/" %} aria-current="page"{% endif %}>CV</a>
       </nav>
     </div>

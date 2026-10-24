@@ -1,0 +1,9 @@
+{% include base_path %}
+{% assign post = include.post %}
+<li class="post-item reveal">
+  <time datetime="{{ post.date | date_to_xmlschema }}">{{ post.date | date: "%b %-d, %Y" }}</time>
+  <div>
+    <h3 class="post-item-title"><a href="{{ base_path }}{{ post.url }}">{{ post.title }}</a></h3>
+    <p class="post-item-dek">{% if post.description %}{{ post.description }}{% else %}{{ post.excerpt | strip_html | truncatewords: 32 }}{% endif %}</p>
+  </div>
+</li>

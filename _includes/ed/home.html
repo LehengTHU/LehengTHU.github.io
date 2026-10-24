@@ -102,3 +102,20 @@
     </div>
   </div>
 </section>
+
+{% if site.posts.size > 0 %}
+<section class="section wrap" id="blog">
+  <header class="section-head reveal">
+    <span class="section-no">05</span>
+    <h2>Latest Posts</h2>
+  </header>
+  <ol class="posts">
+    {% for post in site.posts limit: 3 %}
+      {% include ed/post-item.html post=post %}
+    {% endfor %}
+  </ol>
+  <a class="more reveal" href="{{ base_path }}/blog/">
+    <span>All posts</span><span class="more-arrow" aria-hidden="true">→</span>
+  </a>
+</section>
+{% endif %}

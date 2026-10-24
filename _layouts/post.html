@@ -1,0 +1,18 @@
+---
+layout: editorial
+---
+{% include base_path %}
+{% assign minutes = content | number_of_words | divided_by: 200 | plus: 1 %}
+<article class="post wrap">
+  <header class="page-head post-head">
+    <p class="kicker rise" style="--d:0"><a href="{{ base_path }}/blog/">Blog</a> &nbsp;/&nbsp; <time datetime="{{ page.date | date_to_xmlschema }}">{{ page.date | date: "%B %-d, %Y" }}</time> &nbsp;/&nbsp; {{ minutes }} min read</p>
+    <h1 class="page-title rise" style="--d:1">{{ page.title }}</h1>
+    {% if page.description %}<p class="post-dek rise" style="--d:2">{{ page.description }}</p>{% endif %}
+  </header>
+  <div class="prose rise" style="--d:3">
+    {{ content }}
+  </div>
+  <footer class="post-foot">
+    <a href="{{ base_path }}/blog/">← All posts</a>
+  </footer>
+</article>

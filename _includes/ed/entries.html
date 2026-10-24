@@ -2,11 +2,21 @@
 <ol class="entries">
   {% for e in include.items %}
   {% if e.cv_only and include.cv != true %}{% continue %}{% endif %}
+  {% capture logo_src %}{% if e.logo contains '://' %}{{ e.logo }}{% else %}{{ base_path }}{{ e.logo }}{% endif %}{% endcapture %}
   <li class="entry reveal">
-    <span class="entry-logo"><img src="{% if e.logo contains '://' %}{{ e.logo }}{% else %}{{ base_path }}{{ e.logo }}{% endif %}" alt="" loading="lazy"></span>
+    <span class="entry-mark">
+      {% if e.url %}<a class="entry-logo" href="{{ e.url }}" aria-label="{{ e.org }} website">{% else %}<span class="entry-logo">{% endif %}
+        <img src="{{ logo_src | strip }}" alt="" loading="lazy">
+      {% if e.url %}</a>{% else %}</span>{% endif %}
+    </span>
     <div class="entry-body">
       <p class="entry-org">{{ e.org }}</p>
+      {% if e.college and e.role contains e.college.name %}
+        {% capture college_ref %}<span class="college-ref" tabindex="0">{{ e.college.name }}<a class="entry-college" href="{{ e.college.url }}"><img src="{{ base_path }}{{ e.college.logo }}" alt="{{ e.college.name }}" loading="lazy"></a></span>{% endcapture %}
+      <p class="entry-role">{{ e.role | replace: e.college.name, college_ref }}</p>
+      {% else %}
       <p class="entry-role">{{ e.role }}</p>
+      {% endif %}
       {% if e.detail %}<p class="entry-detail">{{ e.detail | markdownify | remove: "<p>" | remove: "</p>" }}</p>{% endif %}
     </div>
     <span class="entry-period">{{ e.period }}</span>
