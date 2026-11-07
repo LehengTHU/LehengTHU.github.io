@@ -217,6 +217,8 @@ a.org:hover { color: var(--accent-ink); }
 }
 /* text logos (e.g. "Seed") sit on the baseline at the height of capital letters */
 .org-logo--wordmark { height: 0.72em; vertical-align: 0; margin-right: 0.28em; }
+.org-logo--sm { height: 0.85em; vertical-align: -0.08em; margin-right: 0.25em; }
+.org-logo--md { height: 1em; vertical-align: -0.15em; margin-right: 0.28em; }
 .hero-main .hero-lede, .hero-main .hero-now, .hero-main .hero-sub { max-width: none; }
 .hero-links {
   grid-area: actions;
