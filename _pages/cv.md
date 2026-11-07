@@ -16,7 +16,7 @@ redirect_from:
   </div>
   <figure class="portrait">
     <div class="portrait-frame">
-      <img src="https://avatars.githubusercontent.com/u/117516626?v=4&amp;s=460" alt="Portrait of Leheng Sheng" width="460" height="460">
+      <img src="{{ base_path }}/images/portrait.jpg" alt="Portrait of Leheng Sheng" width="720" height="720">
     </div>
   </figure>
 </section>
