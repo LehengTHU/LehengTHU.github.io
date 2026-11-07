@@ -140,7 +140,9 @@ p a:hover, .news a:hover, .page-note a:hover, .theme-refs a:hover, .entry-detail
   letter-spacing: -0.02em;
   flex-shrink: 0;
 }
-.nav-mark span { color: var(--accent); }
+.nav-initials span { color: var(--accent); }
+.nav-mark { display: inline-flex; align-items: center; gap: 10px; }
+.nav-crest { height: 30px; width: auto; }
 
 .nav-links {
   margin-left: auto;
