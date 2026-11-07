@@ -306,7 +306,7 @@ a.org:hover { color: var(--accent-ink); }
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: 47% 50%;
+  object-position: 49% 50%;
   transform: scale(1.12);
   animation: settle 1.8s var(--ease) 0.25s forwards;
 }
