@@ -776,6 +776,11 @@ a.entry-logo:hover { border-color: var(--accent); transform: scale(1.06); }
 
 /* ---------- Responsive ---------- */
 
+/* in-page jump links only when the nav has room for them next to the name */
+@media (max-width: 900px) {
+  .nav-anchor { display: none; }
+}
+
 @media (max-width: 960px) {
   .hero {
     grid-template-columns: 1fr;
@@ -806,7 +811,6 @@ a.entry-logo:hover { border-color: var(--accent); transform: scale(1.06); }
   .nav-links { gap: 18px; }
   .nav-links a { font-size: 0.84rem; }
   .portrait { width: 130px; }
-  .nav-anchor { display: none; }
   .news li { grid-template-columns: 1fr; gap: 4px; }
   .pub, .pub-years .pub { grid-template-columns: 1fr; gap: 8px; padding: 22px 0; }
   .pub-venue { flex-direction: row; align-items: center; gap: 10px; }
