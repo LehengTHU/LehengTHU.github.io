@@ -26,6 +26,11 @@
     });
   }
 
+  const ICON_PATHS = { play: 'M3.2 1.8 10 6 3.2 10.2z', pause: 'M3 2h2.2v8H3zM6.8 2H9v8H6.8z', end: 'M2 2 7.4 6 2 10zM8.2 2H10v8H8.2z' };
+  function icon(name) {
+    return '<svg class="pbc-viewer__icon" viewBox="0 0 12 12" aria-hidden="true" focusable="false"><path d="' + ICON_PATHS[name] + '" fill="currentColor"/></svg>';
+  }
+
   function bilingual(zh, en) {
     return '<span class="zh">' + escapeHTML(zh) + '</span><span class="en">' + escapeHTML(en) + '</span>';
   }
@@ -376,10 +381,10 @@
         '<div class="pbc-viewer__content">' + skeletonMarkup() + '</div>' +
         '<div class="pbc-viewer__controls">' +
           '<button type="button" class="pbc-viewer__button pbc-viewer__button--primary pbc-viewer__play" disabled>' +
-            bilingual('▶ 同步播放', '▶ Play') +
+            icon('play') + bilingual('同步播放', 'Play') +
           '</button>' +
           '<button type="button" class="pbc-viewer__button pbc-viewer__final" disabled>' +
-            bilingual('⏭ 终稿', '⏭ Final') +
+            icon('end') + bilingual('终稿', 'Final') +
           '</button>' +
           '<div class="pbc-viewer__scrubber">' +
             '<label class="pbc-viewer__visually-hidden" for="' + this.id + '-slider">' +
@@ -808,7 +813,7 @@
       this.playing = true;
       this.playStartedAt = 0;
       this.playStartedFraction = this.fraction;
-      this.playButton.innerHTML = bilingual('⏸ 暂停', '⏸ Pause');
+      this.playButton.innerHTML = icon('pause') + bilingual('暂停', 'Pause');
       this.playButton.setAttribute('aria-label', '暂停同步回放 / Pause synchronized replay');
       const tick = (time) => {
         if (!this.playing) return;
@@ -830,7 +835,7 @@
       this.raf = 0;
       this.playStartedAt = 0;
       if (this.playButton) {
-        this.playButton.innerHTML = bilingual('▶ 同步播放', '▶ Play');
+        this.playButton.innerHTML = icon('play') + bilingual('同步播放', 'Play');
         this.playButton.setAttribute('aria-label', '同步播放 / Play synchronized replay');
       }
     }

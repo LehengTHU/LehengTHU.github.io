@@ -339,8 +339,8 @@
 }
 .pbc-film__now { display: none; }
 
-/* ---- phones: taller stage, stacked scenes ---- */
-@container pbcfilm (max-width: 480px) {
+/* ---- narrow films (phones, tablets, narrow windows): taller stage, stacked scenes ---- */
+@container pbcfilm (max-width: 700px) {
   .pbc-film__stage { aspect-ratio: 4 / 5; }
   .pbc-film__scene { padding: 18px 16px; }
   .pbc-film__num, .pbc-film__kicker, .pbc-film__label, .pbc-film__mono, .pbc-film svg text { font-size: 11px; }
@@ -397,6 +397,9 @@
   .pbc-film__seg { padding: 6px 0; }
   .pbc-film__seglabel { display: none; }
   .pbc-film__now { display: block; flex: 1 1 0; min-width: 0; padding-top: 7px; font-family: var(--font-mono); font-size: 12px; color: var(--accent-ink); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+}
+@container pbcfilm (min-width: 481px) and (max-width: 700px) {
+  .pbc-film__stage { aspect-ratio: 1 / 1; }
 }
 
 /* kinetic headline emphasis */

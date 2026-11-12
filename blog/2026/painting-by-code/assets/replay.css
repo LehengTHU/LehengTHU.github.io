@@ -353,6 +353,8 @@
   white-space: nowrap;
 }
 
+.pbc-viewer__icon { display: inline-block; width: .82em; height: .82em; margin-right: .45em; vertical-align: -.06em; }
+
 .pbc-viewer__button:hover:not(:disabled) {
   border-color: var(--ink);
   color: var(--ink);
