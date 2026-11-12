@@ -176,7 +176,8 @@
       r(109.8, 82, 10.3, 6, 'ffce79', .86, 25) + e(129.5, 87.2, 6.6, 3.9, '890c10', .86, 40) + e(142, 88, 4.9, 2.9, '265485', .86, 12) + r(147.6, 84.6, 12, 6.6, '1c2d2f', .78, 90) +
       '</svg>';
   })();
-  var TRAP = {enc: '0,0 100,24 100,76 0,100', dec: '0,24 100,0 100,100 0,76'};
+  var TRAP = {enc: '0,0 100,14 100,86 0,100', dec: '0,14 100,0 100,100 0,86'};
+  var TRAP_NARROW = {enc: '0,0 100,24 100,76 0,100', dec: '0,24 100,0 100,100 0,76'};
   function aeLane(k, title, cells, names, subs) {
     var out = '<div class="pbc-film__aelane is-' + k + '" data-ae="' + k + '-title">' + title + '</div>';
     cells.forEach(function (c, i) {
@@ -187,8 +188,10 @@
           (subs[i / 2] ? '<span class="pbc-film__aesub">' + subs[i / 2] + '</span>' : '') + '</div>';
       } else {
         out += '<div class="pbc-film__aetrap is-' + k + '" data-ae="' + k + '-' + col + '" style="--col:' + col + '">' +
-          '<svg viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><polygon points="' + (i === 1 ? TRAP.enc : TRAP.dec) + '" vector-effect="non-scaling-stroke"/></svg></div>' +
-          '<div class="pbc-film__aelabel is-' + k + '" data-ae="' + k + '-' + col + 'l" style="--col:' + col + '">' +
+          '<svg viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">' +
+            '<polygon class="pbc-film__trap" points="' + (i === 1 ? TRAP.enc : TRAP.dec) + '" vector-effect="non-scaling-stroke"/>' +
+            '<polygon class="pbc-film__trap is-narrow" points="' + (i === 1 ? TRAP_NARROW.enc : TRAP_NARROW.dec) + '" vector-effect="non-scaling-stroke"/></svg></div>' +
+          '<div class="pbc-film__aelabel is-' + k + (i === 1 ? ' is-enc' : ' is-dec') + '" data-ae="' + k + '-' + col + 'l" style="--col:' + col + '">' +
           '<span class="pbc-film__aename">' + c[0] + '</span><span class="pbc-film__aesub">' + c[1] + '</span></div>';
       }
     });

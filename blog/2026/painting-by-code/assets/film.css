@@ -139,7 +139,7 @@
 
 /* ---- 2. code autoencoding ---- */
 .pbc-film__ae {
-  --edge: 118px; --gap: 10px;
+  --edge: 140px; --gap: 10px;
   container-type: inline-size;
   display: grid;
   grid-template-columns: minmax(0, 1fr) var(--edge) minmax(0, 1fr) var(--edge) minmax(0, 1fr);
@@ -177,12 +177,16 @@
 .pbc-film__aetrap svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
 .pbc-film__aetrap polygon { fill: var(--paper-2); stroke: var(--ink-3); stroke-width: 1; stroke-linejoin: round; }
 .pbc-film__aetrap.is-b polygon { fill: color-mix(in srgb, var(--accent) 6%, var(--paper)); stroke: var(--accent); }
+.pbc-film__trap.is-narrow { display: none; }
 .pbc-film__aelabel {
   align-self: start; z-index: 1; height: var(--vh);
   display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; text-align: center;
 }
-.pbc-film__aelabel .pbc-film__aename { font-size: 13.5px; }
-.pbc-film__aelabel .pbc-film__aesub { font-size: 12px; }
+/* labels lean toward the wide end so they stay clear of the slanted edges */
+.pbc-film__aelabel.is-enc { padding-right: 8%; }
+.pbc-film__aelabel.is-dec { padding-left: 8%; }
+.pbc-film__aelabel .pbc-film__aename { font-size: 13px; }
+.pbc-film__aelabel .pbc-film__aesub { font-size: 11px; line-height: 1.15; }
 .pbc-film__aelabel.is-b, .pbc-film__aelabel.is-b .pbc-film__aesub { color: var(--accent); }
 .pbc-film__aediff {
   grid-row: 3;
@@ -361,7 +365,9 @@
   .pbc-film__aelane.is-b { grid-row: 4; margin-top: 8px; }
   .pbc-film__aelabel.is-b { grid-row: 5; }
   .pbc-film__aenode.is-b, .pbc-film__aetrap.is-b { grid-row: 6; }
-  .pbc-film__aelabel { grid-column: calc(var(--col) - 1) / span 3; justify-self: center; height: auto; max-width: 128px; margin: 0 0 3px; gap: 0; line-height: 1.2; }
+  .pbc-film__trap { display: none; }
+  .pbc-film__trap.is-narrow { display: inline; }
+  .pbc-film__aelabel { grid-column: calc(var(--col) - 1) / span 3; justify-self: center; height: auto; max-width: 128px; margin: 0 0 3px; padding: 0; gap: 0; line-height: 1.2; }
   .pbc-film__aelabel .pbc-film__aename, .pbc-film__aename { font-size: 12px; line-height: 1.2; }
   .pbc-film__aelabel .pbc-film__aesub, .pbc-film__aesub { font-size: 11px; line-height: 1.2; }
   .pbc-film__aevis { border-radius: 5px; margin-bottom: 2px; }
