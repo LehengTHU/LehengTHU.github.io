@@ -32,8 +32,8 @@
   CH.forEach(function (c, i) { IX[c.id] = i; });
   function pad2(n) { return (n < 10 ? '0' : '') + n; }
   function counter(i) { return pad2(i + 1) + ' / ' + pad2(CH.length); }
-  var CONCL_ZH = '<u>图片生成是一个可学的代码生成任务</u>：看图重建展现出稳定 scaling，编辑与文生图学到了基础，但 scaling 仍慢。';
-  var CONCL_EN = '<u>Image generation is a learnable code-generation task</u>: reconstruction scales steadily, while editing and text-to-image have learned the basics but still scale slowly.';
+  var CONCL_ZH = '<u>图片生成是一个可学且可扩展的<span class="pbc-film__nb">代码生成任务</span></u>：看图重建展现出稳定 scaling，编辑与文生图学到了基础，但 scaling 仍慢。';
+  var CONCL_EN = '<u>Image generation is a learnable and scalable <span class="pbc-film__nb">code-generation task</span></u>: reconstruction scales steadily, while editing and <span class="pbc-film__nb">text-to-image</span> have learned the basics but still scale slowly.';
   var TOTAL = 0;
   var CASES_URL = '/blog/2026/painting-by-code/assets/cases/';
   CH.forEach(function (c) { c.start = TOTAL; TOTAL += c.dur; });

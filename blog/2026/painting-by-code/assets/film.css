@@ -262,6 +262,7 @@
 }
 .pbc-film__end .en { font-size: 0.94em; }
 .pbc-film__end u { text-decoration-thickness: .07em; text-underline-offset: .24em; }
+.pbc-film__nb { white-space: nowrap; }
 
 /* results: training-progress axis under the tiles */
 .pbc-film__axis { display: flex; align-items: center; gap: 10px; flex: none; }
