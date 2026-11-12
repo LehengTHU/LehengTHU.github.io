@@ -8,8 +8,8 @@
     <p class="post-item-dek">{% if post.description %}{{ post.description }}{% else %}{{ post.excerpt | strip_html | truncatewords: 32 }}{% endif %}</p>
   </div>
   {% if show_preview %}
-  <a class="post-item-preview" href="{{ base_path }}{{ post.url }}" tabindex="-1" aria-hidden="true">
+  <div class="post-item-preview" aria-hidden="true">
     <video src="{{ base_path }}{{ post.preview_video }}"{% if post.preview_poster %} poster="{{ base_path }}{{ post.preview_poster }}"{% endif %} autoplay muted loop playsinline preload="metadata"></video>
-  </a>
+  </div>
   {% endif %}
 </li>
