@@ -39,7 +39,7 @@
   CH.forEach(function (c) { c.start = TOTAL; TOTAL += c.dur; });
   var FADE_IN = 450, FADE_OUT = 350;
   var POSTER_T = 1500;                        // claim text fully in, painting under way
-  var START = 0.28;                           // replays open on a frame that already shows clear strokes
+  var START = 0;                              // replays start from a blank canvas
   var SUMMARY_T = CH[IX.results].start + CH[IX.results].dur - FADE_OUT - 20; // results chapter, final state
 
   var reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -527,7 +527,7 @@
   }
 
   // ---------- scenes ----------
-  // stroke count for replay progress p in [0, 1]; starts at START * total, never on an empty canvas
+  // stroke count for replay progress p in [0, 1]; starts at START * total
   function stepAt(r, p) { return Math.round(r.total * (START + (1 - START) * p)); }
 
   var SCENE = [
