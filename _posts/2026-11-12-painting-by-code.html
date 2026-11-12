@@ -1,0 +1,1409 @@
+---
+title: "LLMs Can Paint via Code Autoencoding"
+description: "We decompile images into executable Python stroke programs through code autoencoding and train a language model to paint with next-token prediction (NTP)."
+excerpt: "We decompile images into executable Python stroke programs through code autoencoding and train a language model to paint with next-token prediction (NTP)."
+layout: none
+feed:
+  excerpt_only: true
+preview_video: /blog/2026/painting-by-code/assets/video/film-preview.mp4
+preview_poster: /blog/2026/painting-by-code/assets/video/film-preview.jpg
+---
+{% raw %}<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>LLMs Can Paint via Code Autoencoding - Leheng Sheng</title>
+<meta name="description" content="We decompile images into executable Python stroke programs through code autoencoding and train a language model to paint with next-token prediction (NTP).">
+<meta name="color-scheme" content="light">
+<meta name="theme-color" content="#FAFAFA">
+<link rel="canonical" href="https://lehengthu.github.io/blog/2026/painting-by-code/">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Leheng Sheng">
+<meta property="og:title" content="LLMs Can Paint via Code Autoencoding">
+<meta property="og:description" content="We decompile images into executable Python stroke programs through code autoencoding and train a language model to paint with next-token prediction (NTP).">
+<meta property="og:url" content="https://lehengthu.github.io/blog/2026/painting-by-code/">
+<meta property="og:image" content="https://lehengthu.github.io/blog/2026/painting-by-code/assets/og-cover.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="article:published_time" content="2026-11-12">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="LLMs Can Paint via Code Autoencoding">
+<meta name="twitter:description" content="We decompile images into executable Python stroke programs through code autoencoding and train a language model to paint with next-token prediction (NTP).">
+<meta name="twitter:image" content="https://lehengthu.github.io/blog/2026/painting-by-code/assets/og-cover.png">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"Article","headline":"LLMs Can Paint via Code Autoencoding","author":[{"@type":"Person","name":"Leheng Sheng","url":"https://lehengthu.github.io/"},{"@type":"Person","name":"Xiaosen Zheng","url":"https://xszheng2020.github.io/"},{"@type":"Person","name":"Wei Chow","url":"https://scholar.google.com/citations?user=br7-IGkAAAAJ"},{"@type":"Person","name":"Yuan Sui","url":"https://www.yuan-sui.com/"},{"@type":"Person","name":"Shizun Wang","url":"https://littlepure2333.github.io/home/"}],"datePublished":"2026-11-12","image":"https://lehengthu.github.io/blog/2026/painting-by-code/assets/og-cover.png","url":"https://lehengthu.github.io/blog/2026/painting-by-code/"}
+</script>
+<link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32.png">
+<link rel="apple-touch-icon" href="/images/favicon-180.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400..700&family=Hanken+Grotesk:ital,wght@0,400..700;1,400..700&family=Geist+Mono:wght@400;500&family=Noto+Serif+SC:wght@500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/blog/2026/painting-by-code/assets/film.css?v=20261112-1920">
+<link rel="stylesheet" href="/blog/2026/painting-by-code/assets/replay.css?v=20261112-1920">
+<style>
+:root {
+  --paper: #FAFAFA;
+  --paper-2: #F2F2F2;
+  --ink: #141414;
+  --ink-2: #4D4D4D;
+  --ink-3: #8C8C8C;
+  --rule: rgba(0, 0, 0, 0.1);
+  --rule-2: rgba(0, 0, 0, 0.07);
+  --accent: #2456A6;
+  --accent-ink: #1D4A8F;
+  --on-accent: #FFFFFF;
+  --card: #FFFFFF;
+  --font-display: "Source Serif 4", "Noto Serif SC", "Source Han Serif SC", "Times New Roman", Georgia, "Songti SC", "STSong", serif;
+  --font-sans: "Hanken Grotesk", "PingFang SC", "Hiragino Sans GB", "Noto Sans SC", "Microsoft YaHei", "Helvetica Neue", Arial, sans-serif;
+  --font-mono: "Geist Mono", ui-monospace, "SF Mono", Menlo, Consolas, "PingFang SC", "Microsoft YaHei", monospace;
+  --page: 1680px;
+  --gutter: clamp(16px, 5vw, 56px);
+  --nav-h: 64px;
+  --ease: cubic-bezier(0.2, 0.7, 0.1, 1);
+  color-scheme: light;
+}
+* { box-sizing: border-box; }
+html { margin: 0; padding: 0; scroll-behavior: smooth; scroll-padding-top: calc(var(--nav-h) + 24px); overflow-x: clip; }
+body {
+  margin: 0;
+  padding: 0;
+  overflow-x: clip;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-sans);
+  font-size: 16px;
+  line-height: 1.55;
+  font-optical-sizing: auto;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+body.lang-en .zh, body.lang-zh .en { display: none !important; }
+::selection { background: var(--accent); color: var(--on-accent); }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+img { display: block; max-width: 100%; height: auto; }
+button, input { font: inherit; }
+.skip {
+  position: absolute;
+  left: -999px;
+  top: 8px;
+  z-index: 200;
+  padding: 8px 14px;
+  background: var(--ink);
+  color: var(--paper);
+}
+.skip:focus { left: 8px; }
+.nav {
+  position: fixed;
+  inset: 0 0 auto 0;
+  z-index: 50;
+  background: color-mix(in srgb, var(--paper) 82%, transparent);
+  -webkit-backdrop-filter: saturate(1.4) blur(14px);
+  backdrop-filter: saturate(1.4) blur(14px);
+  border-bottom: 1px solid transparent;
+  transition: border-color .3s var(--ease), background-color .4s var(--ease);
+}
+.nav.scrolled { border-bottom-color: var(--rule); }
+.nav-inner {
+  max-width: var(--page);
+  height: var(--nav-h);
+  margin: 0 auto;
+  padding: 0 var(--gutter);
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+.nav-mark {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+  color: inherit;
+  text-decoration: none;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.45rem;
+  letter-spacing: -.02em;
+}
+.nav-crest { width: auto; height: 30px; }
+.nav-links {
+  margin-left: auto;
+  display: flex;
+  gap: 26px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.nav-links::-webkit-scrollbar { display: none; }
+.nav-links a {
+  position: relative;
+  padding: 4px 0;
+  color: var(--ink-2);
+  text-decoration: none;
+  white-space: nowrap;
+  font-size: .9rem;
+  font-weight: 500;
+}
+.nav-links a::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 1.5px;
+  background: var(--accent);
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform .35s var(--ease);
+}
+.nav-links a:hover, .nav-links a[aria-current="page"] { color: var(--ink); }
+.nav-links a:hover::after, .nav-links a[aria-current="page"]::after { transform: scaleX(1); transform-origin: left; }
+.ar-page {
+  max-width: var(--page);
+  margin: 0 auto;
+  padding: var(--nav-h) var(--gutter) 0;
+  display: grid;
+  grid-template-columns: minmax(200px, 1fr) minmax(0, 760px) minmax(0, 1fr);
+  column-gap: 48px;
+  align-items: start;
+}
+.ar-head { grid-column: 2; grid-row: 1; min-width: 0; }
+.ar-main { grid-column: 2; grid-row: 2; min-width: 0; container: pbcmain / inline-size; }
+.ar-crumb, .ar-eyebrow, .ar-toc-title, .tl-h, main h2 small, .pbc-fig-label,
+.btn, .ar-lang button, .pbc-byline, .pbc-read-kicker, .pbc-card-kicker,
+.pbc-updated, .pbc-chart-table, .refs li::marker, .pill, .task-shot figcaption,
+.footer-kicker, .footer-row {
+  font-family: var(--font-mono);
+  font-feature-settings: "ss01";
+}
+.ar-crumb {
+  max-width: 760px;
+  min-width: 0;
+  margin: 40px 0 36px;
+  display: flex;
+  gap: 10px;
+  color: var(--ink-2);
+  font-size: .78rem;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+}
+.ar-crumb a { color: inherit; text-decoration: none; }
+.ar-crumb a:hover { color: var(--accent-ink); }
+.ar-crumb > :last-child { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ar-eyebrow {
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: var(--accent-ink);
+  font-size: .78rem;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  font-variant-numeric: tabular-nums;
+}
+.ar-lang {
+  margin-left: auto;
+  padding: 2px;
+  display: inline-flex;
+  border: 1px solid var(--rule);
+  border-radius: 999px;
+}
+.ar-lang button {
+  padding: 5px 12px;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--ink-2);
+  cursor: pointer;
+  font-size: .72rem;
+  letter-spacing: .06em;
+}
+.ar-lang button.on { background: var(--ink); color: var(--paper); }
+.ar-head h1 {
+  max-width: 760px;
+  margin: 0;
+  color: var(--ink);
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: clamp(2.5rem, 4.6vw, 3.6rem);
+  line-height: 1.08;
+  letter-spacing: -.02em;
+  text-wrap: balance;
+}
+.ar-head h1 .zh, main h2 .zh { letter-spacing: .02em; }
+.ar-standfirst {
+  max-width: 760px;
+  margin: 18px 0 0;
+  color: var(--ink-2);
+  font-size: clamp(1.1rem, 1.5vw, 1.25rem);
+  line-height: 1.5;
+}
+.pbc-byline {
+  max-width: 760px;
+  margin: 22px 0 28px;
+  padding-top: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+  border-top: 1px solid var(--rule);
+  color: var(--ink-2);
+  font-size: .76rem;
+  line-height: 1.4;
+}
+.pbc-authors { margin: 0; padding: 0; list-style: none; display: flex; flex-wrap: wrap; gap: 8px 18px; }
+.pbc-authors a { display: inline-flex; align-items: center; gap: 8px; color: var(--ink); font-weight: 500; text-decoration: none; }
+.pbc-authors a:hover span { text-decoration: underline; text-underline-offset: 3px; }
+.pbc-authors img { width: 28px; height: 28px; border-radius: 50%; object-fit: cover; }
+.pbc-byline-meta { display: flex; align-items: center; gap: 10px; }
+.pbc-byline-sep { color: var(--ink-3); }
+.ar-toc {
+  grid-column: 1;
+  grid-row: 1 / span 2;
+  justify-self: end;
+  width: 200px;
+  position: sticky;
+  top: calc(var(--nav-h) + 24px);
+  align-self: start;
+  z-index: 2;
+  max-height: calc(100vh - var(--nav-h) - 48px);
+  margin-top: 148px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+}
+.ar-toc-title {
+  margin: 0 0 12px;
+  padding-left: 14px;
+  color: var(--ink-3);
+  font-size: .72rem;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+}
+.ar-toc ol { margin: 0; padding: 0; list-style: none; border-left: 1px solid var(--rule); }
+.ar-toc li { margin: 0; }
+.ar-toc a {
+  display: block;
+  margin-left: -1px;
+  padding: 5px 0 5px 12px;
+  border-left: 2px solid transparent;
+  color: var(--ink-2);
+  text-decoration: none;
+  font-size: 13.5px;
+  line-height: 1.35;
+}
+.ar-toc a:hover { color: var(--ink); }
+.ar-toc a.active { border-left-color: var(--accent); color: var(--ink); font-weight: 600; }
+main { margin: 0; padding: 0; }
+main section { max-width: 760px; }
+#pbc-film { max-width: 760px; }
+main section > p, main section > ul, main section > ol, main section > h2, main section > h3,
+main section > .callout, main > .tldr { width: min(760px, 100%); }
+main p, main ul, main ol {
+  color: var(--ink-2);
+  font-size: 17px;
+  line-height: 1.65;
+}
+main p { margin: 0 0 20px; }
+main ul, main ol { margin-top: 0; margin-bottom: 20px; }
+main h2 {
+  margin: clamp(56px, 9vw, 88px) 0 18px;
+  padding-top: 16px;
+  border-top: 1px solid var(--ink);
+  color: var(--ink);
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: clamp(1.7rem, 2.8vw, 2.2rem);
+  line-height: 1.15;
+  letter-spacing: -.015em;
+}
+main h2 small {
+  display: block;
+  margin-bottom: 12px;
+  color: var(--accent-ink);
+  font-size: .8rem;
+  font-weight: 400;
+  letter-spacing: .1em;
+}
+main h3 {
+  margin: 36px 0 12px;
+  color: var(--ink);
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 1.3rem;
+  line-height: 1.3;
+  letter-spacing: -.01em;
+}
+main h4 {
+  margin: 28px 0 10px;
+  color: var(--ink);
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 1.1rem;
+  letter-spacing: -.005em;
+}
+main a {
+  color: var(--accent-ink);
+  text-decoration: none;
+  background: linear-gradient(currentColor, currentColor) 0 100% / 100% 1px no-repeat;
+}
+main a:hover { background-size: 100% 2px; }
+main strong { color: var(--ink); font-weight: 600; }
+main code {
+  padding: .12em .35em;
+  border-radius: 4px;
+  background: var(--paper-2);
+  font-family: var(--font-mono);
+  font-size: .86em;
+}
+.kicker { color: var(--ink-2); }
+.tldr { margin: 28px 0 8px; }
+.tl-h {
+  margin: 0 0 12px;
+  color: var(--ink-2);
+  font-size: .78rem;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+}
+.tldr > p { margin: 0 0 16px; color: var(--ink); font-size: 17px; }
+.tldr u { text-decoration-thickness: 1.5px; text-underline-offset: .24em; }
+.tldr ol { margin: 0 0 8px; padding: 0; border-top: 1px solid var(--ink); list-style: none; counter-reset: fact; }
+.tldr li {
+  display: grid;
+  grid-template-columns: 32px minmax(0, 1fr);
+  gap: 8px;
+  margin: 0;
+  padding: 13px 0;
+  border-bottom: 1px solid var(--rule);
+  counter-increment: fact;
+  color: var(--ink-2);
+  font-size: 16px;
+  line-height: 1.55;
+}
+.tldr li::before {
+  content: counter(fact) ".";
+  color: var(--accent);
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  line-height: 1.2;
+}
+.callout { margin: 8px 0 22px; padding: 4px 0 4px 18px; border-left: 3px solid var(--accent); }
+.callout p { margin: 0; }
+.callout.beige { margin: 0; padding: 14px 0; border: 0; border-bottom: 1px solid var(--rule); }
+p + .callout.beige { border-top: 1px solid var(--ink); }
+.btn {
+  padding: 7px 15px;
+  border: 1px solid var(--rule);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--ink-2);
+  cursor: pointer;
+  font-size: .76rem;
+  letter-spacing: .04em;
+}
+.btn:hover { border-color: var(--ink); color: var(--ink); }
+.btn.primary { border-color: var(--accent); background: var(--accent); color: var(--on-accent); }
+.btn.primary:hover { border-color: var(--accent-ink); background: var(--accent-ink); color: var(--on-accent); }
+.pbc-figure {
+  width: min(760px, 100%);
+  max-width: 100%;
+  margin: 34px 0 42px;
+}
+.pbc-figure.pbc-wide { width: min(760px, 100%); }
+.pbc-figure-head { margin-bottom: 14px; padding-top: 12px; border-top: 1px solid var(--rule); }
+.pbc-figure-title {
+  margin: 0;
+  color: var(--ink);
+  font-family: var(--font-display);
+  font-size: 1.22rem;
+  font-weight: 700;
+  line-height: 1.3;
+}
+.pbc-figure-claim { margin: 5px 0 0; color: var(--accent-ink); font-size: 15px; line-height: 1.5; }
+.pbc-figure figcaption {
+  margin-top: 12px;
+  color: var(--ink-2);
+  font-size: 14px;
+  line-height: 1.55;
+}
+.pbc-fig-label {
+  color: var(--accent-ink);
+  font-size: .78rem;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+}
+.pbc-video-actions { margin: 0 0 10px; }
+.pbc-video-pair { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; align-items: start; }
+.pbc-video-pair video {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1 / 1;
+  border: 1px solid var(--rule-2);
+  border-radius: 8px;
+  background: var(--paper-2);
+  object-fit: contain;
+}
+.pbc-read-card {
+  width: min(760px, 100%);
+  margin: 32px 0 44px;
+  display: grid;
+  grid-template-columns: 180px minmax(0, 1fr);
+  border: 1px solid var(--rule);
+  border-radius: 8px;
+  overflow: hidden;
+  background: var(--card);
+  color: inherit;
+  text-decoration: none;
+}
+main .pbc-read-card { background-image: none; }
+.pbc-read-card img { width: 100%; height: 100%; min-height: 142px; object-fit: cover; }
+.pbc-read-copy { padding: 18px 20px; align-self: center; }
+.pbc-read-copy > span { display: block; }
+.pbc-card-kicker { margin: 0 0 8px; color: var(--accent-ink); font-size: .72rem; letter-spacing: .06em; text-transform: uppercase; }
+.pbc-read-title { margin: 0 0 6px; color: var(--ink); font-family: var(--font-display); font-size: 1.18rem; font-weight: 700; line-height: 1.3; }
+.pbc-read-desc { margin: 0; color: var(--ink-2); font-size: 15px; line-height: 1.5; }
+.grid3 { width: min(760px, 100%); margin: 8px 0 12px; display: grid; grid-template-columns: 1fr; gap: 12px; align-items: stretch; }
+.taskcard {
+  height: 100%;
+  padding: 14px 16px 4px;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--rule-2);
+  border-radius: 8px;
+}
+.taskcard > .task-shot { align-self: start; }
+.taskcard .pill { display: block; width: fit-content; }
+main .taskcard h4 { margin: 0 0 8px; font-size: 1.1rem; }
+main .taskcard p { font-size: 15.5px; }
+.pill {
+  display: inline-block;
+  margin: 0 6px 6px 0;
+  padding: 2px 10px;
+  border: 1px solid var(--rule);
+  border-radius: 999px;
+  color: var(--ink-2);
+  font-size: .7rem;
+  letter-spacing: .04em;
+}
+.task-shot { width: 100%; margin: 10px 0 12px; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; container-type: inline-size; }
+.task-shot figure { width: max-content; max-width: 100%; margin: 0; }
+.task-shot figure:only-child { grid-column: 1 / -1; }
+.task-shot img {
+  width: auto;
+  max-width: 100%;
+  height: min(220px, calc((100cqw - 10px) / 2));
+  border: 1px solid var(--rule-2);
+  border-radius: 8px;
+  background: var(--paper-2);
+  object-fit: contain;
+  object-position: top left;
+}
+.task-shot figcaption { margin-top: 6px; color: var(--ink-3); font-size: .7rem; letter-spacing: .04em; line-height: 1.4; text-align: center; }
+main .task-prompt { margin: 0 0 4px; padding: 8px 10px; border-radius: 6px; background: var(--paper-2); color: var(--ink-2); font-size: 13.5px; line-height: 1.45; }
+@container pbcmain (min-width: 700px) {
+  .grid3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .taskcard { height: auto; display: grid; grid-template-rows: subgrid; grid-row: span 5; row-gap: 10px; }
+  main .taskcard > h4 { grid-row: 1; margin-bottom: 0; }
+  main .taskcard > p:not(.zh):not(.en):not(.task-prompt) { grid-row: 2; margin-bottom: 0; }
+  main .taskcard > p.zh, main .taskcard > p.en { grid-row: 3; margin-bottom: 0; }
+  main .taskcard > .task-prompt { grid-row: 4; margin: 0; align-self: start; }
+  .taskcard > .task-shot { grid-row: 5; margin-top: 0; }
+}
+.loss-charts { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; }
+.loss-card { min-width: 0; padding: 20px 14px 16px; border: 1px solid var(--rule-2); border-radius: 8px; }
+main .loss-card h4 { margin: 0 10px 12px; font-size: 1.1rem; }
+.loss-plot { min-width: 0; }
+.pbc-loss-svg { display: block; width: 100%; height: auto; font-family: var(--font-sans); }
+.pbc-chart-scroll { max-width: 100%; overflow-x: auto; padding-bottom: 4px; }
+.pbc-psnr-svg { display: block; width: 100%; min-width: 620px; height: auto; font-family: var(--font-sans); }
+.pbc-chart-toolbar { margin: 0 0 10px; display: flex; justify-content: flex-end; }
+.pbc-chart-table { width: 100%; min-width: 610px; border-collapse: collapse; color: var(--ink-2); font-size: 12px; font-variant-numeric: tabular-nums; }
+.pbc-chart-table th, .pbc-chart-table td { padding: 8px 9px; border-bottom: 1px solid var(--rule); text-align: right; white-space: nowrap; }
+.pbc-chart-table th:first-child, .pbc-chart-table td:first-child { text-align: left; }
+.pbc-chart-table thead th { color: var(--ink); font-weight: 500; }
+.pbc-note { position: relative; display: inline; }
+.pbc-note-marker {
+  margin: 0 .06em;
+  padding: 0 .12em;
+  border: 0;
+  border-bottom: 1px solid currentColor;
+  background: transparent;
+  color: var(--accent-ink);
+  cursor: pointer;
+  font-family: var(--font-mono);
+  font-size: .72em;
+  line-height: 1;
+  vertical-align: super;
+}
+.pbc-note-popover {
+  position: absolute;
+  left: 50%;
+  bottom: calc(100% + 10px);
+  z-index: 40;
+  width: max-content;
+  max-width: min(310px, calc(100vw - 32px));
+  padding: 10px 12px;
+  border: 1px solid var(--rule);
+  border-radius: 7px;
+  background: var(--card);
+  box-shadow: 0 3px 12px rgba(0,0,0,.08);
+  color: var(--ink-2);
+  font-family: var(--font-sans);
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 1.45;
+  text-align: left;
+  transform: translateX(-50%) translateY(4px);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity .16s ease, transform .16s ease, visibility .16s;
+}
+.pbc-note:hover .pbc-note-popover, .pbc-note:focus-within .pbc-note-popover, .pbc-note.open .pbc-note-popover {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transform: translateX(-50%) translateY(0);
+}
+.pbc-note-popover a { font-size: 12px; }
+.pbc-updated {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 9px;
+  border: 1px solid var(--accent);
+  border-radius: 999px;
+  color: var(--accent-ink);
+  font-size: .68rem;
+  letter-spacing: .04em;
+}
+.refs { margin: 4px 0 0; padding-left: 1.3em; }
+.refs li { margin: 10px 0; color: var(--ink-2); font-size: 15.5px; line-height: 1.55; }
+.refs li::marker { color: var(--ink-3); }
+.pbc-backrefs { margin-left: 5px; white-space: nowrap; }
+.pbc-citation {
+  position: relative;
+  width: min(760px, 100%);
+  margin-top: 22px;
+}
+.pbc-citation pre {
+  margin: 0;
+  padding: 18px;
+  overflow-x: auto;
+  border: 1px solid var(--rule);
+  border-radius: 8px;
+  background: var(--paper-2);
+  color: var(--ink);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  line-height: 1.6;
+}
+.pbc-copy { margin: 10px 0 0; }
+.footer {
+  margin-top: clamp(80px, 10vw, 128px);
+  padding: clamp(48px, 6vw, 72px) 0 32px;
+  border-top: 1px solid var(--rule);
+  background: var(--paper-2);
+  color: var(--ink);
+}
+.footer .wrap { max-width: var(--page); margin: 0 auto; padding: 0 var(--gutter); }
+.footer a { color: inherit; text-decoration: none; }
+.footer-kicker { margin: 0 0 12px; opacity: .6; font-size: .78rem; letter-spacing: .14em; text-transform: uppercase; }
+.footer-mail {
+  display: inline-block;
+  color: inherit;
+  font-family: var(--font-display);
+  font-size: clamp(1.35rem, 2.6vw, 2rem);
+  line-height: 1.2;
+  letter-spacing: -.01em;
+  word-break: break-all;
+  background: linear-gradient(var(--accent), var(--accent)) 0 100% / 0% 3px no-repeat;
+  transition: background-size .6s var(--ease), color .3s;
+}
+.footer-mail:hover { background-size: 100% 3px; color: var(--accent); }
+.footer-row {
+  margin-top: clamp(36px, 5vw, 56px);
+  padding-top: 20px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 12px 24px;
+  border-top: 1px solid color-mix(in srgb, var(--ink) 20%, transparent);
+  opacity: .75;
+  font-size: .76rem;
+}
+.footer-links { display: flex; flex-wrap: wrap; gap: 22px; }
+.footer-links a:hover { color: var(--accent); }
+@media (max-width: 960px) {
+  .ar-page { grid-template-columns: 148px minmax(0, 1fr); column-gap: 24px; }
+  .ar-toc { width: auto; justify-self: stretch; margin-top: 120px; }
+  .ar-toc a { padding: 4px 0 4px 10px; font-size: 13px; }
+}
+@media (max-width: 700px) {
+  .loss-charts { grid-template-columns: 1fr; }
+}
+@media (max-width: 640px) {
+  .pbc-video-pair { grid-template-columns: 1fr; }
+}
+@media (max-width: 680px) {
+  .nav-inner { gap: 16px; }
+  .nav-mark { font-size: 1.12rem; }
+  .nav-links { gap: 18px; }
+  .nav-links a { font-size: .82rem; }
+  .ar-page { display: block; max-width: none; }
+  .ar-crumb { margin: 24px 0 28px; }
+  .ar-head h1 { font-size: 2.3rem; }
+  .ar-standfirst { font-size: 1.1rem; }
+  .pbc-byline { flex-wrap: wrap; }
+  .ar-toc { position: static; max-height: none; margin: 28px 0 8px; }
+  main p, main ul, main ol { font-size: 16px; line-height: 1.6; }
+  main h3 { font-size: 1.2rem; }
+  .pbc-read-card { grid-template-columns: 112px minmax(0, 1fr); }
+  .pbc-read-card img { min-height: 100%; }
+  .pbc-read-copy { padding: 14px; }
+  .pbc-read-title { font-size: 1rem; }
+  .pbc-read-desc { font-size: 13px; }
+  .pbc-note-popover {
+    position: fixed;
+    left: 16px;
+    right: 16px;
+    bottom: 18px;
+    width: auto;
+    max-width: none;
+    transform: translateY(4px);
+  }
+  .pbc-note:hover .pbc-note-popover, .pbc-note:focus-within .pbc-note-popover, .pbc-note.open .pbc-note-popover {
+    transform: translateY(0);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; animation-duration: .01ms !important; }
+}
+</style>
+</head>
+<body class="lang-en">
+<a class="skip" href="#main">Skip to content</a>
+<header class="nav" id="top">
+<div class="nav-inner">
+<a class="nav-mark" href="/" aria-label="Home"><img class="nav-crest" src="/images/nus-crest.png" alt="" width="257" height="327"><span>Leheng Sheng</span></a>
+<nav class="nav-links" aria-label="Primary">
+<a href="/">Home</a>
+<a href="/publications/">All papers</a>
+<a href="/blog/" aria-current="page">Blog</a>
+<a href="/cv/">CV</a>
+</nav>
+</div>
+</header>
+<div class="ar-page">
+<header class="ar-head">
+<div class="ar-crumb"><a href="/blog/">Blog</a><span aria-hidden="true">/</span><time datetime="2026-11-12"><span class="zh">2026 年 11 月 12 日</span><span class="en">November 12, 2026</span></time></div>
+<div class="ar-eyebrow">
+<span>Painting by Code</span>
+<div class="ar-lang" role="group" aria-label="Language">
+<button id="btn-en" type="button" class="on" aria-pressed="true">EN</button>
+<button id="btn-zh" type="button" aria-pressed="false">中文</button>
+</div>
+</div>
+<h1>LLMs Can Paint via Code Autoencoding</h1>
+<p class="ar-standfirst zh">我们用代码自编码把图片批量反编译成可执行的 Python 笔触程序，再用下一词预测（NTP）训练语言模型逐笔作画。</p>
+<p class="ar-standfirst en">We decompile images into executable Python stroke programs through code autoencoding and train a language model to paint with next-token prediction (NTP).</p>
+<div class="pbc-byline">
+<ul class="pbc-authors" aria-label="作者 / Authors">
+<li><a href="/"><img src="/images/portrait.jpg" alt="" width="28" height="28"><span><span class="zh">盛乐恒</span><span class="en">Leheng Sheng</span></span></a></li>
+<li><a href="https://xszheng2020.github.io/"><img src="/blog/2026/painting-by-code/assets/authors/xiaosen-zheng.jpg" alt="" width="28" height="28"><span><span class="zh">郑晓森</span><span class="en">Xiaosen Zheng</span></span></a></li>
+<li><a href="https://scholar.google.com/citations?user=br7-IGkAAAAJ&amp;hl=en&amp;oi=sra"><img src="/blog/2026/painting-by-code/assets/authors/wei-chow.jpg" alt="" width="28" height="28"><span><span class="zh">周炜</span><span class="en">Wei Chow</span></span></a></li>
+<li><a href="https://www.yuan-sui.com/"><img src="/blog/2026/painting-by-code/assets/authors/yuan-sui.jpg" alt="" width="28" height="28"><span><span class="zh">隋远</span><span class="en">Yuan Sui</span></span></a></li>
+<li><a href="https://littlepure2333.github.io/home/"><img src="/blog/2026/painting-by-code/assets/authors/shizun-wang.jpg" alt="" width="28" height="28"><span><span class="zh">王诗尊</span><span class="en">Shizun Wang</span></span></a></li>
+</ul>
+<div class="pbc-byline-meta"><time datetime="2026-11-12"><span class="zh">2026 年 11 月 12 日</span><span class="en">November 12, 2026</span></time><span class="pbc-byline-sep" aria-hidden="true">·</span><span><span class="zh">约 11 分钟阅读</span><span class="en">11 min read</span></span></div>
+</div>
+<div id="pbc-film" class="pbc-film" aria-label="开场影片 / Opening film"></div>
+</header>
+<nav class="ar-toc" aria-label="Contents">
+<div class="ar-toc-title"><span class="zh">目录</span><span class="en">Contents</span></div>
+<ol>
+<li><a href="#bg"><span class="zh">背景</span><span class="en">Background</span></a></li>
+<li><a href="#results"><span class="zh">结果</span><span class="en">Results</span></a></li>
+<li><a href="#method"><span class="zh">方法</span><span class="en">Method</span></a></li>
+<li><a href="#dynamics"><span class="zh">训练动力学</span><span class="en">Training</span></a></li>
+<li><a href="#limitations"><span class="zh">局限</span><span class="en">Limitations</span></a></li>
+<li><a href="#conclusion"><span class="zh">结论</span><span class="en">Conclusion</span></a></li>
+<li><a href="#related"><span class="zh">相关工作</span><span class="en">Related work</span></a></li>
+<li><a href="#disclaimer"><span class="zh">声明</span><span class="en">Disclaimer</span></a></li>
+<li><a href="#refs"><span class="zh">参考文献</span><span class="en">References</span></a></li>
+<li><a href="#citation"><span class="zh">引用</span><span class="en">Citation</span></a></li>
+</ol>
+</nav>
+<main class="ar-main" id="main">
+<div class="tldr">
+<div class="tl-h">TL;DR</div>
+<p class="zh"><strong><u>图片生成是一个可学的代码生成任务</u>：其中看图重建展现出稳定的 scaling；编辑与文生图也学到了基础，只是 scaling 缓慢。</strong></p>
+<p class="en"><strong><u>Image generation is a learnable code-generation task</u>: reconstruction scales steadily, while editing and text-to-image learn the basics but scale slowly.</strong></p>
+<ol>
+<li><span class="zh"><strong>可学且稳定。</strong>我们用标准 NTP 训练逐笔绘制，loss 平稳下降，没有 spike。在测试集上图片重建 PSNR 随着训练稳定上升，仍未见 ceiling。</span><span class="en"><strong>Learnable and stable.</strong> Under standard NTP training, the loss decreases smoothly without spikes. On the test set, image reconstruction PSNR rises steadily with training and shows no ceiling yet.</span></li>
+<li><span class="zh"><strong>编辑与文生图任务相对较难，但仍能学到基础概念。</strong>文生图能抓到基本概念（天空、草地、主体的大致轮廓与配色），编辑能找到要改的部位并在那里落笔；只是画得粗，完成度和稳定性都还不够，PSNR 没有随训练步数上升。可能的原因有三个：文本描述不充分、模型容量不足、数据不足。</span><span class="en"><strong>Editing and text-to-image are relatively harder, but the model still learns basic concepts.</strong> Text-to-image captures basic concepts (e.g., sky, grass, and the rough shape and palette of the subject). Editing finds the region to change and paints there. However, the strokes remain coarse and lack completion and stability. As a result, PSNR does not increase with training steps. We consider three possible causes: insufficient captions, insufficient model capacity, and insufficient data.</span></li>
+</ol>
+</div>
+
+<section id="bg">
+<h2><small>01 · BACKGROUND</small><span class="zh">前沿模型能够使用代码逐笔作画</span><span class="en">Frontier models can paint with code, stroke by stroke</span></h2>
+<p class="zh kicker">2026 年 11 月 9 日 Fable 5.2 发布当天，“用代码画画”刷屏。@Mr_Salio 让它分五个阶段画 Anthropic CEO Dario Amodei；第二天，@SMK_12159 回帖“GPT 也能做这个”，画了 OpenAI CEO Sam Altman。两个前沿语言模型选了同一条生成路径：不调用图像模型，用代码一笔一笔地画。</p>
+<p class="en kicker">On November 9, 2026, the day Fable 5.2 launched, “painting with code” went viral. @Mr_Salio asked it to paint Anthropic CEO Dario Amodei in five passes. The next day, @SMK_12159 replied “GPT can do this too” with a painting of OpenAI CEO Sam Altman. Both frontier language models took the same generation path: they called no image model and painted with code, stroke by stroke.</p>
+<figure class="pbc-figure" id="fig-videos">
+<header class="pbc-figure-head"><div class="pbc-figure-title"><span class="zh">两个模型用代码画出肖像</span><span class="en">Two models paint portraits with code</span></div><p class="pbc-figure-claim"><span class="zh">两段视频都没有调用图像或视频模型，画面由代码笔触逐笔生成。</span><span class="en">Neither video calls an image or video model, and both generate each frame stroke by stroke in code.</span></p></header>
+<div class="pbc-video-actions"><button type="button" class="btn primary" id="duo-play"><span class="zh">▶ 同时播放两条</span><span class="en">▶ Play both</span></button></div>
+<div class="pbc-video-pair">
+<video id="vid-fable" src="/blog/2026/painting-by-code/assets/video/fable-dario.mp4" poster="/blog/2026/painting-by-code/assets/video/fable-dario.jpg" preload="metadata" playsinline controls></video>
+<video id="vid-gpt" src="/blog/2026/painting-by-code/assets/video/gpt-altman.mp4" poster="/blog/2026/painting-by-code/assets/video/gpt-altman.jpg" preload="metadata" playsinline controls></video>
+</div>
+<figcaption><span class="pbc-fig-label"><span class="zh">图 1 · </span><span class="en">Figure 1 · </span></span><span class="zh">左：Fable 5.2 分五个阶段写实绘制 Dario Amodei（@Mr_Salio，19 秒）；右：GPT 应战绘制 Sam Altman（@SMK_12159，35 秒）。</span><span class="en">Left: Fable 5.2 paints Dario Amodei realistically in five passes (@Mr_Salio, 19 s). Right: GPT answers with Sam Altman (@SMK_12159, 35 s).</span></figcaption>
+</figure>
+<p class="zh">这两个例子说明，<strong>纯语言模型可以把绘画分解成能执行、能检查、能迭代的代码</strong>。视觉生成未必是扩散黑盒，也可以是一种<strong>带中间状态的推理过程</strong>。于是我们想问：</p>
+<p class="en">These two examples show that <strong>a pure language model can decompose painting into code that it can execute, inspect, and iterate on</strong>. Visual generation need not be a diffusion black box. It can also be a <strong>reasoning process with explicit intermediate states</strong>. We therefore ask:</p>
+<div class="callout"><p><strong><span class="zh">能不能把“绘画”批量变成监督数据，直接把逐笔作画的能力训进模型权重，让模型一次写出完整的绘制程序？</span><span class="en">Can we turn “painting” into supervised data at scale, train stroke-by-stroke drawing directly into the model’s weights, and let the model write a complete drawing program in one go?</span></strong></p></div>
+<p class="zh">我们的做法是<strong>代码自编码</strong>：用拟合器把每张图片反编译成一段笔触程序（即逐笔作画的代码），再用固定渲染器执行这段程序，把图片画回来。这样，任意一张图片都能自动变成一条“图片–程序”训练样本，无需人工标注。我们再用这些样本训练语言模型，让它学会自己写出笔触程序。</p>
+<p class="en">Our approach is <strong>code autoencoding</strong>. A fitter decompiles each image into a stroke program (i.e., code that paints the image stroke by stroke), and a fixed renderer executes the program to draw the image back. In this way, any image becomes an image–program training pair without manual labels. We then train a language model on these pairs to write stroke programs itself.</p>
+</section>
+
+<section id="results">
+<h2><small>02 · RESULTS</small><span class="zh">图片生成是一个可学的代码生成任务</span><span class="en">Image generation is a learnable code-generation task</span></h2>
+<p class="zh kicker">我们用代码自编码得到的笔触程序训练语言模型，具体做法见第 3 节。训练过程中，我们按先后保存了七个检查点（C1–C7），并在模型没有见过的测试集上测试每个检查点。</p>
+<p class="en kicker">We train a language model on the stroke programs from code autoencoding (Section 3 gives the details). During training, we save seven checkpoints in order (C1–C7) and evaluate each one on a test set that the model has never seen.</p>
+<h3><span class="zh">模型逐渐学会用代码重建图片</span><span class="en">The model gradually learns to reconstruct images with code</span></h3>
+<p class="zh">PSNR 衡量重建图和原图有多接近：数值越高越像，大约每提高 3 dB，像素误差减半。从 C1 到 C7，平均重建 PSNR 从 8.78 dB 升到 <strong>17.44 dB</strong>，提高了 <strong>8.66 dB</strong>，相当于像素误差降到原来的约七分之一。把相邻两个检查点逐张比较，后一个检查点在大多数图片上画得更像。这条曲线至今没有变平。</p>
+<p class="en">PSNR measures how close a reconstruction is to the original image: higher means closer, and every gain of about 3 dB halves the pixel error. From C1 to C7, the average reconstruction PSNR rises from 8.78 dB to <strong>17.44 dB</strong>. This gain of <strong>8.66 dB</strong> cuts the pixel error to about one seventh. When we compare two adjacent checkpoints image by image, the later one paints closer to the original on most images. The curve has not flattened yet.</p>
+<figure class="pbc-figure pbc-wide" id="fig-reconstruction">
+<header class="pbc-figure-head"><div class="pbc-figure-title"><span class="zh">图片重建逐渐被学会</span><span class="en">Image reconstruction is learned gradually</span></div><p class="pbc-figure-claim"><span class="zh">我们在七个不同的训练检查点（C1–C7）对同一张图片进行绘制，回放同步展示每个检查点从铺底色到画细节的过程。</span><span class="en">We draw the same image at seven different training checkpoints (C1–C7), and the replay shows all of them painting in sync, from the base colors to the details.</span></p></header>
+<div class="pbc-viewer" data-task="reconstruction" data-cases="case-001,case-002,case-020" data-default="case-001"></div>
+<figcaption><span class="pbc-fig-label"><span class="zh">图 2 · </span><span class="en">Figure 2 · </span></span><span class="zh">测试集中三张图片的 C1–C7 同步回放，按绘制进度的相同比例对齐。强调色边框标出该图 PSNR 最高的检查点。</span><span class="en">Synchronized C1–C7 replays of three images from the test set, aligned by the same fraction of drawing progress. The accent frame marks the checkpoint with the best PSNR for each image.</span></figcaption>
+</figure>
+<h3><span class="zh">编辑与文生图更难学习，但仍学到基础</span><span class="en">Editing and text-to-image are harder to learn, but the model still learns the basics</span></h3>
+<p class="zh">与重建不同，编辑与文生图的分数并不乐观：编辑的平均 PSNR 从 17.05 缓降到 15.06 dB，文生图在 8.8–9.3 dB 横盘。但是，文生图能抓到基本概念，用大色块搭出天空、草地和主体轮廓；编辑也能找到要改的部位，在对的地方落笔（图 3、图 4）。问题出在后面：细节画不准，指令常做不完，编辑还容易画过头。目前提升的是这些仍很粗糙的基础能力，分数还没有反映出来。可能的原因有三个：</p>
+<p class="en">Unlike reconstruction, editing and text-to-image do not improve in score: the average editing PSNR decreases from 17.05 to 15.06 dB, while text-to-image remains within 8.8–9.3 dB. However, text-to-image captures basic concepts and lays down the sky, grass, and subject shapes in broad color blocks. Editing finds the region to change and paints in the right place (Figures 3 and 4). The failures come afterwards: details are inaccurate, instructions are often left unfinished, and editing tends to overpaint. At this stage, the gains lie in these still crude basics, which the scores do not yet reflect. There are three possible causes:</p>
+<div class="callout beige"><p><strong><span class="zh">（a）文本描述不充分。</span><span class="en">(a) Captions are insufficient.</span></strong> <span class="zh">文生图的 prompt 多是数据集里的短描述，对构图与配色的监督不足；编辑指令也常含糊。</span><span class="en">Most text-to-image prompts are short dataset captions that underspecify composition and palette. Editing instructions are often vague as well.</span></p></div>
+<div class="callout beige"><p><strong><span class="zh">（b）模型容量不足。</span><span class="en">(b) Model capacity is insufficient.</span></strong> <span class="zh">重建依赖视觉与代码的对齐；编辑和文生图还需要理解指令、规划空间。基础已经有了，但要画得准、做得完，可能需要更大的模型。</span><span class="en">Reconstruction relies on the alignment between vision and code, while editing and text-to-image additionally require instruction understanding and spatial planning. With the basics in place, painting accurately and finishing instructions may require a larger model.</span></p></div>
+<div class="callout beige"><p><strong><span class="zh">（c）训练数据不足。</span><span class="en">(c) The data are not enough yet.</span></strong> <span class="zh">loss 还在下降，未见 ceiling，模型远没有训饱；基础已经学到，更多整图长序列数据可能同时提高准确度和完成度。</span><span class="en">The loss is still decreasing with no ceiling, which indicates that training is far from saturated. More data, especially long whole-image sequences, may improve accuracy and completion together.</span></p></div>
+<figure class="pbc-figure pbc-wide" id="fig-editing">
+<header class="pbc-figure-head"><div class="pbc-figure-title"><span class="zh">编辑能找到要改的区域</span><span class="en">Editing finds the region to change</span></div><p class="pbc-figure-claim"><span class="zh">模型在指令指向的位置落笔，但常画过头或做不完。</span><span class="en">The model paints where the instruction points, but it often overpaints or stops early.</span></p></header>
+<div class="pbc-viewer" data-task="editing" data-cases="case-023,case-028,case-024" data-default="case-023"></div>
+<figcaption><span class="pbc-fig-label"><span class="zh">图 3 · </span><span class="en">Figure 3 · </span></span><span class="zh">三个编辑案例：输入图、目标图与 C1–C7 覆盖程序的同步回放。强调色边框标出该案例 PSNR 最高的检查点。</span><span class="en">Three editing cases, with the input image, the target image, and synchronized replays of the C1–C7 overlay programs. The accent frame marks the checkpoint with the best PSNR for the case.</span></figcaption>
+</figure>
+<figure class="pbc-figure pbc-wide" id="fig-text-to-image">
+<header class="pbc-figure-head"><div class="pbc-figure-title"><span class="zh">文生图先用大色块铺出画面</span><span class="en">Text-to-image starts with broad color blocks</span></div><p class="pbc-figure-claim"><span class="zh">天空、草地和主体轮廓已经出现，像素分数仍大致持平。</span><span class="en">Sky, grass, and subject shapes appear, while pixel scores remain roughly flat.</span></p></header>
+<div class="pbc-viewer" data-task="text_to_image" data-cases="case-031,case-032,case-033" data-default="case-031"></div>
+<figcaption><span class="pbc-fig-label"><span class="zh">图 4 · </span><span class="en">Figure 4 · </span></span><span class="zh">三个文生图案例：prompt、单张参考图与 C1–C7 同步回放。PSNR 按单张参考图逐像素计算；强调色边框标出该案例 PSNR 最高的检查点。</span><span class="en">Three text-to-image cases, with the prompt, a single reference image, and synchronized C1–C7 replays. PSNR compares each render with the single reference image pixel by pixel. The accent frame marks the checkpoint with the best PSNR for the case.</span></figcaption>
+</figure>
+</section>
+
+<section id="method">
+<h2><small>03 · METHOD</small><span class="zh">将图片反编译成代码</span><span class="en">Decompiling images into code</span></h2>
+<p class="zh kicker">上面的结果都建立在大量“图片–程序”训练样本之上，这些样本来自代码自编码。如果把一张图片看作一段程序运行的结果，图片重建就是反编译：给定像素，恢复产生它的笔触程序。这些程序由拟合器求解得到，无需人工标注。</p>
+<p class="en kicker">The results above rely on a large number of image–program training pairs, which come from code autoencoding. If an image is the output of a program, reconstruction is decompilation: given the pixels, we find the stroke program that produced them. A fitter solves these programs without manual labels.</p>
+<p class="zh">笔触虚拟机极简：画布上只有三类原语，即椭圆、胶囊和矩形。每一笔由中心、长短轴、角度、透明度与调色板颜色决定。一段程序有几百到一千多笔，渲染结果即目标图的近似。</p>
+<p class="en">The stroke VM (i.e., the virtual machine that executes stroke programs) is minimal: its canvas has only three primitives, namely ellipses, capsules, and rectangles. Each stroke is determined by its center, axes, angle, opacity, and palette color. Rendering a program of a few hundred to over a thousand strokes approximates the target image.</p>
+<p class="zh">同一套笔触语言和同一个渲染器，配上不同的题目，就构成三个任务；训练数据覆盖重建、编辑和文生图。</p>
+<p class="en">The same stroke language and the same renderer support three tasks that differ only in their inputs. The training data cover reconstruction, editing, and text-to-image.</p>
+<div class="grid3">
+<div class="taskcard"><h4>Task 1 · <span class="zh">重建</span><span class="en">Reconstruction</span></h4><p><span class="pill"><span class="zh">输入：图片</span><span class="en">Input: image</span></span><span class="pill"><span class="zh">输出：笔触程序</span><span class="en">Output: stroke program</span></span></p><p class="zh">用笔触程序重建参考图。</p><p class="en">Reconstruct the reference image with a stroke program.</p>
+<div class="task-shot">
+<figure><img src="/blog/2026/painting-by-code/assets/cases/img/case-001-target.jpg" alt="case-001 target image" width="256" height="256" loading="lazy"><figcaption><span class="zh">目标图</span><span class="en">Target</span></figcaption></figure>
+</div></div>
+<div class="taskcard"><h4>Task 2 · <span class="zh">编辑</span><span class="en">Editing</span></h4><p><span class="pill"><span class="zh">输入：原图 + 指令</span><span class="en">Input: image + instruction</span></span><span class="pill"><span class="zh">输出：覆盖层程序</span><span class="en">Output: overlay program</span></span></p><p class="zh">按编辑指令生成局部覆盖层。</p><p class="en">Generate a local overlay from the editing instruction.</p>
+<p class="task-prompt">remove the lamp</p>
+<div class="task-shot">
+<figure><img src="/blog/2026/painting-by-code/assets/cases/img/case-023-input.jpg" alt="case-023 input image" width="256" height="256" loading="lazy"><figcaption><span class="zh">原图</span><span class="en">Origin</span></figcaption></figure>
+<figure><img src="/blog/2026/painting-by-code/assets/cases/img/case-023-target.jpg" alt="case-023 target image" width="256" height="256" loading="lazy"><figcaption><span class="zh">目标图</span><span class="en">Target</span></figcaption></figure>
+</div></div>
+<div class="taskcard"><h4>Task 3 · <span class="zh">文生图</span><span class="en">Text-to-image</span></h4><p><span class="pill"><span class="zh">输入：文字</span><span class="en">Input: text</span></span><span class="pill"><span class="zh">输出：笔触程序</span><span class="en">Output: stroke program</span></span></p><p class="zh">根据文字描述生成笔触程序。</p><p class="en">Generate a stroke program from a text description.</p>
+<p class="task-prompt">people flying kites on a bright sunny day A crowd of people flying kites in the grass.</p>
+<div class="task-shot">
+<figure><img src="/blog/2026/painting-by-code/assets/cases/img/case-031-target.jpg" alt="case-031 target image" width="256" height="192" loading="lazy"><figcaption><span class="zh">目标图</span><span class="en">Target</span></figcaption></figure>
+</div></div>
+</div>
+<h3><span class="zh">拟合器每次保留降误差最多的一笔</span><span class="en">The fitter keeps the stroke that most reduces the error</span></h3>
+<p class="zh">三个任务用到的笔触程序都由拟合器求出。用多尺度笔触由粗到细地“画”出一张图，最早由 Hertzmann 系统化提出<span class="pbc-note"><button class="pbc-note-marker" id="cite-2m-zh" type="button" aria-describedby="cite-2m-zh-tip" aria-expanded="false">2</button><span class="pbc-note-popover" id="cite-2m-zh-tip" role="tooltip">Hertzmann, SIGGRAPH 1998.<br><a href="#ref-2">查看参考文献</a></span></span>；更早的交互式雏形见 Haeberli 1990<span class="pbc-note"><button class="pbc-note-marker" id="cite-1m-zh" type="button" aria-describedby="cite-1m-zh-tip" aria-expanded="false">1</button><span class="pbc-note-popover" id="cite-1m-zh-tip" role="tooltip">Haeberli, SIGGRAPH 1990.<br><a href="#ref-1">查看参考文献</a></span></span>。Hertzmann 每笔的颜色直接从原图采样，其余参数用启发式确定；我们则按增益（即这一笔带来的误差下降）对每一笔做联合优化。</p>
+<p class="en">The stroke programs for all three tasks come from the fitter. Painting an image coarse to fine with strokes of multiple sizes was first systematized by Hertzmann<span class="pbc-note"><button class="pbc-note-marker" id="cite-2m-en" type="button" aria-describedby="cite-2m-en-tip" aria-expanded="false">2</button><span class="pbc-note-popover" id="cite-2m-en-tip" role="tooltip">Hertzmann, SIGGRAPH 1998.<br><a href="#ref-2">View reference</a></span></span>, with an earlier interactive precursor by Haeberli in 1990<span class="pbc-note"><button class="pbc-note-marker" id="cite-1m-en" type="button" aria-describedby="cite-1m-en-tip" aria-expanded="false">1</button><span class="pbc-note-popover" id="cite-1m-en-tip" role="tooltip">Haeberli, SIGGRAPH 1990.<br><a href="#ref-1">View reference</a></span></span>. Hertzmann samples each stroke color from the source image and sets the other parameters by heuristics. In contrast, we jointly optimize each stroke by its gain (i.e., the error reduction it brings).</p>
+<p class="zh"><strong>由粗到细。</strong>大笔先铺轮廓与色块，中笔修正结构，小笔只在仍不够像的地方补纹理。</p>
+<p class="en"><strong>Coarse to fine.</strong> The fitter first lays down silhouettes and color blocks with large strokes. It then fixes the structure with medium strokes and adds texture with small strokes only where the render still deviates from the image.</p>
+<p class="zh"><strong>残差落笔。</strong>在残差最大处搜索位置与形状（长宽比）；哪一笔让当前渲染与原图的误差降得最多，就保留哪一笔。</p>
+<p class="en"><strong>Residual placement.</strong> The fitter searches the position and shape (i.e., aspect ratio) of a stroke where the residual is largest. It keeps the stroke that most reduces the error between the current render and the original image.</p>
+<p class="zh"><strong>梯度定角度。</strong>角度取自图像梯度，颜色由最小二乘闭式解求出。</p>
+<p class="en"><strong>Angle from the gradient.</strong> The fitter takes the stroke angle from the image gradient and solves the color in closed form by least squares.</p>
+<p class="zh">留下的笔触按顺序编译成整数笔触程序，再用 PSNR 门槛筛掉拟合失败的样本，剩下的就是训练数据。</p>
+<p class="en">We compile the kept strokes in order into an integer stroke program and drop failed fits with a PSNR threshold. The remaining programs form the training data.</p>
+<p class="zh">拟合器和渲染器合在一起，就是标题里的代码自编码。它和自编码器（autoencoder）一样，先把图片转换为中间表示，再重建图片。不同的是，这里的中间表示是可读、可执行的笔触程序，由优化拟合得到，再交给固定渲染器执行。</p>
+<p class="en">Together, the fitter and the renderer form the code autoencoding in the title. Like an autoencoder, it maps an image to an intermediate representation and then reconstructs the image. In contrast, the intermediate representation here is a readable and executable stroke program, obtained by optimization and executed by a fixed renderer.</p>
+<figure class="pbc-figure" id="fig-ae">
+<header class="pbc-figure-head"><div class="pbc-figure-title"><span class="zh">代码是优化得到的可执行潜表示</span><span class="en">The code is an executable latent found by optimization</span></div><p class="pbc-figure-claim"><span class="zh">代码自编码用优化求出代码，再交给固定渲染器执行；自编码器则同时学习编码器和解码器。</span><span class="en">Code autoencoding fits code by optimization and runs it on a fixed renderer, while an autoencoder learns both its encoder and its decoder.</span></p></header>
+<style>
+.pbc-ae { container-type: inline-size; color: var(--ink); --ae-edge: 136px; --ae-gap: 10px; --ae-vh: 108px; }
+.pbc-ae .ae-sr { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip-path: inset(50%); white-space: nowrap; border: 0; }
+.pbc-ae .ae-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) var(--ae-edge) minmax(0, 1fr) var(--ae-edge) minmax(0, 1fr);
+  grid-template-areas:
+    "la la la la la"
+    "a1 a2 a3 a4 a5"
+    "d1 d2 d3 d4 d5"
+    "lb lb lb lb lb"
+    "b1 b2 b3 b4 b5";
+  column-gap: var(--ae-gap);
+  align-items: start;
+}
+@supports (width: 1cqw) {
+  .pbc-ae { --ae-vh: calc((100cqw - 2 * var(--ae-edge) - 4 * var(--ae-gap)) / 3 * 170 / 256); }
+}
+.pbc-ae .ae-lane {
+  display: flex; align-items: center; gap: 12px; margin: 0 0 12px;
+  font: 500 13px/1.2 var(--font-mono); letter-spacing: .12em; text-transform: uppercase; color: var(--ink-2);
+}
+.pbc-ae .ae-lane::after { content: ""; flex: 1; height: 1px; background: var(--rule); }
+.pbc-ae .ae-lane b { font-weight: 500; color: var(--ink-3); letter-spacing: .08em; }
+.pbc-ae .ae-lane-b { color: var(--accent-ink); }
+.pbc-ae .ae-lane-b b { color: var(--accent); opacity: .75; }
+.pbc-ae [data-a="la"] { grid-area: la; } .pbc-ae [data-a="lb"] { grid-area: lb; }
+.pbc-ae [data-a="a1"] { grid-area: a1; } .pbc-ae [data-a="a2"] { grid-area: a2; } .pbc-ae [data-a="a3"] { grid-area: a3; } .pbc-ae [data-a="a4"] { grid-area: a4; } .pbc-ae [data-a="a5"] { grid-area: a5; }
+.pbc-ae [data-a="b1"] { grid-area: b1; } .pbc-ae [data-a="b2"] { grid-area: b2; } .pbc-ae [data-a="b3"] { grid-area: b3; } .pbc-ae [data-a="b4"] { grid-area: b4; } .pbc-ae [data-a="b5"] { grid-area: b5; }
+.pbc-ae [data-a="d1"] { grid-area: d1; } .pbc-ae [data-a="d2"] { grid-area: d2; } .pbc-ae [data-a="d3"] { grid-area: d3; } .pbc-ae [data-a="d4"] { grid-area: d4; } .pbc-ae [data-a="d5"] { grid-area: d5; }
+
+.pbc-ae .ae-vis {
+  position: relative; width: 100%; aspect-ratio: 256 / 170; margin: 0;
+  border: 1px solid var(--rule); border-radius: 8px; overflow: hidden;
+  display: flex; align-items: center; justify-content: center; background: transparent;
+}
+.pbc-ae .ae-vis img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.pbc-ae .ae-vis.is-img { border-color: var(--rule-2); background: var(--paper-2); }
+.pbc-ae .ae-vis.is-prog { border-color: var(--accent); background: var(--card); }
+.pbc-ae .ae-vis.is-latent { background: var(--card); }
+.pbc-ae .ae-vis.is-raster { background: var(--card); }
+.pbc-ae .ae-mark { width: 100%; height: 100%; display: block; }
+.pbc-ae .ae-mark .ae-base { stroke: var(--rule); stroke-width: 1; }
+
+.pbc-ae .ae-cap { margin-top: 9px; }
+.pbc-ae .ae-name { display: block; font: 600 16px/1.3 var(--font-display); color: var(--ink); }
+.pbc-ae .ae-sub { display: block; margin-top: 3px; font: 400 13px/1.35 var(--font-mono); letter-spacing: .02em; color: var(--ink-3); }
+.pbc-ae .is-b .ae-sub { color: var(--accent); }
+
+.pbc-ae .ae-edge {
+  height: var(--ae-vh);
+  display: grid; grid-template-rows: 1fr auto 1fr; text-align: center; color: var(--ink-3);
+}
+.pbc-ae .ae-edge .ae-name { align-self: end; padding-bottom: 7px; }
+.pbc-ae .ae-edge .ae-sub { align-self: start; margin-top: 0; padding-top: 7px; text-transform: uppercase; }
+.pbc-ae .ae-edge.is-b { color: var(--accent); }
+.pbc-ae .ae-edge.is-trap { position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+.pbc-ae .ae-edge.is-trap .ae-name, .pbc-ae .ae-edge.is-trap .ae-sub { position: relative; align-self: center; padding: 0; }
+.pbc-ae .ae-edge.is-trap .ae-sub { margin-top: 2px; }
+.pbc-ae .ae-trap { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+.pbc-ae .ae-trap polygon { fill: var(--paper-2); stroke: var(--ink-3); stroke-width: 1; stroke-linejoin: round; }
+.pbc-ae .is-b .ae-trap polygon { fill: #F3F5F9; fill: color-mix(in srgb, var(--accent) 6%, var(--paper)); stroke: var(--accent); }
+.pbc-ae .ae-edge.is-trap.is-b .ae-sub { font-size: 12px; letter-spacing: 0; line-height: 1.3; }
+.pbc-ae .ae-edge.is-trap .ae-name, .pbc-ae .ae-edge.is-trap .ae-sub { max-width: 92%; }
+.pbc-ae .ae-edge.is-trap.is-b .ae-name { font-size: 15px; white-space: nowrap; }
+.pbc-ae .ae-trap-v { display: none; }
+.pbc-ae .ae-arrow { position: relative; height: 1px; width: 100%; background: currentColor; }
+.pbc-ae .ae-arrow::after {
+  content: ""; position: absolute; right: 0; top: -4px; width: 8px; height: 8px;
+  border-top: 1px solid currentColor; border-right: 1px solid currentColor; transform: rotate(45deg); transform-origin: 75% 25%;
+}
+
+.pbc-ae .ae-diff {
+  margin: 18px 0 22px; padding: 8px 0 0; border-top: 1px dashed var(--rule);
+  font: 400 13px/1.35 var(--font-mono); color: var(--ink-3); text-align: center;
+}
+.pbc-ae .ae-diff.is-key { border-top: 1px solid var(--accent); }
+.pbc-ae .ae-diff i { font-style: normal; color: var(--ink-2); }
+.pbc-ae .ae-diff em { font-style: normal; color: var(--accent); font-weight: 500; }
+.pbc-ae .ae-diff-k { display: none; }
+
+@container (max-width: 600px) {
+  .pbc-ae .ae-grid {
+    --ae-gap: 14px;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    grid-template-areas: "la lb" "a1 b1" "a2 b2" "a3 b3" "a4 b4" "a5 b5" "d2 d2" "d3 d3" "d4 d4";
+  }
+  .pbc-ae [data-a="d1"], .pbc-ae [data-a="d5"] { display: none; }
+  .pbc-ae .ae-diff.is-key {
+    display: flex; align-items: baseline; gap: 12px; margin: 0; padding: 9px 0;
+    border-top: 1px solid var(--rule); text-align: left; font-size: 13px;
+  }
+  .pbc-ae .ae-diff[data-a="d2"] { margin-top: 22px; border-top-color: var(--accent); }
+  .pbc-ae .ae-diff[data-a="d4"] { border-bottom: 1px solid var(--rule); }
+  .pbc-ae .ae-diff-k { display: block; flex: 0 0 6.5em; font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-3); }
+  .pbc-ae .ae-lane { font-size: 12px; letter-spacing: .08em; flex-wrap: wrap; row-gap: 2px; }
+  .pbc-ae .ae-lane::after { flex-basis: 100%; }
+  .pbc-ae .ae-edge { height: auto; display: flex; flex-direction: column; align-items: center; padding: 10px 0 12px; }
+  .pbc-ae .ae-edge .ae-name { order: 1; padding: 0 0 6px; align-self: center; }
+  .pbc-ae .ae-edge .ae-arrow { order: 2; width: 1px; height: 22px; }
+  .pbc-ae .ae-edge .ae-sub { order: 3; padding-top: 6px; align-self: center; }
+  .pbc-ae .ae-arrow::after { right: auto; left: -4px; top: auto; bottom: 0; transform: rotate(135deg); transform-origin: 50% 50%; bottom: 1px; }
+  .pbc-ae .ae-edge.is-trap { height: 92px; margin: 12px 0 10px; padding: 0; }
+  .pbc-ae .ae-trap-h { display: none; }
+  .pbc-ae .ae-trap-v { display: block; }
+  .pbc-ae .ae-edge.is-trap.is-enc { justify-content: flex-start; padding-top: 12px; }
+  .pbc-ae .ae-edge.is-trap.is-dec { justify-content: flex-end; padding-bottom: 12px; }
+  .pbc-ae .ae-edge.is-trap.is-b .ae-name { font-size: 14px; }
+  .pbc-ae .ae-name { font-size: 15px; }
+  .pbc-ae .ae-sub { font-size: 12px; }
+  .pbc-ae .ae-cap { margin-top: 7px; }
+}
+</style>
+<div class="pbc-ae">
+  <p class="ae-sr">
+    <span class="zh">示意图：上面一行是自编码器，输入图经可学习的编码器压成一个不可读的潜向量，再由可学习的解码器还原成重建图。下面一行是代码自编码，目标图经优化求解拟合出一段可读、可执行的代码，再由固定的渲染器执行这段代码，画回重建图。三处不同：编码靠优化求解而不是学习，中间表示是代码而不是向量，解码器是固定的渲染器而不是可学习的网络。</span>
+    <span class="en">Diagram. Top lane, an autoencoder: an input image goes through a learned encoder into an unreadable latent vector, and a learned decoder turns it back into a reconstruction. Bottom lane, code autoencoding: code is fitted to the target image by optimization, giving a readable, executable program, and a fixed renderer executes that code to draw the reconstruction. Three differences: the encoder is solved rather than learned, the intermediate is code rather than a vector, and the decoder is a fixed renderer rather than a learned network.</span>
+  </p>
+  <div class="ae-grid">
+    <div class="ae-lane" data-a="la"><span><span class="zh">自编码器</span><span class="en">Autoencoder</span></span></div>
+
+    <div class="ae-node" data-a="a1">
+      <div class="ae-vis is-raster"><svg class="ae-mark" viewBox="0 0 168 112" preserveAspectRatio="xMidYMid slice" shape-rendering="crispEdges" aria-hidden="true" focusable="false"><rect x="0.0" y="0.0" width="11.5" height="11.5" fill="#a8a8a8"/><rect x="11.2" y="0.0" width="11.5" height="11.5" fill="#b1b1b1"/><rect x="22.4" y="0.0" width="11.5" height="11.5" fill="#b8b8b8"/><rect x="33.6" y="0.0" width="11.5" height="11.5" fill="#c8c8c8"/><rect x="44.8" y="0.0" width="11.5" height="11.5" fill="#d2d2d2"/><rect x="56.0" y="0.0" width="11.5" height="11.5" fill="#d3d3d3"/><rect x="67.2" y="0.0" width="11.5" height="11.5" fill="#c0c0c0"/><rect x="78.4" y="0.0" width="11.5" height="11.5" fill="#b9b9b9"/><rect x="89.6" y="0.0" width="11.5" height="11.5" fill="#bcbcbc"/><rect x="100.8" y="0.0" width="11.5" height="11.5" fill="#c9c9c9"/><rect x="112.0" y="0.0" width="11.5" height="11.5" fill="#bababa"/><rect x="123.2" y="0.0" width="11.5" height="11.5" fill="#b6b6b6"/><rect x="134.4" y="0.0" width="11.5" height="11.5" fill="#b4b4b4"/><rect x="145.6" y="0.0" width="11.5" height="11.5" fill="#b2b2b2"/><rect x="156.8" y="0.0" width="11.5" height="11.5" fill="#b5b5b5"/><rect x="0.0" y="11.2" width="11.5" height="11.5" fill="#b0b0b0"/><rect x="11.2" y="11.2" width="11.5" height="11.5" fill="#aeaeae"/><rect x="22.4" y="11.2" width="11.5" height="11.5" fill="#bcbcbc"/><rect x="33.6" y="11.2" width="11.5" height="11.5" fill="#cfcfcf"/><rect x="44.8" y="11.2" width="11.5" height="11.5" fill="#d2d2d2"/><rect x="56.0" y="11.2" width="11.5" height="11.5" fill="#d3d3d3"/><rect x="67.2" y="11.2" width="11.5" height="11.5" fill="#d0d0d0"/><rect x="78.4" y="11.2" width="11.5" height="11.5" fill="#d2d2d2"/><rect x="89.6" y="11.2" width="11.5" height="11.5" fill="#d1d1d1"/><rect x="100.8" y="11.2" width="11.5" height="11.5" fill="#cecece"/><rect x="112.0" y="11.2" width="11.5" height="11.5" fill="#c6c6c6"/><rect x="123.2" y="11.2" width="11.5" height="11.5" fill="#bbbbbb"/><rect x="134.4" y="11.2" width="11.5" height="11.5" fill="#b7b7b7"/><rect x="145.6" y="11.2" width="11.5" height="11.5" fill="#b6b6b6"/><rect x="156.8" y="11.2" width="11.5" height="11.5" fill="#b6b6b6"/><rect x="0.0" y="22.4" width="11.5" height="11.5" fill="#b6b6b6"/><rect x="11.2" y="22.4" width="11.5" height="11.5" fill="#bababa"/><rect x="22.4" y="22.4" width="11.5" height="11.5" fill="#c1c1c1"/><rect x="33.6" y="22.4" width="11.5" height="11.5" fill="#cecece"/><rect x="44.8" y="22.4" width="11.5" height="11.5" fill="#cecece"/><rect x="56.0" y="22.4" width="11.5" height="11.5" fill="#cecece"/><rect x="67.2" y="22.4" width="11.5" height="11.5" fill="#d0d0d0"/><rect x="78.4" y="22.4" width="11.5" height="11.5" fill="#d2d2d2"/><rect x="89.6" y="22.4" width="11.5" height="11.5" fill="#c8c8c8"/><rect x="100.8" y="22.4" width="11.5" height="11.5" fill="#c4c4c4"/><rect x="112.0" y="22.4" width="11.5" height="11.5" fill="#cccccc"/><rect x="123.2" y="22.4" width="11.5" height="11.5" fill="#cacaca"/><rect x="134.4" y="22.4" width="11.5" height="11.5" fill="#c0c0c0"/><rect x="145.6" y="22.4" width="11.5" height="11.5" fill="#c4c4c4"/><rect x="156.8" y="22.4" width="11.5" height="11.5" fill="#bebebe"/><rect x="0.0" y="33.6" width="11.5" height="11.5" fill="#b8b8b8"/><rect x="11.2" y="33.6" width="11.5" height="11.5" fill="#ababab"/><rect x="22.4" y="33.6" width="11.5" height="11.5" fill="#b0b0b0"/><rect x="33.6" y="33.6" width="11.5" height="11.5" fill="#cccccc"/><rect x="44.8" y="33.6" width="11.5" height="11.5" fill="#c8c8c8"/><rect x="56.0" y="33.6" width="11.5" height="11.5" fill="#c6c6c6"/><rect x="67.2" y="33.6" width="11.5" height="11.5" fill="#c5c5c5"/><rect x="78.4" y="33.6" width="11.5" height="11.5" fill="#c2c2c2"/><rect x="89.6" y="33.6" width="11.5" height="11.5" fill="#afafaf"/><rect x="100.8" y="33.6" width="11.5" height="11.5" fill="#bbbbbb"/><rect x="112.0" y="33.6" width="11.5" height="11.5" fill="#c6c6c6"/><rect x="123.2" y="33.6" width="11.5" height="11.5" fill="#cecece"/><rect x="134.4" y="33.6" width="11.5" height="11.5" fill="#cecece"/><rect x="145.6" y="33.6" width="11.5" height="11.5" fill="#c5c5c5"/><rect x="156.8" y="33.6" width="11.5" height="11.5" fill="#bfbfbf"/><rect x="0.0" y="44.8" width="11.5" height="11.5" fill="#b3b3b3"/><rect x="11.2" y="44.8" width="11.5" height="11.5" fill="#a9a9a9"/><rect x="22.4" y="44.8" width="11.5" height="11.5" fill="#acacac"/><rect x="33.6" y="44.8" width="11.5" height="11.5" fill="#bebebe"/><rect x="44.8" y="44.8" width="11.5" height="11.5" fill="#c1c1c1"/><rect x="56.0" y="44.8" width="11.5" height="11.5" fill="#bababa"/><rect x="67.2" y="44.8" width="11.5" height="11.5" fill="#c2c2c2"/><rect x="78.4" y="44.8" width="11.5" height="11.5" fill="#bababa"/><rect x="89.6" y="44.8" width="11.5" height="11.5" fill="#c2c2c2"/><rect x="100.8" y="44.8" width="11.5" height="11.5" fill="#cccccc"/><rect x="112.0" y="44.8" width="11.5" height="11.5" fill="#d7d7d7"/><rect x="123.2" y="44.8" width="11.5" height="11.5" fill="#dadada"/><rect x="134.4" y="44.8" width="11.5" height="11.5" fill="#e5e5e5"/><rect x="145.6" y="44.8" width="11.5" height="11.5" fill="#c2c2c2"/><rect x="156.8" y="44.8" width="11.5" height="11.5" fill="#b4b4b4"/><rect x="0.0" y="56.0" width="11.5" height="11.5" fill="#aeaeae"/><rect x="11.2" y="56.0" width="11.5" height="11.5" fill="#aaaaaa"/><rect x="22.4" y="56.0" width="11.5" height="11.5" fill="#b9b9b9"/><rect x="33.6" y="56.0" width="11.5" height="11.5" fill="#c6c6c6"/><rect x="44.8" y="56.0" width="11.5" height="11.5" fill="#d4d4d4"/><rect x="56.0" y="56.0" width="11.5" height="11.5" fill="#c1c1c1"/><rect x="67.2" y="56.0" width="11.5" height="11.5" fill="#cbcbcb"/><rect x="78.4" y="56.0" width="11.5" height="11.5" fill="#c8c8c8"/><rect x="89.6" y="56.0" width="11.5" height="11.5" fill="#c8c8c8"/><rect x="100.8" y="56.0" width="11.5" height="11.5" fill="#c9c9c9"/><rect x="112.0" y="56.0" width="11.5" height="11.5" fill="#e0e0e0"/><rect x="123.2" y="56.0" width="11.5" height="11.5" fill="#d8d8d8"/><rect x="134.4" y="56.0" width="11.5" height="11.5" fill="#f4f4f4"/><rect x="145.6" y="56.0" width="11.5" height="11.5" fill="#c4c4c4"/><rect x="156.8" y="56.0" width="11.5" height="11.5" fill="#bfbfbf"/><rect x="0.0" y="67.2" width="11.5" height="11.5" fill="#b0b0b0"/><rect x="11.2" y="67.2" width="11.5" height="11.5" fill="#a9a9a9"/><rect x="22.4" y="67.2" width="11.5" height="11.5" fill="#aeaeae"/><rect x="33.6" y="67.2" width="11.5" height="11.5" fill="#bdbdbd"/><rect x="44.8" y="67.2" width="11.5" height="11.5" fill="#bebebe"/><rect x="56.0" y="67.2" width="11.5" height="11.5" fill="#bcbcbc"/><rect x="67.2" y="67.2" width="11.5" height="11.5" fill="#b9b9b9"/><rect x="78.4" y="67.2" width="11.5" height="11.5" fill="#b3b3b3"/><rect x="89.6" y="67.2" width="11.5" height="11.5" fill="#bbbbbb"/><rect x="100.8" y="67.2" width="11.5" height="11.5" fill="#c6c6c6"/><rect x="112.0" y="67.2" width="11.5" height="11.5" fill="#cecece"/><rect x="123.2" y="67.2" width="11.5" height="11.5" fill="#d4d4d4"/><rect x="134.4" y="67.2" width="11.5" height="11.5" fill="#dadada"/><rect x="145.6" y="67.2" width="11.5" height="11.5" fill="#b6b6b6"/><rect x="156.8" y="67.2" width="11.5" height="11.5" fill="#b2b2b2"/><rect x="0.0" y="78.4" width="11.5" height="11.5" fill="#a6a6a6"/><rect x="11.2" y="78.4" width="11.5" height="11.5" fill="#a0a0a0"/><rect x="22.4" y="78.4" width="11.5" height="11.5" fill="#a4a4a4"/><rect x="33.6" y="78.4" width="11.5" height="11.5" fill="#aeaeae"/><rect x="44.8" y="78.4" width="11.5" height="11.5" fill="#afafaf"/><rect x="56.0" y="78.4" width="11.5" height="11.5" fill="#afafaf"/><rect x="67.2" y="78.4" width="11.5" height="11.5" fill="#afafaf"/><rect x="78.4" y="78.4" width="11.5" height="11.5" fill="#aeaeae"/><rect x="89.6" y="78.4" width="11.5" height="11.5" fill="#a8a8a8"/><rect x="100.8" y="78.4" width="11.5" height="11.5" fill="#acacac"/><rect x="112.0" y="78.4" width="11.5" height="11.5" fill="#b3b3b3"/><rect x="123.2" y="78.4" width="11.5" height="11.5" fill="#b7b7b7"/><rect x="134.4" y="78.4" width="11.5" height="11.5" fill="#b6b6b6"/><rect x="145.6" y="78.4" width="11.5" height="11.5" fill="#b0b0b0"/><rect x="156.8" y="78.4" width="11.5" height="11.5" fill="#b1b1b1"/><rect x="0.0" y="89.6" width="11.5" height="11.5" fill="#a2a2a2"/><rect x="11.2" y="89.6" width="11.5" height="11.5" fill="#a5a5a5"/><rect x="22.4" y="89.6" width="11.5" height="11.5" fill="#a8a8a8"/><rect x="33.6" y="89.6" width="11.5" height="11.5" fill="#aaaaaa"/><rect x="44.8" y="89.6" width="11.5" height="11.5" fill="#aaaaaa"/><rect x="56.0" y="89.6" width="11.5" height="11.5" fill="#ababab"/><rect x="67.2" y="89.6" width="11.5" height="11.5" fill="#ababab"/><rect x="78.4" y="89.6" width="11.5" height="11.5" fill="#acacac"/><rect x="89.6" y="89.6" width="11.5" height="11.5" fill="#aaaaaa"/><rect x="100.8" y="89.6" width="11.5" height="11.5" fill="#aeaeae"/><rect x="112.0" y="89.6" width="11.5" height="11.5" fill="#aeaeae"/><rect x="123.2" y="89.6" width="11.5" height="11.5" fill="#adadad"/><rect x="134.4" y="89.6" width="11.5" height="11.5" fill="#aeaeae"/><rect x="145.6" y="89.6" width="11.5" height="11.5" fill="#aeaeae"/><rect x="156.8" y="89.6" width="11.5" height="11.5" fill="#aeaeae"/><rect x="0.0" y="100.8" width="11.5" height="11.5" fill="#a2a2a2"/><rect x="11.2" y="100.8" width="11.5" height="11.5" fill="#a4a4a4"/><rect x="22.4" y="100.8" width="11.5" height="11.5" fill="#a8a8a8"/><rect x="33.6" y="100.8" width="11.5" height="11.5" fill="#a8a8a8"/><rect x="44.8" y="100.8" width="11.5" height="11.5" fill="#a8a8a8"/><rect x="56.0" y="100.8" width="11.5" height="11.5" fill="#aaaaaa"/><rect x="67.2" y="100.8" width="11.5" height="11.5" fill="#aaaaaa"/><rect x="78.4" y="100.8" width="11.5" height="11.5" fill="#aaaaaa"/><rect x="89.6" y="100.8" width="11.5" height="11.5" fill="#ababab"/><rect x="100.8" y="100.8" width="11.5" height="11.5" fill="#acacac"/><rect x="112.0" y="100.8" width="11.5" height="11.5" fill="#acacac"/><rect x="123.2" y="100.8" width="11.5" height="11.5" fill="#acacac"/><rect x="134.4" y="100.8" width="11.5" height="11.5" fill="#adadad"/><rect x="145.6" y="100.8" width="11.5" height="11.5" fill="#adadad"/><rect x="156.8" y="100.8" width="11.5" height="11.5" fill="#acacac"/></svg></div>
+      <div class="ae-cap"><span class="ae-name"><span class="zh">输入图</span><span class="en">Input image</span></span></div>
+    </div>
+    <div class="ae-edge is-trap is-enc" data-a="a2">
+      <svg class="ae-trap ae-trap-h" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true" focusable="false"><polygon points="0,0 100,24 100,76 0,100" vector-effect="non-scaling-stroke"/></svg>
+      <svg class="ae-trap ae-trap-v" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true" focusable="false"><polygon points="0,0 100,0 76,100 24,100" vector-effect="non-scaling-stroke"/></svg>
+      <span class="ae-name"><span class="zh">编码器</span><span class="en">Encoder</span></span>
+      <span class="ae-sub"><span class="zh">可学习</span><span class="en">learned</span></span>
+    </div>
+    <div class="ae-node" data-a="a3">
+      <div class="ae-vis is-latent"><svg class="ae-mark" viewBox="0 0 168 112" aria-hidden="true" focusable="false"><rect x="8.1" y="18" width="16" height="16" rx="2" fill="#C4C4C4"/><rect x="27.5" y="18" width="16" height="16" rx="2" fill="#C4C4C4"/><rect x="46.9" y="18" width="16" height="16" rx="2" fill="#BDBDBD"/><rect x="66.3" y="18" width="16" height="16" rx="2" fill="#9A9A9A"/><rect x="85.7" y="18" width="16" height="16" rx="2" fill="#CFCFCF"/><rect x="105.1" y="18" width="16" height="16" rx="2" fill="#ADADAD"/><rect x="124.5" y="18" width="16" height="16" rx="2" fill="#BDBDBD"/><rect x="143.9" y="18" width="16" height="16" rx="2" fill="#8C8C8C"/><rect x="8.1" y="48" width="16" height="16" rx="2" fill="#C4C4C4"/><rect x="27.5" y="48" width="16" height="16" rx="2" fill="#BDBDBD"/><rect x="46.9" y="48" width="16" height="16" rx="2" fill="#CFCFCF"/><rect x="66.3" y="48" width="16" height="16" rx="2" fill="#BDBDBD"/><rect x="85.7" y="48" width="16" height="16" rx="2" fill="#C4C4C4"/><rect x="105.1" y="48" width="16" height="16" rx="2" fill="#ADADAD"/><rect x="124.5" y="48" width="16" height="16" rx="2" fill="#ADADAD"/><rect x="143.9" y="48" width="16" height="16" rx="2" fill="#ADADAD"/><rect x="8.1" y="78" width="16" height="16" rx="2" fill="#D9D9D9"/><rect x="27.5" y="78" width="16" height="16" rx="2" fill="#ADADAD"/><rect x="46.9" y="78" width="16" height="16" rx="2" fill="#CFCFCF"/><rect x="66.3" y="78" width="16" height="16" rx="2" fill="#ADADAD"/><rect x="85.7" y="78" width="16" height="16" rx="2" fill="#CFCFCF"/><rect x="105.1" y="78" width="16" height="16" rx="2" fill="#8C8C8C"/><rect x="124.5" y="78" width="16" height="16" rx="2" fill="#ADADAD"/><rect x="143.9" y="78" width="16" height="16" rx="2" fill="#ADADAD"/></svg></div>
+      <div class="ae-cap"><span class="ae-name"><span class="zh">潜表示</span><span class="en">Latent</span></span><span class="ae-sub"><span class="zh">一个向量，不可读</span><span class="en">a vector, not readable</span></span></div>
+    </div>
+    <div class="ae-edge is-trap is-dec" data-a="a4">
+      <svg class="ae-trap ae-trap-h" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true" focusable="false"><polygon points="0,24 100,0 100,100 0,76" vector-effect="non-scaling-stroke"/></svg>
+      <svg class="ae-trap ae-trap-v" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true" focusable="false"><polygon points="24,0 76,0 100,100 0,100" vector-effect="non-scaling-stroke"/></svg>
+      <span class="ae-name"><span class="zh">解码器</span><span class="en">Decoder</span></span>
+      <span class="ae-sub"><span class="zh">可学习</span><span class="en">learned</span></span>
+    </div>
+    <div class="ae-node" data-a="a5">
+      <div class="ae-vis is-raster"><svg class="ae-mark" viewBox="0 0 168 112" preserveAspectRatio="xMidYMid slice" shape-rendering="crispEdges" aria-hidden="true" focusable="false"><rect x="0.0" y="0.0" width="11.5" height="11.5" fill="#a9a9a9"/><rect x="11.2" y="0.0" width="11.5" height="11.5" fill="#b4b4b4"/><rect x="22.4" y="0.0" width="11.5" height="11.5" fill="#bebebe"/><rect x="33.6" y="0.0" width="11.5" height="11.5" fill="#d1d1d1"/><rect x="44.8" y="0.0" width="11.5" height="11.5" fill="#dbdbdb"/><rect x="56.0" y="0.0" width="11.5" height="11.5" fill="#dcdcdc"/><rect x="67.2" y="0.0" width="11.5" height="11.5" fill="#cbcbcb"/><rect x="78.4" y="0.0" width="11.5" height="11.5" fill="#bebebe"/><rect x="89.6" y="0.0" width="11.5" height="11.5" fill="#c5c5c5"/><rect x="100.8" y="0.0" width="11.5" height="11.5" fill="#cecece"/><rect x="112.0" y="0.0" width="11.5" height="11.5" fill="#c1c1c1"/><rect x="123.2" y="0.0" width="11.5" height="11.5" fill="#b9b9b9"/><rect x="134.4" y="0.0" width="11.5" height="11.5" fill="#b8b8b8"/><rect x="145.6" y="0.0" width="11.5" height="11.5" fill="#b7b7b7"/><rect x="156.8" y="0.0" width="11.5" height="11.5" fill="#b7b7b7"/><rect x="0.0" y="11.2" width="11.5" height="11.5" fill="#b1b1b1"/><rect x="11.2" y="11.2" width="11.5" height="11.5" fill="#b2b2b2"/><rect x="22.4" y="11.2" width="11.5" height="11.5" fill="#c3c3c3"/><rect x="33.6" y="11.2" width="11.5" height="11.5" fill="#d7d7d7"/><rect x="44.8" y="11.2" width="11.5" height="11.5" fill="#dcdcdc"/><rect x="56.0" y="11.2" width="11.5" height="11.5" fill="#dddddd"/><rect x="67.2" y="11.2" width="11.5" height="11.5" fill="#d9d9d9"/><rect x="78.4" y="11.2" width="11.5" height="11.5" fill="#d8d8d8"/><rect x="89.6" y="11.2" width="11.5" height="11.5" fill="#d9d9d9"/><rect x="100.8" y="11.2" width="11.5" height="11.5" fill="#d7d7d7"/><rect x="112.0" y="11.2" width="11.5" height="11.5" fill="#cdcdcd"/><rect x="123.2" y="11.2" width="11.5" height="11.5" fill="#c3c3c3"/><rect x="134.4" y="11.2" width="11.5" height="11.5" fill="#bdbdbd"/><rect x="145.6" y="11.2" width="11.5" height="11.5" fill="#bbbbbb"/><rect x="156.8" y="11.2" width="11.5" height="11.5" fill="#bcbcbc"/><rect x="0.0" y="22.4" width="11.5" height="11.5" fill="#bababa"/><rect x="11.2" y="22.4" width="11.5" height="11.5" fill="#bababa"/><rect x="22.4" y="22.4" width="11.5" height="11.5" fill="#c6c6c6"/><rect x="33.6" y="22.4" width="11.5" height="11.5" fill="#d6d6d6"/><rect x="44.8" y="22.4" width="11.5" height="11.5" fill="#d9d9d9"/><rect x="56.0" y="22.4" width="11.5" height="11.5" fill="#dadada"/><rect x="67.2" y="22.4" width="11.5" height="11.5" fill="#dbdbdb"/><rect x="78.4" y="22.4" width="11.5" height="11.5" fill="#dadada"/><rect x="89.6" y="22.4" width="11.5" height="11.5" fill="#cfcfcf"/><rect x="100.8" y="22.4" width="11.5" height="11.5" fill="#cbcbcb"/><rect x="112.0" y="22.4" width="11.5" height="11.5" fill="#d2d2d2"/><rect x="123.2" y="22.4" width="11.5" height="11.5" fill="#d1d1d1"/><rect x="134.4" y="22.4" width="11.5" height="11.5" fill="#cacaca"/><rect x="145.6" y="22.4" width="11.5" height="11.5" fill="#cacaca"/><rect x="156.8" y="22.4" width="11.5" height="11.5" fill="#c6c6c6"/><rect x="0.0" y="33.6" width="11.5" height="11.5" fill="#b9b9b9"/><rect x="11.2" y="33.6" width="11.5" height="11.5" fill="#b0b0b0"/><rect x="22.4" y="33.6" width="11.5" height="11.5" fill="#b8b8b8"/><rect x="33.6" y="33.6" width="11.5" height="11.5" fill="#cdcdcd"/><rect x="44.8" y="33.6" width="11.5" height="11.5" fill="#cecece"/><rect x="56.0" y="33.6" width="11.5" height="11.5" fill="#cccccc"/><rect x="67.2" y="33.6" width="11.5" height="11.5" fill="#cccccc"/><rect x="78.4" y="33.6" width="11.5" height="11.5" fill="#c8c8c8"/><rect x="89.6" y="33.6" width="11.5" height="11.5" fill="#bababa"/><rect x="100.8" y="33.6" width="11.5" height="11.5" fill="#c3c3c3"/><rect x="112.0" y="33.6" width="11.5" height="11.5" fill="#d0d0d0"/><rect x="123.2" y="33.6" width="11.5" height="11.5" fill="#d9d9d9"/><rect x="134.4" y="33.6" width="11.5" height="11.5" fill="#dadada"/><rect x="145.6" y="33.6" width="11.5" height="11.5" fill="#cbcbcb"/><rect x="156.8" y="33.6" width="11.5" height="11.5" fill="#c4c4c4"/><rect x="0.0" y="44.8" width="11.5" height="11.5" fill="#b5b5b5"/><rect x="11.2" y="44.8" width="11.5" height="11.5" fill="#ababab"/><rect x="22.4" y="44.8" width="11.5" height="11.5" fill="#b4b4b4"/><rect x="33.6" y="44.8" width="11.5" height="11.5" fill="#c3c3c3"/><rect x="44.8" y="44.8" width="11.5" height="11.5" fill="#cacaca"/><rect x="56.0" y="44.8" width="11.5" height="11.5" fill="#c5c5c5"/><rect x="67.2" y="44.8" width="11.5" height="11.5" fill="#c7c7c7"/><rect x="78.4" y="44.8" width="11.5" height="11.5" fill="#c4c4c4"/><rect x="89.6" y="44.8" width="11.5" height="11.5" fill="#c4c4c4"/><rect x="100.8" y="44.8" width="11.5" height="11.5" fill="#d1d1d1"/><rect x="112.0" y="44.8" width="11.5" height="11.5" fill="#e3e3e3"/><rect x="123.2" y="44.8" width="11.5" height="11.5" fill="#e8e8e8"/><rect x="134.4" y="44.8" width="11.5" height="11.5" fill="#ececec"/><rect x="145.6" y="44.8" width="11.5" height="11.5" fill="#cccccc"/><rect x="156.8" y="44.8" width="11.5" height="11.5" fill="#bababa"/><rect x="0.0" y="56.0" width="11.5" height="11.5" fill="#b0b0b0"/><rect x="11.2" y="56.0" width="11.5" height="11.5" fill="#acacac"/><rect x="22.4" y="56.0" width="11.5" height="11.5" fill="#bababa"/><rect x="33.6" y="56.0" width="11.5" height="11.5" fill="#cacaca"/><rect x="44.8" y="56.0" width="11.5" height="11.5" fill="#d9d9d9"/><rect x="56.0" y="56.0" width="11.5" height="11.5" fill="#cfcfcf"/><rect x="67.2" y="56.0" width="11.5" height="11.5" fill="#cfcfcf"/><rect x="78.4" y="56.0" width="11.5" height="11.5" fill="#d0d0d0"/><rect x="89.6" y="56.0" width="11.5" height="11.5" fill="#cecece"/><rect x="100.8" y="56.0" width="11.5" height="11.5" fill="#d3d3d3"/><rect x="112.0" y="56.0" width="11.5" height="11.5" fill="#e9e9e9"/><rect x="123.2" y="56.0" width="11.5" height="11.5" fill="#ececec"/><rect x="134.4" y="56.0" width="11.5" height="11.5" fill="#f4f4f4"/><rect x="145.6" y="56.0" width="11.5" height="11.5" fill="#cfcfcf"/><rect x="156.8" y="56.0" width="11.5" height="11.5" fill="#bfbfbf"/><rect x="0.0" y="67.2" width="11.5" height="11.5" fill="#b0b0b0"/><rect x="11.2" y="67.2" width="11.5" height="11.5" fill="#a9a9a9"/><rect x="22.4" y="67.2" width="11.5" height="11.5" fill="#b0b0b0"/><rect x="33.6" y="67.2" width="11.5" height="11.5" fill="#bfbfbf"/><rect x="44.8" y="67.2" width="11.5" height="11.5" fill="#c5c5c5"/><rect x="56.0" y="67.2" width="11.5" height="11.5" fill="#c1c1c1"/><rect x="67.2" y="67.2" width="11.5" height="11.5" fill="#bebebe"/><rect x="78.4" y="67.2" width="11.5" height="11.5" fill="#bcbcbc"/><rect x="89.6" y="67.2" width="11.5" height="11.5" fill="#bebebe"/><rect x="100.8" y="67.2" width="11.5" height="11.5" fill="#c8c8c8"/><rect x="112.0" y="67.2" width="11.5" height="11.5" fill="#dadada"/><rect x="123.2" y="67.2" width="11.5" height="11.5" fill="#e0e0e0"/><rect x="134.4" y="67.2" width="11.5" height="11.5" fill="#dddddd"/><rect x="145.6" y="67.2" width="11.5" height="11.5" fill="#bfbfbf"/><rect x="156.8" y="67.2" width="11.5" height="11.5" fill="#b7b7b7"/><rect x="0.0" y="78.4" width="11.5" height="11.5" fill="#a7a7a7"/><rect x="11.2" y="78.4" width="11.5" height="11.5" fill="#a1a1a1"/><rect x="22.4" y="78.4" width="11.5" height="11.5" fill="#a6a6a6"/><rect x="33.6" y="78.4" width="11.5" height="11.5" fill="#b0b0b0"/><rect x="44.8" y="78.4" width="11.5" height="11.5" fill="#b2b2b2"/><rect x="56.0" y="78.4" width="11.5" height="11.5" fill="#b2b2b2"/><rect x="67.2" y="78.4" width="11.5" height="11.5" fill="#b1b1b1"/><rect x="78.4" y="78.4" width="11.5" height="11.5" fill="#afafaf"/><rect x="89.6" y="78.4" width="11.5" height="11.5" fill="#aaaaaa"/><rect x="100.8" y="78.4" width="11.5" height="11.5" fill="#afafaf"/><rect x="112.0" y="78.4" width="11.5" height="11.5" fill="#b9b9b9"/><rect x="123.2" y="78.4" width="11.5" height="11.5" fill="#bdbdbd"/><rect x="134.4" y="78.4" width="11.5" height="11.5" fill="#bcbcbc"/><rect x="145.6" y="78.4" width="11.5" height="11.5" fill="#b4b4b4"/><rect x="156.8" y="78.4" width="11.5" height="11.5" fill="#b3b3b3"/><rect x="0.0" y="89.6" width="11.5" height="11.5" fill="#a1a1a1"/><rect x="11.2" y="89.6" width="11.5" height="11.5" fill="#a4a4a4"/><rect x="22.4" y="89.6" width="11.5" height="11.5" fill="#a8a8a8"/><rect x="33.6" y="89.6" width="11.5" height="11.5" fill="#ababab"/><rect x="44.8" y="89.6" width="11.5" height="11.5" fill="#ababab"/><rect x="56.0" y="89.6" width="11.5" height="11.5" fill="#acacac"/><rect x="67.2" y="89.6" width="11.5" height="11.5" fill="#acacac"/><rect x="78.4" y="89.6" width="11.5" height="11.5" fill="#adadad"/><rect x="89.6" y="89.6" width="11.5" height="11.5" fill="#acacac"/><rect x="100.8" y="89.6" width="11.5" height="11.5" fill="#aeaeae"/><rect x="112.0" y="89.6" width="11.5" height="11.5" fill="#b0b0b0"/><rect x="123.2" y="89.6" width="11.5" height="11.5" fill="#afafaf"/><rect x="134.4" y="89.6" width="11.5" height="11.5" fill="#b0b0b0"/><rect x="145.6" y="89.6" width="11.5" height="11.5" fill="#b0b0b0"/><rect x="156.8" y="89.6" width="11.5" height="11.5" fill="#b0b0b0"/><rect x="0.0" y="100.8" width="11.5" height="11.5" fill="#a0a0a0"/><rect x="11.2" y="100.8" width="11.5" height="11.5" fill="#a3a3a3"/><rect x="22.4" y="100.8" width="11.5" height="11.5" fill="#a8a8a8"/><rect x="33.6" y="100.8" width="11.5" height="11.5" fill="#a8a8a8"/><rect x="44.8" y="100.8" width="11.5" height="11.5" fill="#a9a9a9"/><rect x="56.0" y="100.8" width="11.5" height="11.5" fill="#aaaaaa"/><rect x="67.2" y="100.8" width="11.5" height="11.5" fill="#aaaaaa"/><rect x="78.4" y="100.8" width="11.5" height="11.5" fill="#ababab"/><rect x="89.6" y="100.8" width="11.5" height="11.5" fill="#ababab"/><rect x="100.8" y="100.8" width="11.5" height="11.5" fill="#adadad"/><rect x="112.0" y="100.8" width="11.5" height="11.5" fill="#adadad"/><rect x="123.2" y="100.8" width="11.5" height="11.5" fill="#adadad"/><rect x="134.4" y="100.8" width="11.5" height="11.5" fill="#aeaeae"/><rect x="145.6" y="100.8" width="11.5" height="11.5" fill="#aeaeae"/><rect x="156.8" y="100.8" width="11.5" height="11.5" fill="#adadad"/></svg></div>
+      <div class="ae-cap"><span class="ae-name"><span class="zh">重建图</span><span class="en">Reconstruction</span></span></div>
+    </div>
+
+    <div class="ae-diff" data-a="d1"><span class="zh">同样输入一张图</span><span class="en">same input</span></div>
+    <div class="ae-diff is-key" data-a="d2"><span class="ae-diff-k"><span class="zh">编码</span><span class="en">Encode</span></span><span class="zh"><i>学出来</i> → <em>解出来</em></span><span class="en"><i>learned</i> → <em>solved</em></span></div>
+    <div class="ae-diff is-key" data-a="d3"><span class="ae-diff-k"><span class="zh">中间表示</span><span class="en">Middle</span></span><span class="zh"><i>向量</i> → <em>代码</em></span><span class="en"><i>vector</i> → <em>code</em></span></div>
+    <div class="ae-diff is-key" data-a="d4"><span class="ae-diff-k"><span class="zh">解码</span><span class="en">Decode</span></span><span class="zh"><i>可学习</i> → <em>固定</em></span><span class="en"><i>learned</i> → <em>fixed</em></span></div>
+    <div class="ae-diff" data-a="d5"><span class="zh">同样画回原图</span><span class="en">same goal</span></div>
+
+    <div class="ae-lane ae-lane-b" data-a="lb"><span><span class="zh">代码自编码</span><span class="en">Code autoencoding</span></span></div>
+
+    <div class="ae-node is-b" data-a="b1">
+      <div class="ae-vis is-img"><img src="/blog/2026/painting-by-code/assets/diagram/target.jpg" alt="目标图：夜色中的湖与红色的桥 / Target: a night lake with a red bridge" width="256" height="170" loading="lazy" decoding="async"></div>
+      <div class="ae-cap"><span class="ae-name"><span class="zh">目标图</span><span class="en">Target</span></span></div>
+    </div>
+    <div class="ae-edge is-trap is-enc is-b" data-a="b2">
+      <svg class="ae-trap ae-trap-h" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true" focusable="false"><polygon points="0,0 100,24 100,76 0,100" vector-effect="non-scaling-stroke"/></svg>
+      <svg class="ae-trap ae-trap-v" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true" focusable="false"><polygon points="0,0 100,0 76,100 24,100" vector-effect="non-scaling-stroke"/></svg>
+      <span class="ae-name"><span class="zh">代码拟合</span><span class="en">Code fitting</span></span>
+      <span class="ae-sub"><span class="zh">优化求解</span><span class="en">solved by optimization</span></span>
+    </div>
+    <div class="ae-node is-b" data-a="b3">
+      <div class="ae-vis is-prog"><svg class="ae-mark" viewBox="0 0 168 112" aria-hidden="true" focusable="false"><line x1="6" y1="35" x2="162" y2="35" class="ae-base"/><rect x="6.7" y="17.3" width="23.4" height="10.6" rx="5.3" fill="#265485" fill-opacity="0.78" transform="rotate(-60 18.4 22.6)"/><rect x="26.5" y="18.4" width="25.9" height="10.6" rx="5.3" fill="#632e0a" fill-opacity="0.78" transform="rotate(-35 39.5 23.7)"/><rect x="53.8" y="18.4" width="19.2" height="12.2" rx="6.1" fill="#0d192b" fill-opacity="1" transform="rotate(90 63.4 24.5)"/><ellipse cx="83.1" cy="23.7" rx="13.0" ry="8.4" fill="#265485" fill-opacity="0.94" transform="rotate(65 83.1 23.7)"/><ellipse cx="105.9" cy="22.8" rx="13.1" ry="8.1" fill="#394856" fill-opacity="0.78" transform="rotate(-35 105.9 22.8)"/><ellipse cx="127.5" cy="25.1" rx="11.7" ry="6.2" fill="#4f6973" fill-opacity="1" transform="rotate(40 127.5 25.1)"/><ellipse cx="149.8" cy="22.3" rx="15.2" ry="8.6" fill="#394856" fill-opacity="1" transform="rotate(0 149.8 22.3)"/><line x1="6" y1="67" x2="162" y2="67" class="ae-base"/><ellipse cx="17.6" cy="54.5" rx="7.5" ry="4.8" fill="#1b4f8f" fill-opacity="0.94" transform="rotate(25 17.6 54.5)"/><ellipse cx="33.7" cy="57.1" rx="8.4" ry="4.4" fill="#352d15" fill-opacity="0.94" transform="rotate(90 33.7 57.1)"/><rect x="40.9" y="50.8" width="20.1" height="6.9" rx="3.5" fill="#890c10" fill-opacity="1" transform="rotate(-35 50.9 54.3)"/><rect x="55.7" y="51.9" width="21.9" height="8.8" rx="4.4" fill="#890c10" fill-opacity="1" transform="rotate(40 66.7 56.3)"/><ellipse cx="83.7" cy="56.4" rx="10.4" ry="3.7" fill="#0d192b" fill-opacity="0.86" transform="rotate(40 83.7 56.4)"/><ellipse cx="100.6" cy="57.5" rx="8.7" ry="4.2" fill="#1b4f8f" fill-opacity="1" transform="rotate(-35 100.6 57.5)"/><ellipse cx="117.6" cy="56.2" rx="11.3" ry="3.7" fill="#c81e1a" fill-opacity="1" transform="rotate(25 117.6 56.2)"/><ellipse cx="134.0" cy="54.9" rx="8.0" ry="3.3" fill="#1c2d2f" fill-opacity="0.86" transform="rotate(40 134.0 54.9)"/><rect x="142.3" y="50.2" width="17.9" height="12.2" rx="6.1" fill="#ffce79" fill-opacity="0.78" transform="rotate(-20 151.2 56.3)"/><line x1="6" y1="97" x2="162" y2="97" class="ae-base"/><ellipse cx="14.8" cy="86.2" rx="4.9" ry="3.3" fill="#be6c00" fill-opacity="1" transform="rotate(25 14.8 86.2)"/><rect x="19.6" y="82.6" width="12.7" height="4.4" rx="2.2" fill="#265485" fill-opacity="0.94" transform="rotate(-20 26.0 84.8)"/><ellipse cx="39.8" cy="87.8" rx="7.1" ry="3.2" fill="#0d192b" fill-opacity="0.78" transform="rotate(90 39.8 87.8)"/><rect x="46.8" y="82.4" width="9.8" height="6.0" rx="3.0" fill="#e1c130" fill-opacity="0.78" transform="rotate(12 51.7 85.4)"/><rect x="58.2" y="82.3" width="13.5" height="5.9" rx="3.0" fill="#265485" fill-opacity="0.94" transform="rotate(-20 65.0 85.2)"/><rect x="71.1" y="81.0" width="13.2" height="7.7" rx="3.8" fill="#c81e1a" fill-opacity="0.86" transform="rotate(65 77.7 84.8)"/><ellipse cx="89.8" cy="86.6" rx="6.1" ry="3.8" fill="#ffce79" fill-opacity="0.94" transform="rotate(-35 89.8 86.6)"/><rect x="96.0" y="82.6" width="12.7" height="7.2" rx="3.6" fill="#c81e1a" fill-opacity="0.86" transform="rotate(65 102.3 86.2)"/><rect x="109.8" y="82.0" width="10.3" height="6.0" rx="3.0" fill="#ffce79" fill-opacity="0.86" transform="rotate(25 114.9 85.0)"/><ellipse cx="129.5" cy="87.2" rx="6.6" ry="3.9" fill="#890c10" fill-opacity="0.86" transform="rotate(40 129.5 87.2)"/><ellipse cx="142.0" cy="88.0" rx="4.9" ry="2.9" fill="#265485" fill-opacity="0.86" transform="rotate(12 142.0 88.0)"/><rect x="147.6" y="84.6" width="12.0" height="6.6" rx="3.3" fill="#1c2d2f" fill-opacity="0.78" transform="rotate(90 153.6 87.9)"/></svg></div>
+      <div class="ae-cap"><span class="ae-name"><span class="zh">代码</span><span class="en">Code</span></span><span class="ae-sub"><span class="zh">可读、可执行</span><span class="en">readable and executable</span></span></div>
+    </div>
+    <div class="ae-edge is-trap is-dec is-b" data-a="b4">
+      <svg class="ae-trap ae-trap-h" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true" focusable="false"><polygon points="0,24 100,0 100,100 0,76" vector-effect="non-scaling-stroke"/></svg>
+      <svg class="ae-trap ae-trap-v" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true" focusable="false"><polygon points="24,0 76,0 100,100 0,100" vector-effect="non-scaling-stroke"/></svg>
+      <span class="ae-name"><span class="zh">执行代码</span><span class="en">Execute the code</span></span>
+      <span class="ae-sub"><span class="zh">固定渲染器</span><span class="en">fixed renderer</span></span>
+    </div>
+    <div class="ae-node is-b" data-a="b5">
+      <div class="ae-vis is-img"><img src="/blog/2026/painting-by-code/assets/diagram/recon.jpg" alt="重建图：执行代码画回的同一幅夜景 / Reconstruction: the same night scene, drawn by executing the code" width="256" height="170" loading="lazy" decoding="async"></div>
+      <div class="ae-cap"><span class="ae-name"><span class="zh">重建图</span><span class="en">Reconstruction</span></span></div>
+    </div>
+  </div>
+</div>
+
+<figcaption><span class="pbc-fig-label"><span class="zh">图 5 · </span><span class="en">Figure 5 · </span></span><span class="zh">自编码器与代码自编码的结构对照。两者都先压缩、再重建；代码自编码用优化得到可读、可执行的代码，交给固定渲染器执行，自编码器则学习潜表示与解码器。</span><span class="en">An autoencoder compared with code autoencoding. Both compress an image and then reconstruct it. Code autoencoding obtains readable, executable code by optimization and runs it on a fixed renderer, while an autoencoder learns its latent and its decoder.</span></figcaption>
+</figure>
+</section>
+
+<section id="dynamics">
+<h2><small>04 · TRAINING DYNAMICS</small><span class="zh">训练 loss 平稳下降，没有 spike</span><span class="en">Training loss decreases without spikes</span></h2>
+<h3><span class="zh">每条程序是一段纯文本，只有笔触正文计 loss</span><span class="en">The loss is computed only on the stroke code</span></h3>
+<p class="zh">拟合器留下的每条程序收成一段纯文本。前缀（任务、档位、画布定义；编辑另带输入图）不计 loss，笔触正文计 loss。我们用标准 NTP 训练，并定期保存检查点，评估它们在测试集上的表现。</p>
+<p class="en">Each program kept by the fitter becomes a piece of plain text. We exclude the prefix (i.e., the task, the tier, and the canvas definition, plus the input image for editing) from the loss and compute the loss only on the stroke code. We train with standard NTP and periodically save checkpoints to evaluate their performance on the test set.</p>
+<figure class="pbc-figure pbc-wide" id="fig-loss">
+<header class="pbc-figure-head"><div class="pbc-figure-title"><span class="zh">两组训练 loss 都平稳下降</span><span class="en">Both training losses decrease smoothly</span></div><p class="pbc-figure-claim"><span class="zh">我们记录了训练过程中两组训练数据（重建与编辑、文生图）上的 loss 变化。</span><span class="en">We record how the training loss changes during training on the two groups of training data (reconstruction with editing, and text-to-image).</span></p></header>
+<div class="loss-charts">
+<div class="loss-card"><h4><span class="zh">重建与编辑</span><span class="en">Reconstruction + editing</span></h4><div class="loss-plot" data-series="re" data-id="loss-re" data-label="Reconstruction and editing"><svg class="pbc-loss-svg" viewBox="0 0 440 361" role="img" aria-labelledby="loss-re-title loss-re-desc"><title id="loss-re-title">Reconstruction and editing normalized training loss</title><desc id="loss-re-desc">Normalized training loss, with the first point set to the maximum of 1, against relative training step on a log scale from 1x to 20x. Pale blue shows the raw observations and dark blue shows a centered 51-point moving average.</desc><defs><clipPath id="loss-re-clip"><rect x="18" y="26" width="406" height="279"/></clipPath></defs><g font-size="13" fill="#737373"><line x1="18" x2="424" y1="305" y2="305" stroke="#E6E6E6"/><line x1="18" x2="424" y1="275.1" y2="275.1" stroke="#E6E6E6"/><line x1="18" x2="424" y1="225.3" y2="225.3" stroke="#E6E6E6"/><line x1="18" x2="424" y1="175.5" y2="175.5" stroke="#E6E6E6"/><line x1="18" x2="424" y1="125.6" y2="125.6" stroke="#E6E6E6"/><line x1="18" x2="424" y1="75.8" y2="75.8" stroke="#E6E6E6"/><line x1="18" x2="424" y1="26" y2="26" stroke="#E6E6E6"/><line x1="18" x2="18" y1="305" y2="309" stroke="#CCCCCC"/><text x="18" y="325" text-anchor="middle">1×</text><line x1="111.9" x2="111.9" y1="305" y2="309" stroke="#CCCCCC"/><text x="111.9" y="325" text-anchor="middle">2×</text><line x1="236.1" x2="236.1" y1="305" y2="309" stroke="#CCCCCC"/><text x="236.1" y="325" text-anchor="middle">5×</text><line x1="330.1" x2="330.1" y1="305" y2="309" stroke="#CCCCCC"/><text x="330.1" y="325" text-anchor="middle">10×</text><line x1="424" x2="424" y1="305" y2="309" stroke="#CCCCCC"/><text x="424" y="325" text-anchor="middle">20×</text><text class="zh" x="18" y="14" fill="#4D4D4D">归一化 loss</text><text class="en" x="18" y="14" fill="#4D4D4D">Normalized loss</text><text class="zh" x="221" y="353" text-anchor="middle" fill="#4D4D4D">相对训练步数（对数刻度）</text><text class="en" x="221" y="353" text-anchor="middle" fill="#4D4D4D">Relative training step (log scale)</text></g><g clip-path="url(#loss-re-clip)"><polyline points="18.5,-28.8 18.5,37 19.5,9.1 19.5,7.1 20.5,4.1 20.5,23 21.5,25 21.5,24 22.5,14 22.5,44.9 23.5,25 23.5,21 24.5,32 24.5,46.9 25.5,25 25.5,24 26.5,8.1 26.5,57.9 27.5,47.9 27.5,42.9 28.5,41.9 28.5,50.9 29.5,57.9 29.5,28 30.5,32 30.5,47.9 31.5,63.9 31.5,6.1 32.5,49.9 32.5,62.9 33.5,70.8 33.5,59.9 34.5,51.9 34.5,68.8 35.5,43.9 35.5,38 36.5,59.9 36.5,65.9 37.5,93.8 37.5,38 38.5,63.9 38.5,71.8 39.5,78.8 39.5,41.9 40.5,65.9 40.5,67.9 41.5,79.8 41.5,39 42.5,38 42.5,100.7 43.5,64.9 43.5,57.9 44.5,62.9 44.5,85.8 45.5,73.8 45.5,57.9 46.5,71.8 46.5,82.8 47.5,76.8 47.5,74.8 48.5,60.9 48.5,89.8 49.5,94.8 49.5,68.8 50.5,68.8 50.5,81.8 51.5,91.8 51.5,65.9 52.5,71.8 52.5,83.8 53.5,102.7 53.5,50.9 54.5,70.8 54.5,110.7 55.5,93.8 55.5,91.8 56.5,74.8 56.5,98.7 57.5,94.8 57.5,88.8 58.5,79.8 58.5,110.7 59.5,111.7 59.5,85.8 60.5,79.8 60.5,87.8 61.5,97.7 61.5,77.8 62.5,92.8 62.5,106.7 63.5,119.7 63.5,84.8 64.5,79.8 64.5,106.7 65.5,115.7 65.5,99.7 66.5,101.7 66.5,124.6 67.5,108.7 67.5,93.8 68.5,115.7 68.5,136.6 69.5,104.7 69.5,94.8 70.5,93.8 70.5,118.7 71.5,104.7 71.5,83.8 72.5,99.7 72.5,130.6 73.5,124.6 73.5,76.8 74.5,94.8 74.5,108.7 75.5,152.5 75.5,82.8 76.5,96.7 76.5,101.7 77.5,122.7 77.5,105.7 78.5,112.7 78.5,141.6 79.5,119.7 79.5,101.7 80.5,104.7 80.5,123.6 81.5,134.6 81.5,102.7 82.5,115.7 82.5,130.6 83.5,114.7 83.5,93.8 84.5,88.8 84.5,121.7 85.5,129.6 85.5,106.7 86.5,104.7 86.5,129.6 87.5,132.6 87.5,113.7 88.5,109.7 88.5,115.7 89.5,123.6 89.5,107.7 90.5,115.7 90.5,126.6 91.5,141.6 91.5,111.7 92.5,124.6 92.5,147.6 93.5,146.6 93.5,110.7 94.5,128.6 94.5,135.6 95.5,149.6 95.5,134.6 96.5,120.7 96.5,137.6 97.5,140.6 97.5,104.7 98.5,131.6 98.5,142.6 99.5,137.6 99.5,123.6 100.5,121.7 100.5,146.6 101.5,157.5 101.5,115.7 102.5,115.7 102.5,137.6 103.5,159.5 103.5,122.7 104.5,116.7 104.5,139.6 105.5,154.5 105.5,116.7 106.5,127.6 106.5,142.6 107.5,149.6 107.5,137.6 108.5,115.7 108.5,170.5 109.5,145.6 109.5,130.6 110.5,111.7 110.5,144.6 111.5,161.5 111.5,134.6 112.5,127.6 112.5,146.6 113.5,164.5 113.5,125.6 114.5,111.7 114.5,160.5 115.5,146.6 115.5,113.7 116.5,141.6 116.5,143.6 117.5,161.5 117.5,140.6 118.5,123.6 118.5,156.5 119.5,165.5 119.5,122.7 120.5,139.6 120.5,155.5 121.5,152.5 121.5,144.6 122.5,131.6 122.5,161.5 123.5,157.5 123.5,146.6 124.5,131.6 124.5,173.5 125.5,160.5 125.5,109.7 126.5,127.6 126.5,181.4 127.5,166.5 127.5,149.6 128.5,142.6 128.5,155.5 129.5,164.5 129.5,131.6 130.5,127.6 130.5,165.5 131.5,147.6 131.5,134.6 132.5,149.6 132.5,161.5 133.5,162.5 133.5,154.5 134.5,141.6 134.5,162.5 135.5,178.5 135.5,144.6 136.5,156.5 136.5,175.5 137.5,166.5 137.5,125.6 138.5,135.6 138.5,175.5 139.5,165.5 139.5,147.6 140.5,143.6 140.5,174.5 141.5,179.5 141.5,115.7 142.5,135.6 142.5,166.5 143.5,181.4 143.5,132.6 144.5,142.6 144.5,181.4 145.5,176.5 145.5,142.6 146.5,139.6 146.5,176.5 147.5,180.4 147.5,144.6 148.5,139.6 148.5,175.5 149.5,176.5 149.5,140.6 150.5,146.6 150.5,176.5 151.5,171.5 151.5,139.6 152.5,149.6 152.5,186.4 153.5,176.5 153.5,142.6 154.5,147.6 154.5,191.4 155.5,162.5 155.5,138.6 156.5,148.6 156.5,181.4 157.5,185.4 157.5,150.6 158.5,151.5 158.5,178.5 159.5,168.5 159.5,154.5 160.5,146.6 160.5,171.5 161.5,175.5 161.5,141.6 162.5,142.6 162.5,189.4 163.5,200.4 163.5,136.6 164.5,139.6 164.5,170.5 165.5,177.5 165.5,146.6 166.5,150.6 166.5,187.4 167.5,182.4 167.5,164.5 168.5,138.6 168.5,192.4 169.5,186.4 169.5,139.6 170.5,156.5 170.5,183.4 171.5,187.4 171.5,149.6 172.5,157.5 172.5,185.4 173.5,176.5 173.5,150.6 174.5,162.5 174.5,194.4 175.5,186.4 175.5,159.5 176.5,160.5 176.5,192.4 177.5,190.4 177.5,154.5 178.5,145.6 178.5,187.4 179.5,190.4 179.5,158.5 180.5,149.6 180.5,198.4 181.5,193.4 181.5,156.5 182.5,168.5 182.5,181.4 183.5,180.4 183.5,151.5 184.5,139.6 184.5,182.4 185.5,186.4 185.5,139.6 186.5,159.5 186.5,183.4 187.5,180.4 187.5,156.5 188.5,161.5 188.5,205.4 189.5,191.4 189.5,157.5 190.5,158.5 190.5,195.4 191.5,193.4 191.5,168.5 192.5,165.5 192.5,196.4 193.5,192.4 193.5,165.5 194.5,153.5 194.5,216.3 195.5,190.4 195.5,154.5 196.5,159.5 196.5,200.4 197.5,193.4 197.5,151.5 198.5,162.5 198.5,198.4 199.5,194.4 199.5,163.5 200.5,142.6 200.5,205.4 201.5,192.4 201.5,157.5 202.5,157.5 202.5,218.3 203.5,198.4 203.5,161.5 204.5,165.5 204.5,192.4 205.5,206.4 205.5,164.5 206.5,165.5 206.5,205.4 207.5,237.2 207.5,149.6 208.5,161.5 208.5,196.4 209.5,195.4 209.5,176.5 210.5,168.5 210.5,197.4 211.5,191.4 211.5,166.5 212.5,160.5 212.5,209.3 213.5,206.4 213.5,152.5 214.5,152.5 214.5,192.4 215.5,202.4 215.5,165.5 216.5,153.5 216.5,212.3 217.5,204.4 217.5,180.4 218.5,160.5 218.5,199.4 219.5,200.4 219.5,181.4 220.5,166.5 220.5,193.4 221.5,201.4 221.5,161.5 222.5,166.5 222.5,221.3 223.5,216.3 223.5,166.5 224.5,160.5 224.5,202.4 225.5,212.3 225.5,172.5 226.5,152.5 226.5,218.3 227.5,205.4 227.5,172.5 228.5,169.5 228.5,201.4 229.5,220.3 229.5,158.5 230.5,173.5 230.5,234.3 231.5,201.4 231.5,173.5 232.5,177.5 232.5,227.3 233.5,206.4 233.5,160.5 234.5,166.5 234.5,208.3 235.5,223.3 235.5,179.5 236.5,161.5 236.5,218.3 237.5,220.3 237.5,170.5 238.5,172.5 238.5,216.3 239.5,213.3 239.5,172.5 240.5,173.5 240.5,207.4 241.5,213.3 241.5,181.4 242.5,180.4 242.5,213.3 243.5,228.3 243.5,166.5 244.5,175.5 244.5,206.4 245.5,222.3 245.5,170.5 246.5,178.5 246.5,201.4 247.5,213.3 247.5,171.5 248.5,161.5 248.5,216.3 249.5,218.3 249.5,177.5 250.5,157.5 250.5,217.3 251.5,210.3 251.5,166.5 252.5,181.4 252.5,212.3 253.5,232.3 253.5,181.4 254.5,177.5 254.5,209.3 255.5,208.3 255.5,161.5 256.5,178.5 256.5,221.3 257.5,209.3 257.5,187.4 258.5,187.4 258.5,217.3 259.5,234.3 259.5,182.4 260.5,166.5 260.5,218.3 261.5,218.3 261.5,185.4 262.5,175.5 262.5,221.3 263.5,213.3 263.5,176.5 264.5,185.4 264.5,226.3 265.5,224.3 265.5,180.4 266.5,170.5 266.5,212.3 267.5,225.3 267.5,174.5 268.5,177.5 268.5,218.3 269.5,228.3 269.5,169.5 270.5,178.5 270.5,221.3 271.5,219.3 271.5,171.5 272.5,181.4 272.5,215.3 273.5,231.3 273.5,179.5 274.5,182.4 274.5,222.3 275.5,214.3 275.5,186.4 276.5,190.4 276.5,223.3 277.5,222.3 277.5,185.4 278.5,170.5 278.5,224.3 279.5,211.3 279.5,190.4 280.5,182.4 280.5,216.3 281.5,225.3 281.5,173.5 282.5,180.4 282.5,232.3 283.5,233.3 283.5,193.4 284.5,187.4 284.5,237.2 285.5,233.3 285.5,185.4 286.5,190.4 286.5,224.3 287.5,224.3 287.5,193.4 288.5,193.4 288.5,229.3 289.5,240.2 289.5,174.5 290.5,180.4 290.5,229.3 291.5,226.3 291.5,188.4 292.5,186.4 292.5,228.3 293.5,222.3 293.5,185.4 294.5,186.4 294.5,229.3 295.5,255.2 295.5,185.4 296.5,191.4 296.5,254.2 297.5,235.2 297.5,186.4 298.5,178.5 298.5,239.2 299.5,247.2 299.5,170.5 300.5,187.4 300.5,240.2 301.5,223.3 301.5,189.4 302.5,179.5 302.5,234.3 303.5,228.3 303.5,197.4 304.5,180.4 304.5,250.2 305.5,228.3 305.5,189.4 306.5,176.5 306.5,242.2 307.5,229.3 307.5,199.4 308.5,191.4 308.5,243.2 309.5,229.3 309.5,176.5 310.5,190.4 310.5,241.2 311.5,237.2 311.5,195.4 312.5,194.4 312.5,234.3 313.5,251.2 313.5,199.4 314.5,188.4 314.5,248.2 315.5,227.3 315.5,194.4 316.5,185.4 316.5,236.2 317.5,236.2 317.5,188.4 318.5,197.4 318.5,236.2 319.5,241.2 319.5,201.4 320.5,188.4 320.5,241.2 321.5,241.2 321.5,194.4 322.5,197.4 322.5,264.1 323.5,238.2 323.5,192.4 324.5,192.4 324.5,242.2 325.5,244.2 325.5,202.4 326.5,185.4 326.5,238.2 327.5,235.2 327.5,186.4 328.5,200.4 328.5,245.2 329.5,237.2 329.5,201.4 330.5,202.4 330.5,247.2 331.5,233.3 331.5,202.4 332.5,199.4 332.5,232.3 333.5,256.2 333.5,195.4 334.5,176.5 334.5,237.2 335.5,241.2 335.5,206.4 336.5,191.4 336.5,258.2 337.5,239.2 337.5,201.4 338.5,193.4 338.5,249.2 339.5,236.2 339.5,188.4 340.5,196.4 340.5,238.2 341.5,239.2 341.5,207.4 342.5,188.4 342.5,237.2 343.5,252.2 343.5,184.4 344.5,189.4 344.5,254.2 345.5,253.2 345.5,201.4 346.5,204.4 346.5,239.2 347.5,247.2 347.5,187.4 348.5,186.4 348.5,241.2 349.5,252.2 349.5,197.4 350.5,205.4 350.5,252.2 351.5,255.2 351.5,195.4 352.5,197.4 352.5,251.2 353.5,267.1 353.5,196.4 354.5,201.4 354.5,253.2 355.5,259.2 355.5,201.4 356.5,194.4 356.5,245.2 357.5,261.2 357.5,200.4 358.5,210.3 358.5,249.2 359.5,255.2 359.5,202.4 360.5,201.4 360.5,248.2 361.5,247.2 361.5,197.4 362.5,201.4 362.5,244.2 363.5,252.2 363.5,206.4 364.5,200.4 364.5,239.2 365.5,255.2 365.5,206.4 366.5,196.4 366.5,249.2 367.5,256.2 367.5,202.4 368.5,209.3 368.5,271.1 369.5,265.1 369.5,196.4 370.5,206.4 370.5,243.2 371.5,249.2 371.5,203.4 372.5,207.4 372.5,247.2 373.5,250.2 373.5,205.4 374.5,205.4 374.5,262.2 375.5,252.2 375.5,204.4 376.5,203.4 376.5,265.1 377.5,259.2 377.5,197.4 378.5,203.4 378.5,258.2 379.5,254.2 379.5,206.4 380.5,202.4 380.5,272.1 381.5,264.1 381.5,209.3 382.5,205.4 382.5,264.1 383.5,257.2 383.5,208.3 384.5,212.3 384.5,263.2 385.5,248.2 385.5,201.4 386.5,218.3 386.5,259.2 387.5,260.2 387.5,208.3 388.5,204.4 388.5,261.2 389.5,275.1 389.5,204.4 390.5,214.3 390.5,264.1 391.5,262.2 391.5,205.4 392.5,205.4 392.5,276.1 393.5,263.2 393.5,213.3 394.5,208.3 394.5,271.1 395.5,260.2 395.5,208.3 396.5,211.3 396.5,253.2 397.5,280.1 397.5,207.4 398.5,206.4 398.5,281.1 399.5,273.1 399.5,208.3 400.5,217.3 400.5,264.1 401.5,260.2 401.5,211.3 402.5,213.3 402.5,268.1 403.5,260.2 403.5,214.3 404.5,216.3 404.5,278.1 405.5,267.1 405.5,203.4 406.5,219.3 406.5,269.1 407.5,259.2 407.5,216.3 408.5,208.3 408.5,262.2 409.5,272.1 409.5,208.3 410.5,211.3 410.5,285.1 411.5,272.1 411.5,216.3 412.5,219.3 412.5,259.2 413.5,281.1 413.5,213.3 414.5,203.4 414.5,268.1 415.5,268.1 415.5,195.4 416.5,222.3 416.5,270.1 417.5,275.1 417.5,213.3 418.5,202.4 418.5,275.1 419.5,271.1 419.5,219.3 420.5,220.3 420.5,272.1 421.5,265.1 421.5,212.3 422.5,212.3 422.5,263.2" fill="none" stroke="#85A4D6" stroke-width="0.8" stroke-opacity="0.75" stroke-linejoin="round"/><polyline points="18,26 19.4,28 20.7,28 22.1,31 23.4,33 24.8,35 26.1,37 27.5,38 28.8,40.9 30.2,43.9 31.5,47.9 32.9,50.9 34.3,53.9 35.6,55.9 37,58.9 38.3,60.9 39.7,63.9 41,66.9 42.4,68.8 43.7,69.8 45.1,71.8 46.5,74.8 47.8,74.8 49.2,77.8 50.5,79.8 51.9,82.8 53.2,83.8 54.6,85.8 55.9,87.8 57.3,89.8 58.6,91.8 60,94.8 61.4,96.7 62.7,99.7 64.1,99.7 65.4,101.7 66.8,101.7 68.1,103.7 69.5,104.7 70.8,106.7 72.2,108.7 73.5,109.7 74.9,109.7 76.3,109.7 77.6,110.7 79,111.7 80.3,112.7 81.7,114.7 83,114.7 84.4,115.7 85.7,116.7 87.1,118.7 88.5,120.7 89.8,123.6 91.2,124.6 92.5,126.6 93.9,127.6 95.2,129.6 96.6,130.6 97.9,131.6 99.3,131.6 100.6,131.6 102,132.6 103.4,134.6 104.7,134.6 106.1,136.6 107.4,137.6 108.8,138.6 110.1,138.6 111.5,140.6 112.8,141.6 114.2,140.6 115.5,140.6 116.9,141.6 118.3,142.6 119.6,143.6 121,144.6 122.3,145.6 123.7,146.6 125,148.6 126.4,148.6 127.7,149.6 129.1,150.6 130.5,152.5 131.8,154.5 133.2,154.5 134.5,154.5 135.9,155.5 137.2,156.5 138.6,155.5 139.9,156.5 141.3,156.5 142.6,155.5 144,157.5 145.4,157.5 146.7,158.5 148.1,159.5 149.4,159.5 150.8,161.5 152.1,161.5 153.5,161.5 154.8,162.5 156.2,163.5 157.5,161.5 158.9,162.5 160.3,164.5 161.6,162.5 163,163.5 164.3,164.5 165.7,166.5 167,167.5 168.4,167.5 169.7,169.5 171.1,170.5 172.5,171.5 173.8,172.5 175.2,172.5 176.5,172.5 177.9,172.5 179.2,172.5 180.6,171.5 181.9,171.5 183.3,171.5 184.6,171.5 186,171.5 187.4,172.5 188.7,173.5 190.1,176.5 191.4,176.5 192.8,177.5 194.1,179.5 195.5,178.5 196.8,178.5 198.2,177.5 199.5,178.5 200.9,178.5 202.3,178.5 203.6,181.4 205,182.4 206.3,182.4 207.7,183.4 209,182.4 210.4,184.4 211.7,182.4 213.1,182.4 214.5,183.4 215.8,183.4 217.2,183.4 218.5,184.4 219.9,184.4 221.2,185.4 222.6,187.4 223.9,188.4 225.3,190.4 226.6,190.4 228,189.4 229.4,188.4 230.7,188.4 232.1,187.4 233.4,187.4 234.8,188.4 236.1,190.4 237.5,191.4 238.8,190.4 240.2,192.4 241.5,193.4 242.9,194.4 244.3,195.4 245.6,193.4 247,195.4 248.3,194.4 249.7,193.4 251,193.4 252.4,196.4 253.7,197.4 255.1,199.4 256.5,197.4 257.8,201.4 259.2,198.4 260.5,199.4 261.9,198.4 263.2,200.4 264.6,199.4 265.9,199.4 267.3,198.4 268.6,201.4 270,201.4 271.4,200.4 272.7,198.4 274.1,200.4 275.4,203.4 276.8,201.4 278.1,200.4 279.5,201.4 280.8,202.4 282.2,205.4 283.5,207.4 284.9,206.4 286.3,207.4 287.6,207.4 289,208.3 290.3,205.4 291.7,208.3 293,207.4 294.4,207.4 295.7,209.3 297.1,209.3 298.5,207.4 299.8,207.4 301.2,208.3 302.5,208.3 303.9,209.3 305.2,209.3 306.6,213.3 307.9,214.3 309.3,213.3 310.6,213.3 312,214.3 313.4,215.3 314.7,216.3 316.1,215.3 317.4,216.3 318.8,216.3 320.1,216.3 321.5,215.3 322.8,216.3 324.2,214.3 325.5,217.3 326.9,218.3 328.3,218.3 329.6,217.3 331,219.3 332.3,218.3 333.7,217.3 335,219.3 336.4,220.3 337.7,220.3 339.1,217.3 340.5,221.3 341.8,222.3 343.2,221.3 344.5,221.3 345.9,224.3 347.2,221.3 348.6,222.3 349.9,222.3 351.3,223.3 352.6,224.3 354,227.3 355.4,223.3 356.7,223.3 358.1,226.3 359.4,227.3 360.8,227.3 362.1,227.3 363.5,226.3 364.8,226.3 366.2,225.3 367.5,230.3 368.9,229.3 370.3,226.3 371.6,228.3 373,228.3 374.3,229.3 375.7,228.3 377,231.3 378.4,231.3 379.7,231.3 381.1,231.3 382.5,232.3 383.8,235.2 385.2,234.3 386.5,233.3 387.9,235.2 389.2,231.3 390.6,237.2 391.9,237.2 393.3,237.2 394.6,236.2 396,234.3 397.4,237.2 398.7,237.2 400.1,237.2 401.4,236.2 402.8,238.2 404.1,240.2 405.5,238.2 406.8,241.2 408.2,239.2 409.5,240.2 410.9,241.2 412.3,239.2 413.6,242.2 415,241.2 416.3,242.2 417.7,239.2 419,242.2 420.4,242.2 421.7,241.2 423.1,242.2" fill="none" stroke="#2456A6" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></g></svg></div></div>
+<div class="loss-card"><h4><span class="zh">文生图</span><span class="en">Text-to-image</span></h4><div class="loss-plot" data-series="t2" data-id="loss-t2" data-label="Text-to-image"><svg class="pbc-loss-svg" viewBox="0 0 440 361" role="img" aria-labelledby="loss-t2-title loss-t2-desc"><title id="loss-t2-title">Text-to-image normalized training loss</title><desc id="loss-t2-desc">Normalized training loss, with the first point set to the maximum of 1, against relative training step on a log scale from 1x to 20x. Pale blue shows the raw observations and dark blue shows a centered 51-point moving average.</desc><defs><clipPath id="loss-t2-clip"><rect x="18" y="26" width="406" height="279"/></clipPath></defs><g font-size="13" fill="#737373"><line x1="18" x2="424" y1="305" y2="305" stroke="#E6E6E6"/><line x1="18" x2="424" y1="275.1" y2="275.1" stroke="#E6E6E6"/><line x1="18" x2="424" y1="225.3" y2="225.3" stroke="#E6E6E6"/><line x1="18" x2="424" y1="175.5" y2="175.5" stroke="#E6E6E6"/><line x1="18" x2="424" y1="125.6" y2="125.6" stroke="#E6E6E6"/><line x1="18" x2="424" y1="75.8" y2="75.8" stroke="#E6E6E6"/><line x1="18" x2="424" y1="26" y2="26" stroke="#E6E6E6"/><line x1="18" x2="18" y1="305" y2="309" stroke="#CCCCCC"/><text x="18" y="325" text-anchor="middle">1×</text><line x1="111.9" x2="111.9" y1="305" y2="309" stroke="#CCCCCC"/><text x="111.9" y="325" text-anchor="middle">2×</text><line x1="236.1" x2="236.1" y1="305" y2="309" stroke="#CCCCCC"/><text x="236.1" y="325" text-anchor="middle">5×</text><line x1="330.1" x2="330.1" y1="305" y2="309" stroke="#CCCCCC"/><text x="330.1" y="325" text-anchor="middle">10×</text><line x1="424" x2="424" y1="305" y2="309" stroke="#CCCCCC"/><text x="424" y="325" text-anchor="middle">20×</text><text class="zh" x="18" y="14" fill="#4D4D4D">归一化 loss</text><text class="en" x="18" y="14" fill="#4D4D4D">Normalized loss</text><text class="zh" x="221" y="353" text-anchor="middle" fill="#4D4D4D">相对训练步数（对数刻度）</text><text class="en" x="221" y="353" text-anchor="middle" fill="#4D4D4D">Relative training step (log scale)</text></g><g clip-path="url(#loss-t2-clip)"><polyline points="18.5,5.1 18.5,6.1 19.5,14 19.5,12 20.5,10.1 20.5,18 21.5,27 21.5,19 22.5,20 22.5,23 23.5,29 23.5,29 24.5,31 24.5,32 25.5,33 25.5,29 26.5,33 26.5,40 27.5,39 27.5,35 28.5,40 28.5,41.9 29.5,49.9 29.5,47.9 30.5,47.9 30.5,50.9 31.5,51.9 31.5,40.9 32.5,49.9 32.5,50.9 33.5,54.9 33.5,50.9 34.5,51.9 34.5,55.9 35.5,58.9 35.5,57.9 36.5,58.9 36.5,61.9 37.5,64.9 37.5,61.9 38.5,57.9 38.5,67.9 39.5,71.8 39.5,63.9 40.5,70.8 40.5,71.8 41.5,73.8 41.5,67.9 42.5,66.9 42.5,78.8 43.5,77.8 43.5,69.8 44.5,69.8 44.5,72.8 45.5,77.8 45.5,76.8 46.5,75.8 46.5,78.8 47.5,84.8 47.5,77.8 48.5,75.8 48.5,80.8 49.5,86.8 49.5,77.8 50.5,83.8 50.5,87.8 51.5,91.8 51.5,81.8 52.5,84.8 52.5,87.8 53.5,91.8 53.5,83.8 54.5,87.8 54.5,91.8 55.5,93.8 55.5,90.8 56.5,85.8 56.5,89.8 57.5,92.8 57.5,90.8 58.5,88.8 58.5,92.8 59.5,101.7 59.5,93.8 60.5,98.7 60.5,99.7 61.5,99.7 61.5,92.8 62.5,100.7 62.5,103.7 63.5,101.7 63.5,100.7 64.5,97.7 64.5,109.7 65.5,109.7 65.5,105.7 66.5,105.7 66.5,108.7 67.5,111.7 67.5,108.7 68.5,106.7 68.5,110.7 69.5,110.7 69.5,107.7 70.5,104.7 70.5,111.7 71.5,112.7 71.5,101.7 72.5,108.7 72.5,114.7 73.5,115.7 73.5,110.7 74.5,111.7 74.5,119.7 75.5,115.7 75.5,111.7 76.5,116.7 76.5,119.7 77.5,122.7 77.5,111.7 78.5,113.7 78.5,119.7 79.5,119.7 79.5,119.7 80.5,115.7 80.5,119.7 81.5,128.6 81.5,116.7 82.5,118.7 82.5,125.6 83.5,122.7 83.5,118.7 84.5,125.6 84.5,127.6 85.5,127.6 85.5,117.7 86.5,119.7 86.5,130.6 87.5,130.6 87.5,123.6 88.5,127.6 88.5,133.6 89.5,132.6 89.5,125.6 90.5,122.7 90.5,132.6 91.5,133.6 91.5,126.6 92.5,129.6 92.5,134.6 93.5,137.6 93.5,127.6 94.5,131.6 94.5,132.6 95.5,135.6 95.5,125.6 96.5,131.6 96.5,134.6 97.5,143.6 97.5,129.6 98.5,134.6 98.5,137.6 99.5,142.6 99.5,131.6 100.5,136.6 100.5,141.6 101.5,137.6 101.5,129.6 102.5,139.6 102.5,143.6 103.5,145.6 103.5,137.6 104.5,136.6 104.5,143.6 105.5,143.6 105.5,141.6 106.5,142.6 106.5,151.5 107.5,144.6 107.5,135.6 108.5,138.6 108.5,148.6 109.5,149.6 109.5,139.6 110.5,139.6 110.5,150.6 111.5,148.6 111.5,143.6 112.5,142.6 112.5,146.6 113.5,153.5 113.5,144.6 114.5,140.6 114.5,151.5 115.5,152.5 115.5,146.6 116.5,143.6 116.5,152.5 117.5,155.5 117.5,148.6 118.5,143.6 118.5,150.6 119.5,153.5 119.5,146.6 120.5,153.5 120.5,168.5 121.5,158.5 121.5,152.5 122.5,148.6 122.5,156.5 123.5,158.5 123.5,148.6 124.5,148.6 124.5,161.5 125.5,157.5 125.5,144.6 126.5,147.6 126.5,158.5 127.5,162.5 127.5,156.5 128.5,154.5 128.5,158.5 129.5,160.5 129.5,155.5 130.5,155.5 130.5,158.5 131.5,157.5 131.5,150.6 132.5,153.5 132.5,165.5 133.5,162.5 133.5,154.5 134.5,159.5 134.5,166.5 135.5,171.5 135.5,149.6 136.5,153.5 136.5,161.5 137.5,165.5 137.5,157.5 138.5,156.5 138.5,165.5 139.5,166.5 139.5,157.5 140.5,160.5 140.5,163.5 141.5,167.5 141.5,158.5 142.5,163.5 142.5,169.5 143.5,166.5 143.5,162.5 144.5,160.5 144.5,168.5 145.5,168.5 145.5,160.5 146.5,159.5 146.5,169.5 147.5,174.5 147.5,160.5 148.5,161.5 148.5,165.5 149.5,171.5 149.5,163.5 150.5,162.5 150.5,173.5 151.5,176.5 151.5,164.5 152.5,161.5 152.5,177.5 153.5,169.5 153.5,160.5 154.5,163.5 154.5,170.5 155.5,170.5 155.5,164.5 156.5,163.5 156.5,174.5 157.5,172.5 157.5,165.5 158.5,163.5 158.5,172.5 159.5,173.5 159.5,165.5 160.5,167.5 160.5,180.4 161.5,178.5 161.5,171.5 162.5,170.5 162.5,178.5 163.5,179.5 163.5,170.5 164.5,168.5 164.5,180.4 165.5,178.5 165.5,170.5 166.5,170.5 166.5,173.5 167.5,176.5 167.5,169.5 168.5,170.5 168.5,179.5 169.5,178.5 169.5,174.5 170.5,164.5 170.5,177.5 171.5,180.4 171.5,170.5 172.5,167.5 172.5,182.4 173.5,182.4 173.5,171.5 174.5,171.5 174.5,180.4 175.5,184.4 175.5,172.5 176.5,171.5 176.5,182.4 177.5,179.5 177.5,172.5 178.5,173.5 178.5,184.4 179.5,192.4 179.5,172.5 180.5,173.5 180.5,185.4 181.5,185.4 181.5,175.5 182.5,172.5 182.5,185.4 183.5,190.4 183.5,174.5 184.5,175.5 184.5,183.4 185.5,187.4 185.5,175.5 186.5,173.5 186.5,186.4 187.5,184.4 187.5,178.5 188.5,182.4 188.5,189.4 189.5,186.4 189.5,175.5 190.5,175.5 190.5,189.4 191.5,188.4 191.5,178.5 192.5,179.5 192.5,191.4 193.5,193.4 193.5,178.5 194.5,179.5 194.5,189.4 195.5,189.4 195.5,182.4 196.5,181.4 196.5,189.4 197.5,193.4 197.5,182.4 198.5,182.4 198.5,189.4 199.5,189.4 199.5,180.4 200.5,182.4 200.5,190.4 201.5,190.4 201.5,180.4 202.5,181.4 202.5,194.4 203.5,191.4 203.5,182.4 204.5,184.4 204.5,194.4 205.5,193.4 205.5,183.4 206.5,183.4 206.5,193.4 207.5,197.4 207.5,185.4 208.5,184.4 208.5,191.4 209.5,195.4 209.5,182.4 210.5,181.4 210.5,190.4 211.5,194.4 211.5,183.4 212.5,183.4 212.5,196.4 213.5,195.4 213.5,187.4 214.5,185.4 214.5,198.4 215.5,203.4 215.5,189.4 216.5,187.4 216.5,196.4 217.5,200.4 217.5,184.4 218.5,186.4 218.5,200.4 219.5,198.4 219.5,188.4 220.5,185.4 220.5,199.4 221.5,202.4 221.5,185.4 222.5,185.4 222.5,201.4 223.5,196.4 223.5,185.4 224.5,187.4 224.5,196.4 225.5,198.4 225.5,188.4 226.5,190.4 226.5,200.4 227.5,198.4 227.5,188.4 228.5,189.4 228.5,197.4 229.5,202.4 229.5,188.4 230.5,189.4 230.5,198.4 231.5,204.4 231.5,190.4 232.5,190.4 232.5,200.4 233.5,202.4 233.5,193.4 234.5,193.4 234.5,201.4 235.5,203.4 235.5,195.4 236.5,192.4 236.5,199.4 237.5,205.4 237.5,193.4 238.5,187.4 238.5,205.4 239.5,203.4 239.5,191.4 240.5,194.4 240.5,206.4 241.5,202.4 241.5,196.4 242.5,194.4 242.5,205.4 243.5,205.4 243.5,194.4 244.5,193.4 244.5,204.4 245.5,208.3 245.5,192.4 246.5,192.4 246.5,208.3 247.5,207.4 247.5,192.4 248.5,192.4 248.5,207.4 249.5,206.4 249.5,196.4 250.5,197.4 250.5,206.4 251.5,206.4 251.5,193.4 252.5,196.4 252.5,206.4 253.5,206.4 253.5,193.4 254.5,197.4 254.5,208.3 255.5,205.4 255.5,196.4 256.5,198.4 256.5,210.3 257.5,208.3 257.5,199.4 258.5,198.4 258.5,207.4 259.5,208.3 259.5,197.4 260.5,197.4 260.5,209.3 261.5,208.3 261.5,196.4 262.5,197.4 262.5,212.3 263.5,216.3 263.5,201.4 264.5,197.4 264.5,212.3 265.5,210.3 265.5,200.4 266.5,200.4 266.5,210.3 267.5,213.3 267.5,200.4 268.5,199.4 268.5,210.3 269.5,213.3 269.5,196.4 270.5,201.4 270.5,215.3 271.5,210.3 271.5,204.4 272.5,199.4 272.5,217.3 273.5,214.3 273.5,198.4 274.5,199.4 274.5,214.3 275.5,212.3 275.5,203.4 276.5,201.4 276.5,213.3 277.5,216.3 277.5,203.4 278.5,199.4 278.5,217.3 279.5,215.3 279.5,205.4 280.5,200.4 280.5,215.3 281.5,219.3 281.5,205.4 282.5,203.4 282.5,216.3 283.5,216.3 283.5,204.4 284.5,201.4 284.5,217.3 285.5,217.3 285.5,207.4 286.5,203.4 286.5,218.3 287.5,215.3 287.5,206.4 288.5,204.4 288.5,217.3 289.5,217.3 289.5,204.4 290.5,208.3 290.5,219.3 291.5,221.3 291.5,206.4 292.5,207.4 292.5,221.3 293.5,220.3 293.5,207.4 294.5,206.4 294.5,220.3 295.5,223.3 295.5,207.4 296.5,207.4 296.5,219.3 297.5,222.3 297.5,208.3 298.5,209.3 298.5,220.3 299.5,223.3 299.5,206.4 300.5,209.3 300.5,222.3 301.5,221.3 301.5,209.3 302.5,209.3 302.5,224.3 303.5,223.3 303.5,208.3 304.5,210.3 304.5,222.3 305.5,224.3 305.5,207.4 306.5,210.3 306.5,222.3 307.5,223.3 307.5,212.3 308.5,208.3 308.5,224.3 309.5,227.3 309.5,211.3 310.5,211.3 310.5,224.3 311.5,220.3 311.5,208.3 312.5,212.3 312.5,221.3 313.5,227.3 313.5,211.3 314.5,212.3 314.5,224.3 315.5,225.3 315.5,214.3 316.5,215.3 316.5,226.3 317.5,229.3 317.5,213.3 318.5,209.3 318.5,225.3 319.5,227.3 319.5,213.3 320.5,213.3 320.5,229.3 321.5,223.3 321.5,212.3 322.5,209.3 322.5,231.3 323.5,228.3 323.5,214.3 324.5,215.3 324.5,225.3 325.5,229.3 325.5,216.3 326.5,215.3 326.5,227.3 327.5,231.3 327.5,215.3 328.5,216.3 328.5,228.3 329.5,229.3 329.5,214.3 330.5,215.3 330.5,226.3 331.5,227.3 331.5,215.3 332.5,214.3 332.5,228.3 333.5,232.3 333.5,210.3 334.5,215.3 334.5,229.3 335.5,232.3 335.5,216.3 336.5,218.3 336.5,232.3 337.5,227.3 337.5,216.3 338.5,215.3 338.5,231.3 339.5,231.3 339.5,218.3 340.5,217.3 340.5,228.3 341.5,231.3 341.5,219.3 342.5,221.3 342.5,229.3 343.5,237.2 343.5,218.3 344.5,219.3 344.5,231.3 345.5,229.3 345.5,219.3 346.5,217.3 346.5,232.3 347.5,231.3 347.5,219.3 348.5,219.3 348.5,233.3 349.5,238.2 349.5,212.3 350.5,219.3 350.5,235.2 351.5,233.3 351.5,217.3 352.5,219.3 352.5,237.2 353.5,235.2 353.5,219.3 354.5,221.3 354.5,236.2 355.5,234.3 355.5,219.3 356.5,223.3 356.5,233.3 357.5,234.3 357.5,220.3 358.5,222.3 358.5,237.2 359.5,239.2 359.5,222.3 360.5,218.3 360.5,239.2 361.5,238.2 361.5,222.3 362.5,221.3 362.5,240.2 363.5,235.2 363.5,225.3 364.5,222.3 364.5,239.2 365.5,235.2 365.5,221.3 366.5,222.3 366.5,239.2 367.5,235.2 367.5,224.3 368.5,223.3 368.5,237.2 369.5,234.3 369.5,222.3 370.5,225.3 370.5,240.2 371.5,240.2 371.5,222.3 372.5,225.3 372.5,238.2 373.5,240.2 373.5,224.3 374.5,226.3 374.5,239.2 375.5,242.2 375.5,224.3 376.5,226.3 376.5,236.2 377.5,240.2 377.5,225.3 378.5,226.3 378.5,239.2 379.5,239.2 379.5,226.3 380.5,226.3 380.5,243.2 381.5,242.2 381.5,228.3 382.5,225.3 382.5,239.2 383.5,241.2 383.5,226.3 384.5,225.3 384.5,243.2 385.5,243.2 385.5,226.3 386.5,226.3 386.5,239.2 387.5,241.2 387.5,227.3 388.5,226.3 388.5,242.2 389.5,241.2 389.5,229.3 390.5,229.3 390.5,239.2 391.5,241.2 391.5,228.3 392.5,227.3 392.5,242.2 393.5,242.2 393.5,226.3 394.5,229.3 394.5,242.2 395.5,242.2 395.5,224.3 396.5,230.3 396.5,241.2 397.5,245.2 397.5,229.3 398.5,227.3 398.5,245.2 399.5,246.2 399.5,228.3 400.5,226.3 400.5,244.2 401.5,244.2 401.5,228.3 402.5,226.3 402.5,246.2 403.5,245.2 403.5,231.3 404.5,229.3 404.5,249.2 405.5,247.2 405.5,229.3 406.5,233.3 406.5,244.2 407.5,246.2 407.5,230.3 408.5,231.3 408.5,245.2 409.5,248.2 409.5,231.3 410.5,231.3 410.5,249.2 411.5,246.2 411.5,231.3 412.5,236.2 412.5,247.2 413.5,246.2 413.5,235.2 414.5,233.3 414.5,247.2 415.5,247.2 415.5,231.3 416.5,231.3 416.5,247.2 417.5,251.2 417.5,231.3 418.5,234.3 418.5,248.2 419.5,248.2 419.5,235.2 420.5,231.3 420.5,247.2 421.5,252.2 421.5,232.3 422.5,234.3 422.5,249.2" fill="none" stroke="#85A4D6" stroke-width="0.8" stroke-opacity="0.75" stroke-linejoin="round"/><polyline points="18,26 19.4,28 20.7,30 22.1,32 23.4,33 24.8,35 26.1,37 27.5,39 28.8,40 30.2,43.9 31.5,47.9 32.9,50.9 34.3,54.9 35.6,56.9 37,59.9 38.3,62.9 39.7,64.9 41,67.9 42.4,69.8 43.7,72.8 45.1,74.8 46.5,77.8 47.8,79.8 49.2,81.8 50.5,82.8 51.9,84.8 53.2,86.8 54.6,88.8 55.9,90.8 57.3,92.8 58.6,94.8 60,96.7 61.4,98.7 62.7,100.7 64.1,101.7 65.4,103.7 66.8,105.7 68.1,106.7 69.5,108.7 70.8,109.7 72.2,111.7 73.5,112.7 74.9,113.7 76.3,115.7 77.6,116.7 79,117.7 80.3,119.7 81.7,120.7 83,122.7 84.4,123.6 85.7,125.6 87.1,126.6 88.5,127.6 89.8,128.6 91.2,129.6 92.5,131.6 93.9,132.6 95.2,133.6 96.6,134.6 97.9,135.6 99.3,136.6 100.6,137.6 102,138.6 103.4,139.6 104.7,140.6 106.1,141.6 107.4,142.6 108.8,143.6 110.1,144.6 111.5,145.6 112.8,146.6 114.2,146.6 115.5,148.6 116.9,149.6 118.3,150.6 119.6,151.5 121,151.5 122.3,152.5 123.7,153.5 125,154.5 126.4,155.5 127.7,155.5 129.1,156.5 130.5,157.5 131.8,158.5 133.2,158.5 134.5,159.5 135.9,159.5 137.2,160.5 138.6,161.5 139.9,162.5 141.3,162.5 142.6,163.5 144,164.5 145.4,164.5 146.7,165.5 148.1,165.5 149.4,166.5 150.8,166.5 152.1,167.5 153.5,167.5 154.8,167.5 156.2,168.5 157.5,169.5 158.9,170.5 160.3,171.5 161.6,172.5 163,173.5 164.3,174.5 165.7,174.5 167,174.5 168.4,174.5 169.7,174.5 171.1,175.5 172.5,176.5 173.8,176.5 175.2,176.5 176.5,176.5 177.9,177.5 179.2,178.5 180.6,179.5 181.9,179.5 183.3,180.4 184.6,180.4 186,181.4 187.4,182.4 188.7,182.4 190.1,183.4 191.4,183.4 192.8,184.4 194.1,184.4 195.5,184.4 196.8,184.4 198.2,185.4 199.5,185.4 200.9,186.4 202.3,186.4 203.6,187.4 205,188.4 206.3,189.4 207.7,189.4 209,189.4 210.4,189.4 211.7,189.4 213.1,190.4 214.5,191.4 215.8,191.4 217.2,192.4 218.5,192.4 219.9,192.4 221.2,192.4 222.6,192.4 223.9,192.4 225.3,193.4 226.6,193.4 228,194.4 229.4,194.4 230.7,195.4 232.1,197.4 233.4,197.4 234.8,197.4 236.1,197.4 237.5,197.4 238.8,197.4 240.2,197.4 241.5,199.4 242.9,199.4 244.3,200.4 245.6,199.4 247,199.4 248.3,200.4 249.7,200.4 251,201.4 252.4,200.4 253.7,201.4 255.1,202.4 256.5,202.4 257.8,203.4 259.2,203.4 260.5,204.4 261.9,204.4 263.2,204.4 264.6,205.4 265.9,205.4 267.3,205.4 268.6,205.4 270,207.4 271.4,207.4 272.7,207.4 274.1,206.4 275.4,207.4 276.8,207.4 278.1,208.3 279.5,208.3 280.8,209.3 282.2,209.3 283.5,210.3 284.9,211.3 286.3,211.3 287.6,210.3 289,211.3 290.3,211.3 291.7,212.3 293,212.3 294.4,213.3 295.7,214.3 297.1,214.3 298.5,214.3 299.8,214.3 301.2,215.3 302.5,215.3 303.9,215.3 305.2,215.3 306.6,216.3 307.9,216.3 309.3,217.3 310.6,217.3 312,216.3 313.4,217.3 314.7,218.3 316.1,219.3 317.4,218.3 318.8,219.3 320.1,220.3 321.5,219.3 322.8,219.3 324.2,220.3 325.5,220.3 326.9,221.3 328.3,222.3 329.6,222.3 331,222.3 332.3,222.3 333.7,222.3 335,222.3 336.4,223.3 337.7,223.3 339.1,224.3 340.5,223.3 341.8,224.3 343.2,225.3 344.5,225.3 345.9,225.3 347.2,225.3 348.6,226.3 349.9,226.3 351.3,226.3 352.6,227.3 354,227.3 355.4,227.3 356.7,227.3 358.1,228.3 359.4,228.3 360.8,229.3 362.1,229.3 363.5,230.3 364.8,230.3 366.2,230.3 367.5,230.3 368.9,230.3 370.3,230.3 371.6,231.3 373,232.3 374.3,232.3 375.7,232.3 377,232.3 378.4,232.3 379.7,232.3 381.1,233.3 382.5,232.3 383.8,234.3 385.2,233.3 386.5,234.3 387.9,234.3 389.2,235.2 390.6,235.2 391.9,235.2 393.3,235.2 394.6,234.3 396,235.2 397.4,236.2 398.7,237.2 400.1,237.2 401.4,236.2 402.8,237.2 404.1,238.2 405.5,237.2 406.8,239.2 408.2,239.2 409.5,240.2 410.9,239.2 412.3,240.2 413.6,240.2 415,240.2 416.3,239.2 417.7,240.2 419,240.2 420.4,240.2 421.7,241.2 423.1,242.2" fill="none" stroke="#2456A6" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></g></svg></div></div>
+</div>
+<figcaption><span class="pbc-fig-label"><span class="zh">图 6 · </span><span class="en">Figure 6 · </span></span><span class="zh">标准 NTP 训练的 loss。横轴为相对训练步数（对数刻度，首个记录步记为 1×）；纵轴为归一化的训练 loss，以首个记录点为最大值，不标具体数值。浅色线为原始观测（每个像素列画出该列的最小值到最大值），深色线为 51 点居中移动平均。</span><span class="en">Training loss under standard NTP. The x-axis is the relative training step on a log scale, with the first recorded step set to 1×. The y-axis is the normalized training loss, with the first recorded point as the maximum; absolute values are not shown. Pale lines show the raw observations (from the minimum to the maximum within each pixel column), and dark lines show the centered 51-point moving averages.</span></figcaption>
+</figure>
+<p class="zh kicker">两组训练 loss 都持续下降，但七个检查点在测试集上的表现表明，三项任务的改善程度并不一致。</p>
+<p class="en kicker">Both training losses keep decreasing. However, the performance of the seven checkpoints on the test set shows different progress across the three tasks.</p>
+<figure class="pbc-figure" id="fig-psnr">
+<header class="pbc-figure-head"><div class="pbc-figure-title"><span class="zh">重建持续上升，另两项没有同步</span><span class="en">Reconstruction improves while the other tasks do not</span></div><p class="pbc-figure-claim"><span class="zh">重建从 8.78 升到 17.44 dB；编辑在 C2 达到最高后回落，文生图大致持平。</span><span class="en">Reconstruction increases from 8.78 to 17.44 dB, while editing peaks at C2 and text-to-image remains roughly flat.</span></p></header>
+<div class="pbc-chart-toolbar"><button class="btn" id="psnr-toggle" type="button" aria-controls="psnr-chart psnr-table-wrap" aria-expanded="false" data-table-zh="表格" data-table-en="Table" data-chart-zh="图表" data-chart-en="Chart"><span class="zh">表格</span><span class="en">Table</span></button></div>
+<div class="pbc-chart-scroll" id="psnr-chart"><svg class="pbc-psnr-svg" viewBox="0 0 720 390" role="img" aria-labelledby="psnr-title psnr-desc"><title id="psnr-title">Test-set PSNR by checkpoint and task</title><desc id="psnr-desc">Reconstruction increases across seven checkpoints. Editing peaks at C2 and then decreases. Text-to-image remains roughly flat.</desc><rect width="720" height="390" fill="none"/><g fill="#737373" font-size="13"><line x1="64" x2="548" y1="330.0" y2="330.0" stroke="#E6E6E6"/><text x="52" y="334.0" text-anchor="end">8</text><line x1="64" x2="548" y1="274.0" y2="274.0" stroke="#E6E6E6"/><text x="52" y="278.0" text-anchor="end">10</text><line x1="64" x2="548" y1="218.0" y2="218.0" stroke="#E6E6E6"/><text x="52" y="222.0" text-anchor="end">12</text><line x1="64" x2="548" y1="162.0" y2="162.0" stroke="#E6E6E6"/><text x="52" y="166.0" text-anchor="end">14</text><line x1="64" x2="548" y1="106.0" y2="106.0" stroke="#E6E6E6"/><text x="52" y="110.0" text-anchor="end">16</text><line x1="64" x2="548" y1="50.0" y2="50.0" stroke="#E6E6E6"/><text x="52" y="54.0" text-anchor="end">18</text><text x="64.0" y="353" text-anchor="middle">C1</text><text x="144.7" y="353" text-anchor="middle">C2</text><text x="225.3" y="353" text-anchor="middle">C3</text><text x="306.0" y="353" text-anchor="middle">C4</text><text x="386.7" y="353" text-anchor="middle">C5</text><text x="467.3" y="353" text-anchor="middle">C6</text><text x="548.0" y="353" text-anchor="middle">C7</text><text class="zh" x="64" y="20">测试集平均 PSNR（dB，三档 pooled）</text><text class="en" x="64" y="20">Test-set mean PSNR (dB, tiers pooled)</text><text class="zh" x="306" y="382" text-anchor="middle">检查点顺序</text><text class="en" x="306" y="382" text-anchor="middle">Checkpoint order</text></g><polyline points="64.0,308.2 144.7,141.3 225.3,109.9 306.0,96.8 386.7,84.4 467.3,71.0 548.0,65.7" fill="none" stroke="#163464" stroke-width="3"/><circle cx="64.0" cy="308.2" r="4.2" fill="#163464"/><circle cx="144.7" cy="141.3" r="4.2" fill="#163464"/><circle cx="225.3" cy="109.9" r="4.2" fill="#163464"/><circle cx="306.0" cy="96.8" r="4.2" fill="#163464"/><circle cx="386.7" cy="84.4" r="4.2" fill="#163464"/><circle cx="467.3" cy="71.0" r="4.2" fill="#163464"/><circle cx="548.0" cy="65.7" r="4.2" fill="#163464"/><text class="zh" x="562" y="69.7" fill="#163464" font-size="13" font-weight="600">重建 · 17.44</text><text class="en" x="562" y="69.7" fill="#163464" font-size="13" font-weight="600">Reconstruction · 17.44</text><polyline points="64.0,124.2 144.7,76.6 225.3,92.3 306.0,109.4 386.7,101.2 467.3,109.4 548.0,132.3" fill="none" stroke="#2456A6" stroke-width="3" stroke-dasharray="9 6"/><circle cx="64.0" cy="124.2" r="4.2" fill="#2456A6"/><circle cx="144.7" cy="76.6" r="4.2" fill="#2456A6"/><circle cx="225.3" cy="92.3" r="4.2" fill="#2456A6"/><circle cx="306.0" cy="109.4" r="4.2" fill="#2456A6"/><circle cx="386.7" cy="101.2" r="4.2" fill="#2456A6"/><circle cx="467.3" cy="109.4" r="4.2" fill="#2456A6"/><circle cx="548.0" cy="132.3" r="4.2" fill="#2456A6"/><text class="zh" x="562" y="140.3" fill="#2456A6" font-size="13" font-weight="600">编辑 · 15.06</text><text class="en" x="562" y="140.3" fill="#2456A6" font-size="13" font-weight="600">Editing · 15.06</text><polyline points="64.0,327.8 144.7,294.7 225.3,301.4 306.0,305.4 386.7,298.6 467.3,302.0 548.0,308.2" fill="none" stroke="#85A4D6" stroke-width="3" stroke-dasharray="3 5"/><circle cx="64.0" cy="327.8" r="4.2" fill="#85A4D6"/><circle cx="144.7" cy="294.7" r="4.2" fill="#85A4D6"/><circle cx="225.3" cy="301.4" r="4.2" fill="#85A4D6"/><circle cx="306.0" cy="305.4" r="4.2" fill="#85A4D6"/><circle cx="386.7" cy="298.6" r="4.2" fill="#85A4D6"/><circle cx="467.3" cy="302.0" r="4.2" fill="#85A4D6"/><circle cx="548.0" cy="308.2" r="4.2" fill="#85A4D6"/><text class="zh" x="562" y="315.2" fill="#85A4D6" font-size="13" font-weight="600">文生图 · 8.78</text><text class="en" x="562" y="315.2" fill="#85A4D6" font-size="13" font-weight="600">Text-to-image · 8.78</text></svg></div>
+<div class="pbc-chart-scroll" id="psnr-table-wrap" hidden>
+<table class="pbc-chart-table"><thead><tr><th><span class="zh">任务</span><span class="en">Task</span></th><th>C1</th><th>C2</th><th>C3</th><th>C4</th><th>C5</th><th>C6</th><th>C7</th></tr></thead><tbody>
+<tr><td><span class="zh">重建</span><span class="en">Reconstruction</span></td><td>8.78</td><td>14.74</td><td>15.86</td><td>16.33</td><td>16.77</td><td>17.25</td><td>17.44</td></tr>
+<tr><td><span class="zh">编辑</span><span class="en">Editing</span></td><td>15.35</td><td>17.05</td><td>16.49</td><td>15.88</td><td>16.17</td><td>15.88</td><td>15.06</td></tr>
+<tr><td><span class="zh">文生图</span><span class="en">Text-to-image</span></td><td>8.08</td><td>9.26</td><td>9.02</td><td>8.88</td><td>9.12</td><td>9.00</td><td>8.78</td></tr>
+</tbody></table>
+</div>
+<figcaption><span class="pbc-fig-label"><span class="zh">图 7 · </span><span class="en">Figure 7 · </span></span><span class="zh">三项任务的七个检查点在测试集上的平均 PSNR（三档 pooled，横轴只表示检查点的先后顺序）。深蓝实线为重建，蓝色虚线为编辑，浅蓝点线为文生图。文生图的 PSNR 按单张目标图逐像素比较，对没有图像锚点的生成更为严格。</span><span class="en">Mean PSNR of the three tasks on the test set at seven checkpoints, pooled over tiers; the x-axis shows the checkpoint order only. The dark solid, blue dashed, and light dotted lines show reconstruction, editing, and text-to-image, respectively. Text-to-image PSNR compares each render with one specific reference image pixel by pixel, which is a stricter criterion for generation without an image anchor.</span></figcaption>
+</figure>
+</section>
+
+
+<section id="limitations">
+<h2><small>05 · LIMITATIONS</small><span class="zh">局限</span><span class="en">Limitations</span></h2>
+<p class="zh">本文仍有几点局限。一方面，我们只评测了一个模型规模，且 PSNR 只与单张参考图逐像素比较，因此模型容量的影响尚未验证，这一指标对文生图也偏严格。另一方面，全部训练程序来自同一个拟合器，模型会继承它由粗到细的作画习惯，PSNR 门槛也会丢弃拟合失败的样本。</p>
+<p class="en">There are still several limitations in this post. On the one hand, we test only one model size and compute PSNR on a single reference image, which leaves capacity effects untested and is strict for text-to-image. On the other hand, all training programs come from one fitter, whose coarse-to-fine habits the model inherits and whose PSNR threshold drops failed fits.</p>
+</section>
+
+<section id="conclusion">
+<h2><small>06 · CONCLUSION</small><span class="zh">结论</span><span class="en">Conclusion</span></h2>
+<p class="zh">本文用代码自编码训练语言模型逐笔作画：拟合器把图片反编译成可读、可执行的笔触程序，固定渲染器再把程序画回图片，语言模型则用标准 NTP 学习写出这些程序。实验表明，图片生成是一个可学的代码生成任务：图片重建的 PSNR 随训练稳定上升，仍未见 ceiling；编辑与文生图也学到了基础概念，只是 scaling 缓慢。</p>
+<p class="en">This post trains a language model to paint stroke by stroke through code autoencoding. A fitter decompiles each image into a readable, executable stroke program, a fixed renderer draws the program back, and the language model learns to write such programs with standard NTP. The results show that image generation is a learnable code-generation task. Reconstruction PSNR rises steadily with training and shows no ceiling yet, while editing and text-to-image learn basic concepts but scale slowly.</p>
+</section>
+
+<section id="related">
+<h2><small>07 · RELATED WORK</small><span class="zh">相关工作</span><span class="en">Related work</span></h2>
+<p class="zh">笔触渲染把图像表示为一串有序的绘制动作。Haeberli<span class="pbc-note"><button class="pbc-note-marker" id="cite-1r-zh" type="button" aria-describedby="cite-1r-zh-tip" aria-expanded="false">1</button><span class="pbc-note-popover" id="cite-1r-zh-tip" role="tooltip">Haeberli, SIGGRAPH 1990.<br><a href="#ref-1">查看参考文献</a></span></span> 用交互式笔触构造抽象的图像表示，Hertzmann<span class="pbc-note"><button class="pbc-note-marker" id="cite-2r-zh" type="button" aria-describedby="cite-2r-zh-tip" aria-expanded="false">2</button><span class="pbc-note-popover" id="cite-2r-zh-tip" role="tooltip">Hertzmann, SIGGRAPH 1998.<br><a href="#ref-2">查看参考文献</a></span></span> 则用多尺度曲线笔触由粗到细地渲染图像。神经绘画进一步学习如何落笔：Learning to Paint<span class="pbc-note"><button class="pbc-note-marker" id="cite-6r-zh" type="button" aria-describedby="cite-6r-zh-tip" aria-expanded="false">6</button><span class="pbc-note-popover" id="cite-6r-zh-tip" role="tooltip">Huang et al., ICCV 2019.<br><a href="#ref-6">查看参考文献</a></span></span> 用基于模型的强化学习训练绘画策略，Stylized Neural Painting<span class="pbc-note"><button class="pbc-note-marker" id="cite-8r-zh" type="button" aria-describedby="cite-8r-zh-tip" aria-expanded="false">8</button><span class="pbc-note-popover" id="cite-8r-zh-tip" role="tooltip">Zou et al., CVPR 2021.<br><a href="#ref-8">查看参考文献</a></span></span> 借助神经渲染器优化笔触参数，Paint Transformer<span class="pbc-note"><button class="pbc-note-marker" id="cite-9r-zh" type="button" aria-describedby="cite-9r-zh-tip" aria-expanded="false">9</button><span class="pbc-note-popover" id="cite-9r-zh-tip" role="tooltip">Liu et al., ICCV 2021.<br><a href="#ref-9">查看参考文献</a></span></span> 用前馈网络直接预测笔触。这些方法输出供渲染器使用的笔触参数，并不训练语言模型。我们用拟合器批量求出笔触程序，再用标准 NTP 学习完整序列。</p>
+<p class="en">Stroke-based rendering represents an image as an ordered sequence of drawing actions. Haeberli<span class="pbc-note"><button class="pbc-note-marker" id="cite-1r-en" type="button" aria-describedby="cite-1r-en-tip" aria-expanded="false">1</button><span class="pbc-note-popover" id="cite-1r-en-tip" role="tooltip">Haeberli, SIGGRAPH 1990.<br><a href="#ref-1">View reference</a></span></span> builds abstract image representations from interactive strokes, and Hertzmann<span class="pbc-note"><button class="pbc-note-marker" id="cite-2r-en" type="button" aria-describedby="cite-2r-en-tip" aria-expanded="false">2</button><span class="pbc-note-popover" id="cite-2r-en-tip" role="tooltip">Hertzmann, SIGGRAPH 1998.<br><a href="#ref-2">View reference</a></span></span> renders images coarse to fine with curved strokes of multiple sizes. Neural painting further learns how to place strokes. Specifically, Learning to Paint<span class="pbc-note"><button class="pbc-note-marker" id="cite-6r-en" type="button" aria-describedby="cite-6r-en-tip" aria-expanded="false">6</button><span class="pbc-note-popover" id="cite-6r-en-tip" role="tooltip">Huang et al., ICCV 2019.<br><a href="#ref-6">View reference</a></span></span> trains a painting policy with model-based reinforcement learning, Stylized Neural Painting<span class="pbc-note"><button class="pbc-note-marker" id="cite-8r-en" type="button" aria-describedby="cite-8r-en-tip" aria-expanded="false">8</button><span class="pbc-note-popover" id="cite-8r-en-tip" role="tooltip">Zou et al., CVPR 2021.<br><a href="#ref-8">View reference</a></span></span> optimizes stroke parameters through a neural renderer, and Paint Transformer<span class="pbc-note"><button class="pbc-note-marker" id="cite-9r-en" type="button" aria-describedby="cite-9r-en-tip" aria-expanded="false">9</button><span class="pbc-note-popover" id="cite-9r-en-tip" role="tooltip">Liu et al., ICCV 2021.<br><a href="#ref-9">View reference</a></span></span> predicts strokes with a feed-forward network. While effective, these methods output stroke parameters for a renderer and do not train a language model. In contrast, we solve stroke programs at scale with a fitter and learn the complete sequences with standard NTP.</p>
+<p class="zh">另一类工作把草图、图像或矢量图形看作程序或序列。SketchRNN<span class="pbc-note"><button class="pbc-note-marker" id="cite-3r-zh" type="button" aria-describedby="cite-3r-zh-tip" aria-expanded="false">3</button><span class="pbc-note-popover" id="cite-3r-zh-tip" role="tooltip">Ha and Eck, ICLR 2018.<br><a href="#ref-3">查看参考文献</a></span></span> 学习草图的笔画序列；SPIRAL<span class="pbc-note"><button class="pbc-note-marker" id="cite-4r-zh" type="button" aria-describedby="cite-4r-zh-tip" aria-expanded="false">4</button><span class="pbc-note-popover" id="cite-4r-zh-tip" role="tooltip">Ganin et al., ICML 2018.<br><a href="#ref-4">查看参考文献</a></span></span> 用强化对抗学习合成生成图像的程序；Ellis 等人<span class="pbc-note"><button class="pbc-note-marker" id="cite-5r-zh" type="button" aria-describedby="cite-5r-zh-tip" aria-expanded="false">5</button><span class="pbc-note-popover" id="cite-5r-zh-tip" role="tooltip">Ellis et al., NeurIPS 2018.<br><a href="#ref-5">查看参考文献</a></span></span> 从手绘图推断图形程序；DeepSVG<span class="pbc-note"><button class="pbc-note-marker" id="cite-7r-zh" type="button" aria-describedby="cite-7r-zh-tip" aria-expanded="false">7</button><span class="pbc-note-popover" id="cite-7r-zh-tip" role="tooltip">Carlier et al., NeurIPS 2020.<br><a href="#ref-7">查看参考文献</a></span></span> 用分层生成网络建模矢量图形。我们的笔触程序同样可执行，由一个固定的笔触虚拟机运行，同一套语言覆盖重建、编辑和文生图三个任务。</p>
+<p class="en">Another line of research treats sketches, images, or vector graphics as programs or sequences. SketchRNN<span class="pbc-note"><button class="pbc-note-marker" id="cite-3r-en" type="button" aria-describedby="cite-3r-en-tip" aria-expanded="false">3</button><span class="pbc-note-popover" id="cite-3r-en-tip" role="tooltip">Ha and Eck, ICLR 2018.<br><a href="#ref-3">View reference</a></span></span> learns stroke sequences of sketches, and SPIRAL<span class="pbc-note"><button class="pbc-note-marker" id="cite-4r-en" type="button" aria-describedby="cite-4r-en-tip" aria-expanded="false">4</button><span class="pbc-note-popover" id="cite-4r-en-tip" role="tooltip">Ganin et al., ICML 2018.<br><a href="#ref-4">View reference</a></span></span> synthesizes image programs with reinforced adversarial learning. Ellis et al.<span class="pbc-note"><button class="pbc-note-marker" id="cite-5r-en" type="button" aria-describedby="cite-5r-en-tip" aria-expanded="false">5</button><span class="pbc-note-popover" id="cite-5r-en-tip" role="tooltip">Ellis et al., NeurIPS 2018.<br><a href="#ref-5">View reference</a></span></span> infer graphics programs from hand-drawn images, and DeepSVG<span class="pbc-note"><button class="pbc-note-marker" id="cite-7r-en" type="button" aria-describedby="cite-7r-en-tip" aria-expanded="false">7</button><span class="pbc-note-popover" id="cite-7r-en-tip" role="tooltip">Carlier et al., NeurIPS 2020.<br><a href="#ref-7">View reference</a></span></span> models vector graphics with a hierarchical generative network. Our stroke programs are also executable. They run on one fixed stroke VM and share one language across reconstruction, editing, and text-to-image.</p>
+<p class="zh">近期也有工作让多模态智能体借助工具逐笔作画。EASEL<span class="pbc-note"><button class="pbc-note-marker" id="cite-13r-zh" type="button" aria-describedby="cite-13r-zh-tip" aria-expanded="false">13</button><span class="pbc-note-popover" id="cite-13r-zh-tip" role="tooltip">Liu et al., arXiv 2026.<br><a href="#ref-13">查看参考文献</a></span></span> 把参考图引导的重建作为“灵巧视觉工具使用”的代理任务：智能体每一步同时观察参考图和当前画布，输出一笔的画笔参数，再由渲染器更新画布。它对 25 个模型的评测显示，现有智能体的重建相似度只有 0.40–0.54；它还把笔触渲染轨迹转成 44 万条逐步动作监督，用来训练 EASEL-9B。这类智能体做的是逐步闭环控制，每画一笔都要重新观察画布；我们则让模型在一次生成中写出完整的笔触程序，训练数据来自代码自编码。</p>
+<p class="en">Recent work also lets multimodal agents paint stroke by stroke through tools. EASEL<span class="pbc-note"><button class="pbc-note-marker" id="cite-13r-en" type="button" aria-describedby="cite-13r-en-tip" aria-expanded="false">13</button><span class="pbc-note-popover" id="cite-13r-en-tip" role="tooltip">Liu et al., arXiv 2026.<br><a href="#ref-13">View reference</a></span></span> uses reference-guided reconstruction as a proxy task for dexterous visual tool use. At each step, the agent observes the reference image and the current canvas and outputs the parameters of one brush stroke. A renderer then updates the canvas. Its evaluation of 25 models finds reconstruction similarity of only 0.40–0.54. EASEL also converts stroke-based rendering trajectories into 440k next-action samples to train EASEL-9B. Such agents perform closed-loop control and observe the canvas again before every stroke. In contrast, our model writes the complete stroke program in one generation, with training data from code autoencoding.</p>
+<p class="zh">文本驱动的矢量生成把语言引入这一方向：CLIPDraw<span class="pbc-note"><button class="pbc-note-marker" id="cite-10r-zh" type="button" aria-describedby="cite-10r-zh-tip" aria-expanded="false">10</button><span class="pbc-note-popover" id="cite-10r-zh-tip" role="tooltip">Frans et al., NeurIPS 2022.<br><a href="#ref-10">查看参考文献</a></span></span> 借助语言-图像编码器优化文字到绘图的合成，VectorFusion<span class="pbc-note"><button class="pbc-note-marker" id="cite-11r-zh" type="button" aria-describedby="cite-11r-zh-tip" aria-expanded="false">11</button><span class="pbc-note-popover" id="cite-11r-zh-tip" role="tooltip">Jain et al., CVPR 2023.<br><a href="#ref-11">查看参考文献</a></span></span> 从像素扩散模型中抽象出 SVG，StarVector<span class="pbc-note"><button class="pbc-note-marker" id="cite-12r-zh" type="button" aria-describedby="cite-12r-zh-tip" aria-expanded="false">12</button><span class="pbc-note-popover" id="cite-12r-zh-tip" role="tooltip">Rodriguez et al., CVPR 2025.<br><a href="#ref-12">查看参考文献</a></span></span> 直接从图像和文本生成 SVG 代码。这些进展促使我们把拟合器求出的长笔触程序作为语言模型的训练文本。</p>
+<p class="en">Text-conditioned vector generation brings language into this direction. CLIPDraw<span class="pbc-note"><button class="pbc-note-marker" id="cite-10r-en" type="button" aria-describedby="cite-10r-en-tip" aria-expanded="false">10</button><span class="pbc-note-popover" id="cite-10r-en-tip" role="tooltip">Frans et al., NeurIPS 2022.<br><a href="#ref-10">View reference</a></span></span> optimizes text-to-drawing synthesis through language-image encoders, VectorFusion<span class="pbc-note"><button class="pbc-note-marker" id="cite-11r-en" type="button" aria-describedby="cite-11r-en-tip" aria-expanded="false">11</button><span class="pbc-note-popover" id="cite-11r-en-tip" role="tooltip">Jain et al., CVPR 2023.<br><a href="#ref-11">View reference</a></span></span> abstracts SVGs from pixel-based diffusion models, and StarVector<span class="pbc-note"><button class="pbc-note-marker" id="cite-12r-en" type="button" aria-describedby="cite-12r-en-tip" aria-expanded="false">12</button><span class="pbc-note-popover" id="cite-12r-en-tip" role="tooltip">Rodriguez et al., CVPR 2025.<br><a href="#ref-12">View reference</a></span></span> generates SVG code from images and text. These advances inspire us to use long stroke programs solved by the fitter as training text for a language model.</p>
+</section>
+
+<section id="disclaimer">
+<h2><small>08 · DISCLAIMER</small><span class="zh">声明</span><span class="en">Disclaimer</span></h2>
+<p class="zh">本研究出于作者的个人兴趣开展。文中观点仅代表作者本人，不代表作者所在的任何机构。作者声明不存在利益冲突。</p>
+<p class="en">The authors conducted this research out of personal interest. The views expressed here are the authors’ own and do not represent those of any organization they are affiliated with. The authors declare no competing interests.</p>
+</section>
+
+<section id="refs">
+<h2><small>09 · REFERENCES</small><span class="zh">参考文献</span><span class="en">References</span></h2>
+<ol class="refs">
+<li id="ref-1">Paul Haeberli. <a href="https://www.graficaobscura.com/paint/pbn.html"><i>Paint by Numbers: Abstract Image Representations.</i></a> SIGGRAPH 1990.<span class="pbc-backrefs"><span class="zh"><a href="#cite-1m-zh" aria-label="返回方法中的引用 1">↩</a> <a href="#cite-1r-zh" aria-label="返回相关工作中的引用 1">↩</a></span><span class="en"><a href="#cite-1m-en" aria-label="Back to the method citation 1">↩</a> <a href="#cite-1r-en" aria-label="Back to the related work citation 1">↩</a></span></span></li>
+<li id="ref-2">Aaron Hertzmann. <a href="https://mrl.cs.nyu.edu/publications/painterly98/hertzmann-siggraph98.pdf"><i>Painterly Rendering with Curved Brush Strokes of Multiple Sizes.</i></a> SIGGRAPH 1998.<span class="pbc-backrefs"><span class="zh"><a href="#cite-2m-zh" aria-label="返回方法中的引用 2">↩</a> <a href="#cite-2r-zh" aria-label="返回相关工作中的引用 2">↩</a></span><span class="en"><a href="#cite-2m-en" aria-label="Back to the method citation 2">↩</a> <a href="#cite-2r-en" aria-label="Back to the related work citation 2">↩</a></span></span></li>
+<li id="ref-3">David Ha and Douglas Eck. <a href="https://scholar.google.com/scholar?q=A+Neural+Representation+of+Sketch+Drawings"><i>A Neural Representation of Sketch Drawings.</i></a> ICLR 2018.<span class="pbc-backrefs"><span class="zh"><a href="#cite-3r-zh" aria-label="返回相关工作中的引用 3">↩</a></span><span class="en"><a href="#cite-3r-en" aria-label="Back to the related work citation 3">↩</a></span></span></li>
+<li id="ref-4">Yaroslav Ganin, Tejas Kulkarni, Igor Babuschkin, S. M. Ali Eslami, and Oriol Vinyals. <a href="https://scholar.google.com/scholar?q=Synthesizing+Programs+for+Images+using+Reinforced+Adversarial+Learning"><i>Synthesizing Programs for Images using Reinforced Adversarial Learning.</i></a> ICML 2018.<span class="pbc-backrefs"><span class="zh"><a href="#cite-4r-zh" aria-label="返回相关工作中的引用 4">↩</a></span><span class="en"><a href="#cite-4r-en" aria-label="Back to the related work citation 4">↩</a></span></span></li>
+<li id="ref-5">Kevin Ellis, Daniel Ritchie, Armando Solar-Lezama, and Joshua B. Tenenbaum. <a href="https://scholar.google.com/scholar?q=Learning+to+Infer+Graphics+Programs+from+Hand-Drawn+Images"><i>Learning to Infer Graphics Programs from Hand-Drawn Images.</i></a> NeurIPS 2018.<span class="pbc-backrefs"><span class="zh"><a href="#cite-5r-zh" aria-label="返回相关工作中的引用 5">↩</a></span><span class="en"><a href="#cite-5r-en" aria-label="Back to the related work citation 5">↩</a></span></span></li>
+<li id="ref-6">Zhewei Huang, Wen Heng, and Shuchang Zhou. <a href="https://scholar.google.com/scholar?q=Learning+to+Paint+with+Model-based+Deep+Reinforcement+Learning"><i>Learning to Paint with Model-based Deep Reinforcement Learning.</i></a> ICCV 2019.<span class="pbc-backrefs"><span class="zh"><a href="#cite-6r-zh" aria-label="返回相关工作中的引用 6">↩</a></span><span class="en"><a href="#cite-6r-en" aria-label="Back to the related work citation 6">↩</a></span></span></li>
+<li id="ref-7">Alexandre Carlier, Martin Danelljan, Alexandre Alahi, and Radu Timofte. <a href="https://scholar.google.com/scholar?q=DeepSVG%3A+A+Hierarchical+Generative+Network+for+Vector+Graphics+Animation"><i>DeepSVG: A Hierarchical Generative Network for Vector Graphics Animation.</i></a> NeurIPS 2020.<span class="pbc-backrefs"><span class="zh"><a href="#cite-7r-zh" aria-label="返回相关工作中的引用 7">↩</a></span><span class="en"><a href="#cite-7r-en" aria-label="Back to the related work citation 7">↩</a></span></span></li>
+<li id="ref-8">Zhengxia Zou, Tianyang Shi, Shuang Qiu, Yi Yuan, and Zhenwei Shi. <a href="https://scholar.google.com/scholar?q=Stylized+Neural+Painting"><i>Stylized Neural Painting.</i></a> CVPR 2021.<span class="pbc-backrefs"><span class="zh"><a href="#cite-8r-zh" aria-label="返回相关工作中的引用 8">↩</a></span><span class="en"><a href="#cite-8r-en" aria-label="Back to the related work citation 8">↩</a></span></span></li>
+<li id="ref-9">Songhua Liu, Tianwei Lin, Dongliang He, Fu Li, Ruifeng Deng, Xin Li, Errui Ding, and Hao Wang. <a href="https://scholar.google.com/scholar?q=Paint+Transformer%3A+Feed+Forward+Neural+Painting+with+Stroke+Prediction"><i>Paint Transformer: Feed Forward Neural Painting with Stroke Prediction.</i></a> ICCV 2021.<span class="pbc-backrefs"><span class="zh"><a href="#cite-9r-zh" aria-label="返回相关工作中的引用 9">↩</a></span><span class="en"><a href="#cite-9r-en" aria-label="Back to the related work citation 9">↩</a></span></span></li>
+<li id="ref-10">Kevin Frans, Lisa B. Soros, and Olaf Witkowski. <a href="https://scholar.google.com/scholar?q=CLIPDraw%3A+Exploring+Text-to-Drawing+Synthesis+through+Language-Image+Encoders"><i>CLIPDraw: Exploring Text-to-Drawing Synthesis through Language-Image Encoders.</i></a> NeurIPS 2022.<span class="pbc-backrefs"><span class="zh"><a href="#cite-10r-zh" aria-label="返回相关工作中的引用 10">↩</a></span><span class="en"><a href="#cite-10r-en" aria-label="Back to the related work citation 10">↩</a></span></span></li>
+<li id="ref-11">Ajay Jain, Amber Xie, and Pieter Abbeel. <a href="https://scholar.google.com/scholar?q=VectorFusion%3A+Text-to-SVG+by+Abstracting+Pixel-Based+Diffusion+Models"><i>VectorFusion: Text-to-SVG by Abstracting Pixel-Based Diffusion Models.</i></a> CVPR 2023.<span class="pbc-backrefs"><span class="zh"><a href="#cite-11r-zh" aria-label="返回相关工作中的引用 11">↩</a></span><span class="en"><a href="#cite-11r-en" aria-label="Back to the related work citation 11">↩</a></span></span></li>
+<li id="ref-12">Juan A. Rodriguez, Abhay Puri, Shubham Agarwal, Issam H. Laradji, Pau Rodriguez, Sai Rajeswar, David Vazquez, Christopher Pal, and Marco Pedersoli. <a href="https://scholar.google.com/scholar?q=StarVector%3A+Generating+Scalable+Vector+Graphics+Code+from+Images+and+Text"><i>StarVector: Generating Scalable Vector Graphics Code from Images and Text.</i></a> CVPR 2025.<span class="pbc-backrefs"><span class="zh"><a href="#cite-12r-zh" aria-label="返回相关工作中的引用 12">↩</a></span><span class="en"><a href="#cite-12r-en" aria-label="Back to the related work citation 12">↩</a></span></span></li>
+<li id="ref-13">Shudong Liu, Dongyang Chen, Enci Zhang, Jinwei Liang, Zheng Ma, and Lewei Lu. <a href="https://arxiv.org/abs/2608.25417"><i>Paint What You See: Benchmarking Dexterous Visual Tool Use in Multimodal Agents.</i></a> arXiv 2026.<span class="pbc-backrefs"><span class="zh"><a href="#cite-13r-zh" aria-label="返回相关工作中的引用 13">↩</a></span><span class="en"><a href="#cite-13r-en" aria-label="Back to the related work citation 13">↩</a></span></span></li>
+</ol>
+</section>
+
+<section id="citation">
+<h2><small>10 · CITATION</small><span class="zh">引用</span><span class="en">Citation</span></h2>
+<p class="zh">如需引用本文，可以使用下面的 BibTeX：</p>
+<p class="en">To cite this post, please use the following BibTeX entry:</p>
+<div class="pbc-citation">
+<pre id="bibtex">@misc{sheng2026paintingbycode,
+  title        = {LLMs Can Paint via Code Autoencoding},
+  author       = {Sheng, Leheng and Zheng, Xiaosen and Chow, Wei and Sui, Yuan and Wang, Shizun},
+  year         = {2026},
+  howpublished = {Blog post},
+  url          = {https://lehengthu.github.io/blog/2026/painting-by-code/}
+}</pre>
+<button class="btn pbc-copy" id="copy-bibtex" type="button"><span class="zh">复制 BibTeX</span><span class="en">Copy BibTeX</span></button>
+</div>
+</section>
+</main>
+</div>
+<footer class="footer">
+<div class="wrap">
+<p class="footer-kicker">Say hello</p>
+<a class="footer-mail" href="mailto:lehengsheng0418@gmail.com">lehengsheng0418@gmail.com</a>
+<div class="footer-row">
+<span>© 2026 Leheng Sheng</span>
+<span class="footer-links">
+<a href="https://scholar.google.com/citations?user=j4ZcRakAAAAJ&amp;hl=en">Scholar</a>
+<a href="https://github.com/LehengTHU">GitHub</a>
+<a href="#top">Back to top ↑</a>
+</span>
+</div>
+</div>
+</footer>
+<script src="/blog/2026/painting-by-code/assets/film.js?v=20261112-1920" defer></script>
+<script src="/blog/2026/painting-by-code/assets/replay.js?v=20261112-1920" defer></script>
+<script type="application/json" id="pbc-loss-data">{"re":{"y":[0.72,1.0],"ticks":[0.75,0.8,0.85,0.9,0.95,1.0],"xmax":19.867,"lo":[989,1017,1006,1003,1001,981,1001,979,1001,984,968,978,975,968,978,972,962,963,955,957,982,960,939,932,954,947,958,946,946,925,961,940,952,943,949,936,938,931,944,934,942,923,938,915,932,927,931,915,914,919,938,928,919,906,919,922,910,901,917,889,921,907,911,921,895,901,917,873,884,924,903,884,906,902,894,891,895,911,904,896,896,915,893,910,902,899,884,878,884,879,890,876,888,890,885,883,888,879,868,888,866,880,886,871,883,876,875,855,880,881,864,879,861,865,876,879,882,864,869,881,860,870,873,864,868,852,866,865,844,859,870,861,871,860,878,864,863,863,856,847,850,859,850,860,851,861,846,859,844,844,849,849,855,845,850,849,849,854,847,839,849,834,863,844,847,840,847,857,854,850,836,825,828,855,848,838,843,833,835,839,842,838,840,849,831,849,839,833,835,838,843,835,827,832,844,845,843,839,840,842,845,820,834,830,833,832,829,833,809,835,825,825,832,827,831,820,835,833,807,827,833,819,820,818,788,829,830,828,834,825,816,819,833,823,813,821,826,845,825,832,824,804,812,809,823,813,807,820,824,815,805,791,824,798,819,817,819,802,807,805,809,812,818,819,812,812,797,819,807,803,824,812,809,807,808,820,815,813,793,816,817,804,807,816,808,791,807,807,804,808,812,799,801,813,811,800,807,797,804,806,810,809,794,803,811,802,803,806,801,814,809,800,793,792,801,788,792,801,801,796,786,785,796,799,797,803,796,770,794,771,790,786,778,793,785,802,791,797,775,797,790,783,796,782,796,784,788,789,791,774,777,798,789,793,789,789,784,784,784,790,761,787,783,781,787,790,790,780,788,778,792,793,769,780,788,784,767,786,776,783,789,787,786,788,773,771,787,772,786,778,784,778,773,773,770,774,758,772,766,779,780,764,776,770,777,781,778,781,773,786,770,778,776,769,754,760,782,776,778,778,775,763,773,760,776,766,767,771,753,761,761,769,768,762,777,766,765,764,770,750,761,763,749,768,762,754,765,772,745,744,763,752,761,765,757,765,747,763,758,756,766,763,753,740,760,753,766,744,757,766,757,755,750,750,754,753,766,760,762,762],"hi":[1055,1019,1022,1020,1002,1012,1005,994,1002,1018,998,983,984,998,994,1020,985,976,966,974,988,966,988,953,962,984,960,987,988,950,968,963,968,954,951,945,965,957,957,960,954,952,975,955,934,951,937,946,940,935,946,948,933,941,946,939,926,924,932,910,931,924,932,942,926,949,931,931,943,929,920,913,924,921,921,923,910,932,937,919,910,921,912,916,918,910,914,901,900,915,897,891,905,907,921,894,902,904,910,910,899,903,909,909,898,888,910,889,895,914,891,898,900,914,884,912,884,885,902,903,898,886,881,894,879,894,894,916,898,876,883,894,898,871,891,876,871,884,881,881,869,900,890,878,882,910,879,890,893,883,883,886,876,881,886,885,879,886,876,876,883,878,887,877,869,875,874,871,879,884,883,883,889,886,879,875,861,884,887,886,869,876,868,875,863,862,866,865,871,880,867,858,876,869,857,874,886,883,886,866,869,864,868,867,861,857,860,860,872,871,866,857,874,863,862,883,868,859,868,864,860,861,860,866,876,864,849,857,859,857,865,873,873,860,872,845,855,865,844,859,864,859,855,859,865,853,873,853,856,867,854,852,852,848,865,859,852,846,864,855,853,853,852,852,844,845,859,850,844,855,847,854,864,848,868,859,855,844,844,848,864,844,847,838,838,843,859,840,842,850,849,840,845,855,851,834,848,856,847,854,844,846,844,843,839,835,840,855,842,835,843,852,845,832,838,833,840,835,832,832,838,851,845,837,839,840,839,840,832,834,839,847,855,838,835,836,846,828,845,836,833,849,826,834,849,835,830,822,831,826,837,831,840,829,837,828,824,837,831,824,828,833,833,823,840,839,827,825,824,823,823,826,827,830,849,819,834,824,832,829,837,829,818,837,841,836,833,824,821,838,839,820,828,820,830,828,829,824,824,823,831,825,815,823,816,824,828,824,819,825,819,829,821,823,816,829,819,822,820,818,820,820,821,822,828,821,822,819,823,816,820,816,817,813,824,807,817,808,821,821,811,820,820,809,812,817,817,814,818,819,809,817,808,814,812,811,807,809,822,806,809,817,817,812,814,809,806,812,822,830,813,803,812,823,806,805,813,809,813,813],"tr":[1000,998,998,995,993,991,989,988,985,982,978,975,972,970,967,965,962,959,957,956,954,951,951,948,946,943,942,940,938,936,934,931,929,926,926,924,924,922,921,919,917,916,916,916,915,914,913,911,911,910,909,907,905,902,901,899,898,896,895,894,894,894,893,891,891,889,888,887,887,885,884,885,885,884,883,882,881,880,879,877,877,876,875,873,871,871,871,870,869,870,869,869,870,868,868,867,866,866,864,864,864,863,862,864,863,861,863,862,861,859,858,858,856,855,854,853,853,853,853,853,854,854,854,854,854,853,852,849,849,848,846,847,847,848,847,847,847,844,843,843,842,843,841,843,843,842,842,842,841,841,840,838,837,835,835,836,837,837,838,838,837,835,834,835,833,832,831,830,832,830,831,832,832,829,828,826,828,824,827,826,827,825,826,826,827,824,824,825,827,825,822,824,825,824,823,820,818,819,818,818,817,820,817,818,818,816,816,818,818,817,817,816,816,812,811,812,812,811,810,809,810,809,809,809,810,809,811,808,807,807,808,806,807,808,806,805,805,808,804,803,804,804,801,804,803,803,802,801,798,802,802,799,798,798,798,799,799,800,795,796,799,797,797,796,797,794,794,794,794,793,790,791,792,790,794,788,788,788,789,791,788,788,788,789,787,785,787,784,786,785,784,786,783,784,783,786,783,783,784,783]},"t2":{"y":[0.72,1.0],"ticks":[0.75,0.8,0.85,0.9,0.95,1.0],"xmax":19.867,"lo":[1020,1012,1008,1008,999,1003,997,994,993,987,986,987,984,976,975,977,974,975,971,970,967,964,961,963,958,954,954,952,956,947,948,953,948,947,941,946,945,939,938,934,938,939,934,934,932,936,933,933,924,927,926,926,922,924,927,916,916,917,914,915,915,914,914,913,911,910,906,910,911,906,903,906,906,906,904,897,900,903,898,898,895,896,895,892,893,893,892,891,892,888,893,890,891,886,882,888,883,884,888,882,881,880,882,882,874,881,880,877,876,875,877,879,872,877,874,873,873,870,875,875,872,857,867,869,867,871,864,868,867,863,867,865,867,867,868,860,863,859,854,861,864,860,860,859,862,861,858,856,859,857,857,857,856,851,860,854,852,849,859,848,856,855,855,851,853,853,853,852,845,847,847,848,846,845,847,852,849,846,848,847,848,845,843,843,845,847,841,843,846,841,845,833,840,840,840,835,842,838,840,839,841,836,839,836,841,837,834,832,836,836,836,837,832,836,836,835,836,835,831,834,831,832,832,828,832,834,830,835,831,829,834,830,827,822,829,825,830,825,827,826,823,824,829,829,829,827,825,827,828,827,823,827,821,825,823,824,824,822,826,820,820,822,826,819,823,820,820,821,821,817,817,818,818,819,819,819,820,819,819,817,820,818,815,817,818,817,816,817,813,816,809,813,815,815,814,812,815,812,810,815,808,811,816,811,813,812,809,814,808,810,810,806,809,809,808,808,808,807,810,808,810,808,806,804,804,805,805,802,804,806,803,805,802,803,806,804,801,802,803,801,803,804,802,801,798,801,805,805,804,798,801,800,799,801,796,800,798,796,802,794,798,797,800,796,798,794,795,797,796,799,798,797,793,798,796,793,793,798,794,795,794,797,794,796,788,796,794,796,793,794,792,792,787,790,792,788,790,789,791,793,792,791,788,786,791,786,787,785,790,786,790,788,786,790,788,791,785,787,785,787,785,786,783,789,785,786,786,786,782,783,786,786,784,782,782,786,784,785,783,784,786,784,783,783,783,783,783,784,780,780,779,780,781,781,779,780,776,779,778,781,779,780,777,776,778,779,778,779,778,778,779,778,774,777,777,778,777,773,776,776],"hi":[1021,1014,1014,1016,1007,1006,997,995,997,993,991,991,986,978,978,985,977,976,975,974,968,967,962,964,968,962,955,958,959,957,956,956,949,950,948,950,950,948,942,944,941,942,936,938,935,940,935,937,930,932,927,933,925,925,928,922,920,920,917,919,918,918,921,924,917,915,914,914,914,909,914,912,906,910,909,905,907,907,900,908,906,902,902,898,900,903,899,896,896,898,894,900,894,891,896,891,894,889,896,886,887,888,889,884,883,890,887,886,886,886,882,883,881,885,879,879,882,877,882,879,877,872,873,877,877,877,877,881,878,869,871,870,870,869,875,872,871,866,876,869,872,868,869,868,865,866,867,862,863,865,865,866,866,865,864,862,863,861,863,864,865,862,861,862,859,860,862,860,858,854,855,854,855,857,855,855,856,854,855,851,861,855,858,854,854,851,853,854,853,852,853,852,852,850,853,851,850,850,849,852,847,843,850,850,846,847,846,847,846,843,844,844,843,843,845,843,844,845,844,843,841,842,842,840,839,841,843,844,842,836,842,838,840,836,838,841,837,839,837,840,840,840,837,840,838,837,835,837,836,836,837,836,835,835,832,832,830,830,833,832,838,834,831,831,829,831,831,832,833,832,833,833,833,829,828,831,832,829,832,828,829,827,825,826,827,828,828,829,828,828,824,828,825,825,825,823,826,829,824,821,826,824,827,826,822,824,822,822,826,820,825,820,822,821,824,821,818,822,819,821,819,821,817,819,818,818,819,815,818,818,817,816,819,814,816,816,816,817,815,818,814,815,813,817,814,814,817,811,813,814,813,811,810,812,812,816,812,812,813,816,815,811,810,809,810,810,809,809,811,810,810,811,815,810,810,809,807,809,807,810,807,808,806,804,807,805,806,806,808,806,806,805,813,806,808,806,806,804,806,806,802,805,803,803,807,805,803,804,800,803,804,803,801,801,802,803,800,803,798,800,801,799,801,799,800,800,799,799,799,797,800,797,799,800,799,799,798,799,796,796,796,797,798,795,799,796,801,795,796,798,797,796,799,797,799,794,796,795,796,792,795,794,794,794,793,794,789,790,792,792,794,794,794,791,790,794,790,793,791,791],"tr":[1000,998,996,994,993,991,989,987,986,982,978,975,971,969,966,963,961,958,956,953,951,948,946,944,943,941,939,937,935,933,931,929,927,925,924,922,920,919,917,916,914,913,912,910,909,908,906,905,903,902,900,899,898,897,896,894,893,892,891,890,889,888,887,886,885,884,883,882,881,880,879,879,877,876,875,874,874,873,872,871,870,870,869,868,867,867,866,866,865,864,863,863,862,861,861,860,860,859,859,858,858,858,857,856,855,854,853,852,851,851,851,851,851,850,849,849,849,849,848,847,846,846,845,845,844,843,843,842,842,841,841,841,841,840,840,839,839,838,837,836,836,836,836,836,835,834,834,833,833,833,833,833,833,832,832,831,831,830,828,828,828,828,828,828,828,826,826,825,826,826,825,825,824,825,824,823,823,822,822,821,821,821,820,820,820,820,818,818,818,819,818,818,817,817,816,816,815,814,814,815,814,814,813,813,812,811,811,811,811,810,810,810,810,809,809,808,808,809,808,807,806,807,806,805,806,806,805,805,804,803,803,803,803,803,803,802,802,801,802,801,800,800,800,800,799,799,799,798,798,798,798,797,797,796,796,795,795,795,795,795,795,794,793,793,793,793,793,793,792,793,791,792,791,791,790,790,790,790,791,790,789,788,788,789,788,787,788,786,786,785,786,785,785,785,786,785,785,785,784,783]}}</script>
+<script>
+(function () {
+  const body = document.body;
+  const enButton = document.getElementById('btn-en');
+  const zhButton = document.getElementById('btn-zh');
+  function setLanguage(language) {
+    body.classList.toggle('lang-en', language === 'en');
+    body.classList.toggle('lang-zh', language === 'zh');
+    document.documentElement.lang = language === 'zh' ? 'zh-CN' : 'en';
+    if (enButton) {
+      enButton.classList.toggle('on', language === 'en');
+      enButton.setAttribute('aria-pressed', String(language === 'en'));
+    }
+    if (zhButton) {
+      zhButton.classList.toggle('on', language === 'zh');
+      zhButton.setAttribute('aria-pressed', String(language === 'zh'));
+    }
+  }
+  if (enButton) enButton.addEventListener('click', function () { setLanguage('en'); });
+  if (zhButton) zhButton.addEventListener('click', function () { setLanguage('zh'); });
+
+  const nav = document.querySelector('.nav');
+  const tocLinks = Array.from(document.querySelectorAll('.ar-toc a'));
+  const tocSections = tocLinks.map(function (link) {
+    return document.getElementById(link.getAttribute('href').slice(1));
+  }).filter(Boolean);
+  let ticking = false;
+  function updateScrollState() {
+    ticking = false;
+    if (nav) nav.classList.toggle('scrolled', window.scrollY > 8);
+    if (!tocSections.length) return;
+    const root = document.documentElement;
+    const atBottom = window.scrollY + window.innerHeight >= root.scrollHeight - 3;
+    let active = atBottom ? tocSections[tocSections.length - 1].id : tocSections[0].id;
+    if (!atBottom) {
+      const threshold = window.scrollY + Math.min(180, window.innerHeight * .28);
+      tocSections.forEach(function (section) {
+        if (section.offsetTop <= threshold) active = section.id;
+      });
+    }
+    tocLinks.forEach(function (link) {
+      const on = link.getAttribute('href') === '#' + active;
+      link.classList.toggle('active', on);
+      if (on) link.setAttribute('aria-current', 'location');
+      else link.removeAttribute('aria-current');
+    });
+  }
+  function requestScrollUpdate() {
+    if (!ticking) {
+      ticking = true;
+      window.requestAnimationFrame(updateScrollState);
+    }
+  }
+  window.addEventListener('scroll', requestScrollUpdate, {passive: true});
+  window.addEventListener('resize', requestScrollUpdate);
+  updateScrollState();
+
+  const notes = Array.from(document.querySelectorAll('.pbc-note'));
+  function closeNotes(except) {
+    notes.forEach(function (note) {
+      if (note === except) return;
+      note.classList.remove('open');
+      const marker = note.querySelector('.pbc-note-marker');
+      if (marker) marker.setAttribute('aria-expanded', 'false');
+    });
+  }
+  notes.forEach(function (note) {
+    const marker = note.querySelector('.pbc-note-marker');
+    if (!marker) return;
+    marker.addEventListener('click', function (event) {
+      event.stopPropagation();
+      const opening = !note.classList.contains('open');
+      closeNotes(note);
+      note.classList.toggle('open', opening);
+      marker.setAttribute('aria-expanded', String(opening));
+    });
+  });
+  document.addEventListener('pointerdown', function (event) {
+    if (!event.target.closest('.pbc-note')) closeNotes();
+  });
+  document.addEventListener('keydown', function (event) {
+    if (event.key === 'Escape') {
+      closeNotes();
+      if (document.activeElement && document.activeElement.classList.contains('pbc-note-marker')) document.activeElement.blur();
+    }
+  });
+
+  const fable = document.getElementById('vid-fable');
+  const gpt = document.getElementById('vid-gpt');
+  const videos = [fable, gpt].filter(Boolean);
+  const duoButton = document.getElementById('duo-play');
+  let videoGuard = false;
+  function setDuoLabel(paused) {
+    if (!duoButton) return;
+    const zh = duoButton.querySelector('.zh');
+    const en = duoButton.querySelector('.en');
+    if (zh) zh.textContent = paused ? '▶ 同时播放两条' : '⏸ 同时暂停';
+    if (en) en.textContent = paused ? '▶ Play both' : '⏸ Pause both';
+  }
+  function syncVideos(source, force) {
+    videos.forEach(function (video) {
+      if (video !== source && (force || Math.abs(video.currentTime - source.currentTime) > .35)) {
+        try { video.currentTime = source.currentTime; } catch (error) {}
+      }
+    });
+  }
+  function playBoth(source) {
+    if (!videos.length) return;
+    videoGuard = true;
+    syncVideos(source || videos[0], false);
+    Promise.allSettled(videos.map(function (video) { return video.play(); })).then(function () {
+      videoGuard = false;
+      setDuoLabel(false);
+    });
+  }
+  function pauseBoth() {
+    videoGuard = true;
+    videos.forEach(function (video) { video.pause(); });
+    videoGuard = false;
+    setDuoLabel(true);
+  }
+  if (duoButton) duoButton.addEventListener('click', function () {
+    if (videos.some(function (video) { return video.paused; })) playBoth(videos[0]);
+    else pauseBoth();
+  });
+  videos.forEach(function (video) {
+    video.addEventListener('play', function () {
+      if (videoGuard) return;
+      videoGuard = true;
+      syncVideos(video, false);
+      Promise.allSettled(videos.filter(function (other) { return other !== video; }).map(function (other) { return other.play(); })).then(function () {
+        videoGuard = false;
+        setDuoLabel(false);
+      });
+    });
+    video.addEventListener('pause', function () {
+      if (videoGuard || video.ended) return;
+      videoGuard = true;
+      videos.forEach(function (other) { if (other !== video && !other.ended) other.pause(); });
+      videoGuard = false;
+      setDuoLabel(true);
+    });
+    video.addEventListener('seeked', function () {
+      if (!videoGuard) syncVideos(video, false);
+    });
+    video.addEventListener('timeupdate', function () {
+      if (video.paused || videoGuard) return;
+      const other = video === fable ? gpt : fable;
+      if (other && !other.paused && Math.abs(other.currentTime - video.currentTime) > .6) {
+        try { other.currentTime = video.currentTime; } catch (error) {}
+      }
+    });
+  });
+
+  function lossSVG(d, W, id, label) {
+    const H = Math.round(Math.min(400, Math.max(300, W * 0.82)));
+    const L = 18, R = 16, T = 26, B = 56;
+    const pw = W - L - R, ph = H - T - B;
+    const lo = d.y[0], hi = d.y[1], LN20 = Math.log(20);
+    const X = function (frac) { return L + frac * pw; };
+    const Y = function (v) { return T + (hi - v) / (hi - lo) * ph; };
+    const f = function (n) { return Math.round(n * 10) / 10; };
+    let s = '<svg class="pbc-loss-svg" viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-labelledby="' + id + '-title ' + id + '-desc">' +
+      '<title id="' + id + '-title">' + label + ' normalized training loss</title>' +
+      '<desc id="' + id + '-desc">Normalized training loss, with the first point set to the maximum of 1, against relative training step on a log scale from 1x to 20x. Pale blue shows the raw observations and dark blue shows a centered 51-point moving average.</desc>' +
+      '<defs><clipPath id="' + id + '-clip"><rect x="' + L + '" y="' + T + '" width="' + pw + '" height="' + ph + '"/></clipPath></defs>' +
+      '<g font-size="13" fill="#737373">';
+    s += '<line x1="' + L + '" x2="' + (L + pw) + '" y1="' + (T + ph) + '" y2="' + (T + ph) + '" stroke="#E6E6E6"/>';
+    d.ticks.forEach(function (t) {
+      const y = f(Y(t));
+      s += '<line x1="' + L + '" x2="' + (L + pw) + '" y1="' + y + '" y2="' + y + '" stroke="#E6E6E6"/>';
+    });
+    [1, 2, 5, 10, 20].forEach(function (t) {
+      const x = f(X(Math.log(t) / LN20));
+      s += '<line x1="' + x + '" x2="' + x + '" y1="' + (T + ph) + '" y2="' + (T + ph + 4) + '" stroke="#CCCCCC"/>' +
+        '<text x="' + x + '" y="' + (T + ph + 20) + '" text-anchor="middle">' + t + '×</text>';
+    });
+    s += '<text class="zh" x="' + L + '" y="14" fill="#4D4D4D">归一化 loss</text><text class="en" x="' + L + '" y="14" fill="#4D4D4D">Normalized loss</text>' +
+      '<text class="zh" x="' + f(L + pw / 2) + '" y="' + (H - 8) + '" text-anchor="middle" fill="#4D4D4D">相对训练步数（对数刻度）</text>' +
+      '<text class="en" x="' + f(L + pw / 2) + '" y="' + (H - 8) + '" text-anchor="middle" fill="#4D4D4D">Relative training step (log scale)</text></g>';
+    // raw observations: per pixel column, a vertical stroke from the min to the max of the bins it covers
+    const nb = d.lo.length, last = Math.log(d.xmax) / LN20;
+    const cols = Math.max(1, Math.floor(pw)), mn = [], mx = [];
+    for (let i = 0; i < nb; i++) {
+      const frac = (i + 0.5) / nb;
+      if (frac > last) break;
+      const c = Math.min(cols - 1, Math.floor(frac * cols));
+      mn[c] = mn[c] === undefined ? d.lo[i] : Math.min(mn[c], d.lo[i]);
+      mx[c] = mx[c] === undefined ? d.hi[i] : Math.max(mx[c], d.hi[i]);
+    }
+    const raw = [];
+    let flip = false;
+    for (let c = 0; c < cols; c++) {
+      if (mn[c] === undefined) continue;
+      const x = f(L + (c + 0.5) * pw / cols), a = f(Y(mn[c] / 1000)), b = f(Y(mx[c] / 1000));
+      raw.push(flip ? x + ',' + a + ' ' + x + ',' + b : x + ',' + b + ' ' + x + ',' + a);
+      flip = !flip;
+    }
+    const tr = d.tr.map(function (v, i) {
+      return f(X(last * i / (d.tr.length - 1))) + ',' + f(Y(v / 1000));
+    });
+    s += '<g clip-path="url(#' + id + '-clip)">' +
+      '<polyline points="' + raw.join(' ') + '" fill="none" stroke="#85A4D6" stroke-width="0.8" stroke-opacity="0.75" stroke-linejoin="round"/>' +
+      '<polyline points="' + tr.join(' ') + '" fill="none" stroke="#2456A6" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></g></svg>';
+    return s;
+  }
+
+  const lossData = document.getElementById('pbc-loss-data');
+  const lossPlots = Array.from(document.querySelectorAll('.loss-plot[data-series]'));
+  let lossSeries = null;
+  try { lossSeries = lossData ? JSON.parse(lossData.textContent) : null; } catch (error) { lossSeries = null; }
+  function drawLoss() {
+    lossPlots.forEach(function (plot) {
+      const series = lossSeries && lossSeries[plot.dataset.series];
+      const width = Math.floor(plot.clientWidth);
+      if (!series || width < 160 || String(width) === plot.dataset.width) return;
+      plot.dataset.width = String(width);
+      plot.innerHTML = lossSVG(series, width, plot.dataset.id, plot.dataset.label);
+    });
+  }
+  if (lossSeries && lossPlots.length) {
+    drawLoss();
+    if ('ResizeObserver' in window) {
+      const observer = new ResizeObserver(drawLoss);
+      lossPlots.forEach(function (plot) { observer.observe(plot); });
+    } else {
+      window.addEventListener('resize', drawLoss);
+    }
+  }
+
+  const psnrToggle = document.getElementById('psnr-toggle');
+  const psnrChart = document.getElementById('psnr-chart');
+  const psnrTable = document.getElementById('psnr-table-wrap');
+  if (psnrToggle && psnrChart && psnrTable) {
+    psnrToggle.addEventListener('click', function () {
+      const showTable = psnrTable.hidden;
+      psnrTable.hidden = !showTable;
+      psnrChart.hidden = showTable;
+      psnrToggle.setAttribute('aria-expanded', String(showTable));
+      const zh = psnrToggle.querySelector('.zh');
+      const en = psnrToggle.querySelector('.en');
+      if (zh) zh.textContent = showTable ? psnrToggle.dataset.chartZh : psnrToggle.dataset.tableZh;
+      if (en) en.textContent = showTable ? psnrToggle.dataset.chartEn : psnrToggle.dataset.tableEn;
+    });
+  }
+
+  const copyButton = document.getElementById('copy-bibtex');
+  const bibtex = document.getElementById('bibtex');
+  if (copyButton && bibtex) {
+    copyButton.addEventListener('click', async function () {
+      try {
+        await navigator.clipboard.writeText(bibtex.textContent);
+        const zh = copyButton.querySelector('.zh');
+        const en = copyButton.querySelector('.en');
+        if (zh) zh.textContent = '已复制';
+        if (en) en.textContent = 'Copied';
+        window.setTimeout(function () {
+          if (zh) zh.textContent = '复制 BibTeX';
+          if (en) en.textContent = 'Copy BibTeX';
+        }, 1800);
+      } catch (error) {
+        const range = document.createRange();
+        range.selectNodeContents(bibtex);
+        const selection = window.getSelection();
+        selection.removeAllRanges();
+        selection.addRange(range);
+      }
+    });
+  }
+})();
+</script>
+</body>
+</html>
+{% endraw %}

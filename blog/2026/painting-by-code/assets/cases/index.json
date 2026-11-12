@@ -1,0 +1,1552 @@
+[
+ {
+  "id": "case-001",
+  "i": 1,
+  "task": "reconstruction",
+  "target": "img/case-001-target.jpg",
+  "width": 256,
+  "height": 256,
+  "steps": {
+   "C1": {
+    "psnr_db": 6.81,
+    "strokes": 678
+   },
+   "C2": {
+    "psnr_db": 15.7,
+    "strokes": 1535
+   },
+   "C3": {
+    "psnr_db": 16.95,
+    "strokes": 476
+   },
+   "C4": {
+    "psnr_db": 16.98,
+    "strokes": 368
+   },
+   "C5": {
+    "psnr_db": 17.75,
+    "strokes": 1206
+   },
+   "C6": {
+    "psnr_db": 17.66,
+    "strokes": 946
+   },
+   "C7": {
+    "psnr_db": 18.65,
+    "strokes": 1209
+   }
+  }
+ },
+ {
+  "id": "case-002",
+  "i": 2,
+  "task": "reconstruction",
+  "target": "img/case-002-target.jpg",
+  "width": 256,
+  "height": 256,
+  "steps": {
+   "C1": {
+    "psnr_db": 6.59,
+    "strokes": 228
+   },
+   "C2": {
+    "psnr_db": 21.76,
+    "strokes": 1189
+   },
+   "C3": {
+    "psnr_db": 23.45,
+    "strokes": 296
+   },
+   "C4": {
+    "psnr_db": 24.67,
+    "strokes": 485
+   },
+   "C5": {
+    "psnr_db": 25.64,
+    "strokes": 543
+   },
+   "C6": {
+    "psnr_db": 26.56,
+    "strokes": 482
+   },
+   "C7": {
+    "psnr_db": 26.65,
+    "strokes": 827
+   }
+  }
+ },
+ {
+  "id": "case-003",
+  "i": 3,
+  "task": "reconstruction",
+  "target": "img/case-003-target.jpg",
+  "width": 256,
+  "height": 171,
+  "steps": {
+   "C1": {
+    "psnr_db": 8.4,
+    "strokes": 203
+   },
+   "C2": {
+    "psnr_db": 21.3,
+    "strokes": 1388
+   },
+   "C3": {
+    "psnr_db": 24.6,
+    "strokes": 368
+   },
+   "C4": {
+    "psnr_db": 24.9,
+    "strokes": 407
+   },
+   "C5": {
+    "psnr_db": 25.08,
+    "strokes": 280
+   },
+   "C6": {
+    "psnr_db": 24.35,
+    "strokes": 680
+   },
+   "C7": {
+    "psnr_db": 25.3,
+    "strokes": 363
+   }
+  }
+ },
+ {
+  "id": "case-004",
+  "i": 4,
+  "task": "reconstruction",
+  "target": "img/case-004-target.jpg",
+  "width": 171,
+  "height": 256,
+  "steps": {
+   "C1": {
+    "psnr_db": 9.75,
+    "strokes": 979
+   },
+   "C2": {
+    "psnr_db": 20.48,
+    "strokes": 1258
+   },
+   "C3": {
+    "psnr_db": 23.52,
+    "strokes": 308
+   },
+   "C4": {
+    "psnr_db": 24.09,
+    "strokes": 276
+   },
+   "C5": {
+    "psnr_db": 23.15,
+    "strokes": 411
+   },
+   "C6": {
+    "psnr_db": 23.69,
+    "strokes": 245
+   },
+   "C7": {
+    "psnr_db": 23.68,
+    "strokes": 329
+   }
+  }
+ },
+ {
+  "id": "case-005",
+  "i": 5,
+  "task": "reconstruction",
+  "target": "img/case-005-target.jpg",
+  "width": 256,
+  "height": 192,
+  "steps": {
+   "C1": {
+    "psnr_db": 5.97,
+    "strokes": 333
+   },
+   "C2": {
+    "psnr_db": 19.71,
+    "strokes": 1415
+   },
+   "C3": {
+    "psnr_db": 19.97,
+    "strokes": 371
+   },
+   "C4": {
+    "psnr_db": 21.17,
+    "strokes": 415
+   },
+   "C5": {
+    "psnr_db": 20.71,
+    "strokes": 476
+   },
+   "C6": {
+    "psnr_db": 22.14,
+    "strokes": 418
+   },
+   "C7": {
+    "psnr_db": 21.95,
+    "strokes": 932
+   }
+  }
+ },
+ {
+  "id": "case-006",
+  "i": 6,
+  "task": "reconstruction",
+  "target": "img/case-006-target.jpg",
+  "width": 256,
+  "height": 171,
+  "steps": {
+   "C1": {
+    "psnr_db": 10.34,
+    "strokes": 1157
+   },
+   "C2": {
+    "psnr_db": 16.54,
+    "strokes": 1424
+   },
+   "C3": {
+    "psnr_db": 18.34,
+    "strokes": 780
+   },
+   "C4": {
+    "psnr_db": 19.35,
+    "strokes": 498
+   },
+   "C5": {
+    "psnr_db": 19.49,
+    "strokes": 724
+   },
+   "C6": {
+    "psnr_db": 20.91,
+    "strokes": 813
+   },
+   "C7": {
+    "psnr_db": 20.89,
+    "strokes": 793
+   }
+  }
+ },
+ {
+  "id": "case-007",
+  "i": 7,
+  "task": "reconstruction",
+  "target": "img/case-007-target.jpg",
+  "width": 256,
+  "height": 145,
+  "steps": {
+   "C1": {
+    "psnr_db": 9.46,
+    "strokes": 1166
+   },
+   "C2": {
+    "psnr_db": 16.3,
+    "strokes": 1766
+   },
+   "C3": {
+    "psnr_db": 18.2,
+    "strokes": 294
+   },
+   "C4": {
+    "psnr_db": 17.31,
+    "strokes": 281
+   },
+   "C5": {
+    "psnr_db": 18.96,
+    "strokes": 289
+   },
+   "C6": {
+    "psnr_db": 19.84,
+    "strokes": 481
+   },
+   "C7": {
+    "psnr_db": 20.7,
+    "strokes": 279
+   }
+  }
+ },
+ {
+  "id": "case-008",
+  "i": 8,
+  "task": "reconstruction",
+  "target": "img/case-008-target.jpg",
+  "width": 256,
+  "height": 192,
+  "steps": {
+   "C1": {
+    "psnr_db": 10.2,
+    "strokes": 1004
+   },
+   "C2": {
+    "psnr_db": 17.18,
+    "strokes": 2031
+   },
+   "C3": {
+    "psnr_db": 19.13,
+    "strokes": 366
+   },
+   "C4": {
+    "psnr_db": 19.22,
+    "strokes": 365
+   },
+   "C5": {
+    "psnr_db": 18.72,
+    "strokes": 376
+   },
+   "C6": {
+    "psnr_db": 19.78,
+    "strokes": 666
+   },
+   "C7": {
+    "psnr_db": 20.62,
+    "strokes": 562
+   }
+  }
+ },
+ {
+  "id": "case-009",
+  "i": 9,
+  "task": "reconstruction",
+  "target": "img/case-009-target.jpg",
+  "width": 256,
+  "height": 171,
+  "steps": {
+   "C1": {
+    "psnr_db": 12.29,
+    "strokes": 1244
+   },
+   "C2": {
+    "psnr_db": 17.02,
+    "strokes": 1608
+   },
+   "C3": {
+    "psnr_db": 19.1,
+    "strokes": 287
+   },
+   "C4": {
+    "psnr_db": 19.4,
+    "strokes": 342
+   },
+   "C5": {
+    "psnr_db": 20.25,
+    "strokes": 298
+   },
+   "C6": {
+    "psnr_db": 21.22,
+    "strokes": 411
+   },
+   "C7": {
+    "psnr_db": 20.55,
+    "strokes": 464
+   }
+  }
+ },
+ {
+  "id": "case-010",
+  "i": 10,
+  "task": "reconstruction",
+  "target": "img/case-010-target.jpg",
+  "width": 256,
+  "height": 171,
+  "steps": {
+   "C1": {
+    "psnr_db": 11.09,
+    "strokes": 270
+   },
+   "C2": {
+    "psnr_db": 19.25,
+    "strokes": 1465
+   },
+   "C3": {
+    "psnr_db": 18.53,
+    "strokes": 571
+   },
+   "C4": {
+    "psnr_db": 19.87,
+    "strokes": 305
+   },
+   "C5": {
+    "psnr_db": 19.41,
+    "strokes": 707
+   },
+   "C6": {
+    "psnr_db": 20.33,
+    "strokes": 1004
+   },
+   "C7": {
+    "psnr_db": 20.38,
+    "strokes": 773
+   }
+  }
+ },
+ {
+  "id": "case-011",
+  "i": 11,
+  "task": "reconstruction",
+  "target": "img/case-011-target.jpg",
+  "width": 256,
+  "height": 192,
+  "steps": {
+   "C1": {
+    "psnr_db": 9.91,
+    "strokes": 272
+   },
+   "C2": {
+    "psnr_db": 16.33,
+    "strokes": 1259
+   },
+   "C3": {
+    "psnr_db": 19.67,
+    "strokes": 297
+   },
+   "C4": {
+    "psnr_db": 20.23,
+    "strokes": 297
+   },
+   "C5": {
+    "psnr_db": 22.2,
+    "strokes": 307
+   },
+   "C6": {
+    "psnr_db": 22.19,
+    "strokes": 382
+   },
+   "C7": {
+    "psnr_db": 20.23,
+    "strokes": 742
+   }
+  }
+ },
+ {
+  "id": "case-012",
+  "i": 12,
+  "task": "reconstruction",
+  "target": "img/case-012-target.jpg",
+  "width": 171,
+  "height": 256,
+  "steps": {
+   "C1": {
+    "psnr_db": 5.63,
+    "strokes": 213
+   },
+   "C2": {
+    "psnr_db": 16.03,
+    "strokes": 1756
+   },
+   "C3": {
+    "psnr_db": 17.57,
+    "strokes": 518
+   },
+   "C4": {
+    "psnr_db": 17.87,
+    "strokes": 692
+   },
+   "C5": {
+    "psnr_db": 18.76,
+    "strokes": 727
+   },
+   "C6": {
+    "psnr_db": 19.25,
+    "strokes": 704
+   },
+   "C7": {
+    "psnr_db": 19.85,
+    "strokes": 818
+   }
+  }
+ },
+ {
+  "id": "case-013",
+  "i": 13,
+  "task": "reconstruction",
+  "target": "img/case-013-target.jpg",
+  "width": 256,
+  "height": 205,
+  "steps": {
+   "C1": {
+    "psnr_db": 13.05,
+    "strokes": 382
+   },
+   "C2": {
+    "psnr_db": 16,
+    "strokes": 1118
+   },
+   "C3": {
+    "psnr_db": 18.72,
+    "strokes": 303
+   },
+   "C4": {
+    "psnr_db": 18.17,
+    "strokes": 318
+   },
+   "C5": {
+    "psnr_db": 18.65,
+    "strokes": 473
+   },
+   "C6": {
+    "psnr_db": 20.07,
+    "strokes": 505
+   },
+   "C7": {
+    "psnr_db": 19.77,
+    "strokes": 460
+   }
+  }
+ },
+ {
+  "id": "case-014",
+  "i": 14,
+  "task": "reconstruction",
+  "target": "img/case-014-target.jpg",
+  "width": 170,
+  "height": 256,
+  "steps": {
+   "C1": {
+    "psnr_db": 8.52,
+    "strokes": 286
+   },
+   "C2": {
+    "psnr_db": 16.96,
+    "strokes": 1454
+   },
+   "C3": {
+    "psnr_db": 18.91,
+    "strokes": 401
+   },
+   "C4": {
+    "psnr_db": 19.98,
+    "strokes": 319
+   },
+   "C5": {
+    "psnr_db": 19,
+    "strokes": 626
+   },
+   "C6": {
+    "psnr_db": 20.2,
+    "strokes": 832
+   },
+   "C7": {
+    "psnr_db": 19.63,
+    "strokes": 1069
+   }
+  }
+ },
+ {
+  "id": "case-015",
+  "i": 15,
+  "task": "reconstruction",
+  "target": "img/case-015-target.jpg",
+  "width": 256,
+  "height": 192,
+  "steps": {
+   "C1": {
+    "psnr_db": 7.54,
+    "strokes": 247
+   },
+   "C2": {
+    "psnr_db": 18.12,
+    "strokes": 1473
+   },
+   "C3": {
+    "psnr_db": 17.43,
+    "strokes": 534
+   },
+   "C4": {
+    "psnr_db": 18.61,
+    "strokes": 480
+   },
+   "C5": {
+    "psnr_db": 19.22,
+    "strokes": 614
+   },
+   "C6": {
+    "psnr_db": 19.03,
+    "strokes": 825
+   },
+   "C7": {
+    "psnr_db": 19.33,
+    "strokes": 1334
+   }
+  }
+ },
+ {
+  "id": "case-016",
+  "i": 16,
+  "task": "reconstruction",
+  "target": "img/case-016-target.jpg",
+  "width": 256,
+  "height": 171,
+  "steps": {
+   "C1": {
+    "psnr_db": 5.27,
+    "strokes": 1080
+   },
+   "C2": {
+    "psnr_db": 15.7,
+    "strokes": 1632
+   },
+   "C3": {
+    "psnr_db": 17.53,
+    "strokes": 468
+   },
+   "C4": {
+    "psnr_db": 17.72,
+    "strokes": 621
+   },
+   "C5": {
+    "psnr_db": 18.85,
+    "strokes": 650
+   },
+   "C6": {
+    "psnr_db": 18.06,
+    "strokes": 753
+   },
+   "C7": {
+    "psnr_db": 19.32,
+    "strokes": 867
+   }
+  }
+ },
+ {
+  "id": "case-017",
+  "i": 17,
+  "task": "reconstruction",
+  "target": "img/case-017-target.jpg",
+  "width": 256,
+  "height": 192,
+  "steps": {
+   "C1": {
+    "psnr_db": 7.65,
+    "strokes": 382
+   },
+   "C2": {
+    "psnr_db": 16.71,
+    "strokes": 1306
+   },
+   "C3": {
+    "psnr_db": 18.09,
+    "strokes": 529
+   },
+   "C4": {
+    "psnr_db": 17.86,
+    "strokes": 917
+   },
+   "C5": {
+    "psnr_db": 18.47,
+    "strokes": 1372
+   },
+   "C6": {
+    "psnr_db": 19.04,
+    "strokes": 695
+   },
+   "C7": {
+    "psnr_db": 19.23,
+    "strokes": 950
+   }
+  }
+ },
+ {
+  "id": "case-018",
+  "i": 18,
+  "task": "reconstruction",
+  "target": "img/case-018-target.jpg",
+  "width": 256,
+  "height": 171,
+  "steps": {
+   "C1": {
+    "psnr_db": 8.12,
+    "strokes": 255
+   },
+   "C2": {
+    "psnr_db": 14.05,
+    "strokes": 1269
+   },
+   "C3": {
+    "psnr_db": 17.46,
+    "strokes": 366
+   },
+   "C4": {
+    "psnr_db": 19.43,
+    "strokes": 438
+   },
+   "C5": {
+    "psnr_db": 18.34,
+    "strokes": 377
+   },
+   "C6": {
+    "psnr_db": 19.52,
+    "strokes": 340
+   },
+   "C7": {
+    "psnr_db": 19.14,
+    "strokes": 480
+   }
+  }
+ },
+ {
+  "id": "case-019",
+  "i": 19,
+  "task": "reconstruction",
+  "target": "img/case-019-target.jpg",
+  "width": 256,
+  "height": 192,
+  "steps": {
+   "C1": {
+    "psnr_db": 5.74,
+    "strokes": 269
+   },
+   "C2": {
+    "psnr_db": 13.1,
+    "strokes": 1362
+   },
+   "C3": {
+    "psnr_db": 15.58,
+    "strokes": 720
+   },
+   "C4": {
+    "psnr_db": 16.01,
+    "strokes": 686
+   },
+   "C5": {
+    "psnr_db": 16.66,
+    "strokes": 974
+   },
+   "C6": {
+    "psnr_db": 18.03,
+    "strokes": 865
+   },
+   "C7": {
+    "psnr_db": 18.26,
+    "strokes": 1413
+   }
+  }
+ },
+ {
+  "id": "case-020",
+  "i": 20,
+  "task": "reconstruction",
+  "target": "img/case-020-target.jpg",
+  "width": 256,
+  "height": 192,
+  "steps": {
+   "C1": {
+    "psnr_db": 6.54,
+    "strokes": 223
+   },
+   "C2": {
+    "psnr_db": 16.21,
+    "strokes": 1418
+   },
+   "C3": {
+    "psnr_db": 17.19,
+    "strokes": 552
+   },
+   "C4": {
+    "psnr_db": 17.11,
+    "strokes": 666
+   },
+   "C5": {
+    "psnr_db": 17.56,
+    "strokes": 871
+   },
+   "C6": {
+    "psnr_db": 17.69,
+    "strokes": 822
+   },
+   "C7": {
+    "psnr_db": 17.81,
+    "strokes": 573
+   }
+  }
+ },
+ {
+  "id": "case-021",
+  "i": 21,
+  "task": "editing",
+  "prompt": "Give him glasses.",
+  "target": "img/case-021-target.jpg",
+  "input": "img/case-021-input.jpg",
+  "width": 256,
+  "height": 256,
+  "steps": {
+   "C1": {
+    "psnr_db": 24.07,
+    "strokes": 317
+   },
+   "C2": {
+    "psnr_db": 23.66,
+    "strokes": 647
+   },
+   "C3": {
+    "psnr_db": 24.4,
+    "strokes": 690
+   },
+   "C4": {
+    "psnr_db": 21.47,
+    "strokes": 412
+   },
+   "C5": {
+    "psnr_db": 32.81,
+    "strokes": 70
+   },
+   "C6": {
+    "psnr_db": 29.07,
+    "strokes": 110
+   },
+   "C7": {
+    "psnr_db": 32.67,
+    "strokes": 82
+   }
+  }
+ },
+ {
+  "id": "case-022",
+  "i": 22,
+  "task": "editing",
+  "prompt": "Get rid of the ball.",
+  "target": "img/case-022-target.jpg",
+  "input": "img/case-022-input.jpg",
+  "width": 256,
+  "height": 256,
+  "steps": {
+   "C1": {
+    "psnr_db": 16.42,
+    "strokes": 386
+   },
+   "C2": {
+    "psnr_db": 24.89,
+    "strokes": 49
+   },
+   "C3": {
+    "psnr_db": 24.3,
+    "strokes": 27
+   },
+   "C4": {
+    "psnr_db": 24.41,
+    "strokes": 19
+   },
+   "C5": {
+    "psnr_db": 29.35,
+    "strokes": 19
+   },
+   "C6": {
+    "psnr_db": 22.99,
+    "strokes": 35
+   },
+   "C7": {
+    "psnr_db": 30.63,
+    "strokes": 13
+   }
+  }
+ },
+ {
+  "id": "case-023",
+  "i": 23,
+  "task": "editing",
+  "prompt": "remove the lamp",
+  "target": "img/case-023-target.jpg",
+  "input": "img/case-023-input.jpg",
+  "width": 256,
+  "height": 256,
+  "steps": {
+   "C1": {
+    "psnr_db": 14.55,
+    "strokes": 1146
+   },
+   "C2": {
+    "psnr_db": 24.15,
+    "strokes": 21
+   },
+   "C3": {
+    "psnr_db": 23.32,
+    "strokes": 32
+   },
+   "C4": {
+    "psnr_db": 21.37,
+    "strokes": 39
+   },
+   "C5": {
+    "psnr_db": 31.65,
+    "strokes": 32
+   },
+   "C6": {
+    "psnr_db": 22.88,
+    "strokes": 56
+   },
+   "C7": {
+    "psnr_db": 29.94,
+    "strokes": 58
+   }
+  }
+ },
+ {
+  "id": "case-024",
+  "i": 24,
+  "task": "editing",
+  "prompt": "add a rocket up in the sky",
+  "target": "img/case-024-target.jpg",
+  "input": "img/case-024-input.jpg",
+  "width": 256,
+  "height": 256,
+  "steps": {
+   "C1": {
+    "psnr_db": 18.85,
+    "strokes": 385
+   },
+   "C2": {
+    "psnr_db": 26.69,
+    "strokes": 52
+   },
+   "C3": {
+    "psnr_db": 22.33,
+    "strokes": 826
+   },
+   "C4": {
+    "psnr_db": 21.88,
+    "strokes": 331
+   },
+   "C5": {
+    "psnr_db": 25.6,
+    "strokes": 60
+   },
+   "C6": {
+    "psnr_db": 27,
+    "strokes": 433
+   },
+   "C7": {
+    "psnr_db": 27.2,
+    "strokes": 132
+   }
+  }
+ },
+ {
+  "id": "case-025",
+  "i": 25,
+  "task": "editing",
+  "prompt": "add a penguin",
+  "target": "img/case-025-target.jpg",
+  "input": "img/case-025-input.jpg",
+  "width": 256,
+  "height": 256,
+  "steps": {
+   "C1": {
+    "psnr_db": 17.9,
+    "strokes": 394
+   },
+   "C2": {
+    "psnr_db": 17.79,
+    "strokes": 1591
+   },
+   "C3": {
+    "psnr_db": 21,
+    "strokes": 287
+   },
+   "C4": {
+    "psnr_db": 15.32,
+    "strokes": 334
+   },
+   "C5": {
+    "psnr_db": 20.06,
+    "strokes": 486
+   },
+   "C6": {
+    "psnr_db": 18.94,
+    "strokes": 471
+   },
+   "C7": {
+    "psnr_db": 25.16,
+    "strokes": 423
+   }
+  }
+ },
+ {
+  "id": "case-026",
+  "i": 26,
+  "task": "editing",
+  "prompt": "Add a second airplane.",
+  "target": "img/case-026-target.jpg",
+  "input": "img/case-026-input.jpg",
+  "width": 256,
+  "height": 256,
+  "steps": {
+   "C1": {
+    "psnr_db": 8.59,
+    "strokes": 354
+   },
+   "C2": {
+    "psnr_db": 17.58,
+    "strokes": 1631
+   },
+   "C3": {
+    "psnr_db": 23.4,
+    "strokes": 482
+   },
+   "C4": {
+    "psnr_db": 23.45,
+    "strokes": 581
+   },
+   "C5": {
+    "psnr_db": 24.03,
+    "strokes": 337
+   },
+   "C6": {
+    "psnr_db": 24.73,
+    "strokes": 398
+   },
+   "C7": {
+    "psnr_db": 24.97,
+    "strokes": 450
+   }
+  }
+ },
+ {
+  "id": "case-027",
+  "i": 27,
+  "task": "editing",
+  "prompt": "add a dog jumping",
+  "target": "img/case-027-target.jpg",
+  "input": "img/case-027-input.jpg",
+  "width": 256,
+  "height": 256,
+  "steps": {
+   "C1": {
+    "psnr_db": 20.36,
+    "strokes": 384
+   },
+   "C2": {
+    "psnr_db": 14.08,
+    "strokes": 1023
+   },
+   "C3": {
+    "psnr_db": 17.2,
+    "strokes": 397
+   },
+   "C4": {
+    "psnr_db": 20.58,
+    "strokes": 341
+   },
+   "C5": {
+    "psnr_db": 15.49,
+    "strokes": 452
+   },
+   "C6": {
+    "psnr_db": 12.78,
+    "strokes": 337
+   },
+   "C7": {
+    "psnr_db": 24.85,
+    "strokes": 437
+   }
+  }
+ },
+ {
+  "id": "case-028",
+  "i": 28,
+  "task": "editing",
+  "prompt": "remove the tv",
+  "target": "img/case-028-target.jpg",
+  "input": "img/case-028-input.jpg",
+  "width": 256,
+  "height": 256,
+  "steps": {
+   "C1": {
+    "psnr_db": 9.95,
+    "strokes": 397
+   },
+   "C2": {
+    "psnr_db": 11.61,
+    "strokes": 34
+   },
+   "C3": {
+    "psnr_db": 12.98,
+    "strokes": 181
+   },
+   "C4": {
+    "psnr_db": 15.6,
+    "strokes": 71
+   },
+   "C5": {
+    "psnr_db": 20.05,
+    "strokes": 81
+   },
+   "C6": {
+    "psnr_db": 19.03,
+    "strokes": 63
+   },
+   "C7": {
+    "psnr_db": 24.67,
+    "strokes": 82
+   }
+  }
+ },
+ {
+  "id": "case-029",
+  "i": 29,
+  "task": "editing",
+  "prompt": "add chandeliers on the ceiling",
+  "target": "img/case-029-target.jpg",
+  "input": "img/case-029-input.jpg",
+  "width": 256,
+  "height": 256,
+  "steps": {
+   "C1": {
+    "psnr_db": 19.64,
+    "strokes": 274
+   },
+   "C2": {
+    "psnr_db": 14.18,
+    "strokes": 1169
+   },
+   "C3": {
+    "psnr_db": 14.18,
+    "strokes": 334
+   },
+   "C4": {
+    "psnr_db": 17.55,
+    "strokes": 277
+   },
+   "C5": {
+    "psnr_db": 18.7,
+    "strokes": 335
+   },
+   "C6": {
+    "psnr_db": 7.78,
+    "strokes": 527
+   },
+   "C7": {
+    "psnr_db": 24.48,
+    "strokes": 72
+   }
+  }
+ },
+ {
+  "id": "case-030",
+  "i": 30,
+  "task": "editing",
+  "prompt": "place a rubber duck on the picture",
+  "target": "img/case-030-target.jpg",
+  "input": "img/case-030-input.jpg",
+  "width": 256,
+  "height": 256,
+  "steps": {
+   "C1": {
+    "psnr_db": 16.43,
+    "strokes": 1147
+   },
+   "C2": {
+    "psnr_db": 10.11,
+    "strokes": 355
+   },
+   "C3": {
+    "psnr_db": 24.83,
+    "strokes": 699
+   },
+   "C4": {
+    "psnr_db": 26.58,
+    "strokes": 408
+   },
+   "C5": {
+    "psnr_db": 22.26,
+    "strokes": 332
+   },
+   "C6": {
+    "psnr_db": 20.74,
+    "strokes": 696
+   },
+   "C7": {
+    "psnr_db": 23.99,
+    "strokes": 95
+   }
+  }
+ },
+ {
+  "id": "case-031",
+  "i": 31,
+  "task": "text_to_image",
+  "prompt": "people flying kites on a bright sunny day A crowd of people flying kites in the grass.",
+  "target": "img/case-031-target.jpg",
+  "width": 256,
+  "height": 256,
+  "steps": {
+   "C1": {
+    "psnr_db": 8.65,
+    "strokes": 554
+   },
+   "C2": {
+    "psnr_db": 15.21,
+    "strokes": 1266
+   },
+   "C3": {
+    "psnr_db": 15.62,
+    "strokes": 291
+   },
+   "C4": {
+    "psnr_db": 15,
+    "strokes": 453
+   },
+   "C5": {
+    "psnr_db": 16.41,
+    "strokes": 1428
+   },
+   "C6": {
+    "psnr_db": 12.93,
+    "strokes": 318
+   },
+   "C7": {
+    "psnr_db": 14.1,
+    "strokes": 602
+   }
+  }
+ },
+ {
+  "id": "case-032",
+  "i": 32,
+  "task": "text_to_image",
+  "prompt": "A  man standing on a beach while holding a white surfboard. A man holding a surfboard on a beach with a pier in the background.",
+  "target": "img/case-032-target.jpg",
+  "width": 256,
+  "height": 256,
+  "steps": {
+   "C1": {
+    "psnr_db": 12.05,
+    "strokes": 241
+   },
+   "C2": {
+    "psnr_db": 13.95,
+    "strokes": 1588
+   },
+   "C3": {
+    "psnr_db": 7.49,
+    "strokes": 290
+   },
+   "C4": {
+    "psnr_db": 15.19,
+    "strokes": 237
+   },
+   "C5": {
+    "psnr_db": 10.64,
+    "strokes": 307
+   },
+   "C6": {
+    "psnr_db": 15.85,
+    "strokes": 313
+   },
+   "C7": {
+    "psnr_db": 13.88,
+    "strokes": 472
+   }
+  }
+ },
+ {
+  "id": "case-033",
+  "i": 33,
+  "task": "text_to_image",
+  "prompt": "A dog eyeballing something cooking in the oven. A dog is looking into an oven to see what's cooking.",
+  "target": "img/case-033-target.jpg",
+  "width": 256,
+  "height": 256,
+  "steps": {
+   "C1": {
+    "psnr_db": 6.9,
+    "strokes": 1074
+   },
+   "C2": {
+    "psnr_db": 10.96,
+    "strokes": 1581
+   },
+   "C3": {
+    "psnr_db": 12.14,
+    "strokes": 288
+   },
+   "C4": {
+    "psnr_db": 9.29,
+    "strokes": 387
+   },
+   "C5": {
+    "psnr_db": 9.36,
+    "strokes": 481
+   },
+   "C6": {
+    "psnr_db": 12.34,
+    "strokes": 318
+   },
+   "C7": {
+    "psnr_db": 11.77,
+    "strokes": 694
+   }
+  }
+ },
+ {
+  "id": "case-034",
+  "i": 34,
+  "task": "text_to_image",
+  "prompt": "A blue corner sink with a man reflected in the above mirrors. a bathroom with a sink and a mirror",
+  "target": "img/case-034-target.jpg",
+  "width": 256,
+  "height": 171,
+  "steps": {
+   "C1": {
+    "psnr_db": 5.75,
+    "strokes": 0
+   },
+   "C2": {
+    "psnr_db": 11.16,
+    "strokes": 1876
+   },
+   "C3": {
+    "psnr_db": 8.67,
+    "strokes": 505
+   },
+   "C4": {
+    "psnr_db": 10.29,
+    "strokes": 299
+   },
+   "C5": {
+    "psnr_db": 11.92,
+    "strokes": 150
+   },
+   "C6": {
+    "psnr_db": 10.52,
+    "strokes": 443
+   },
+   "C7": {
+    "psnr_db": 11.2,
+    "strokes": 402
+   }
+  }
+ },
+ {
+  "id": "case-035",
+  "i": 35,
+  "task": "text_to_image",
+  "prompt": "A woman sits under the shade of an umbrella at the beach. A woman lying on her back with knees bent on a beach towel under a multicolored, striped beach umbrella, surrounded by sand, and with clear blue sky above.",
+  "target": "img/case-035-target.jpg",
+  "width": 256,
+  "height": 256,
+  "steps": {
+   "C1": {
+    "psnr_db": 11.68,
+    "strokes": 1132
+   },
+   "C2": {
+    "psnr_db": 8.17,
+    "strokes": 1314
+   },
+   "C3": {
+    "psnr_db": 9.15,
+    "strokes": 243
+   },
+   "C4": {
+    "psnr_db": 9.42,
+    "strokes": 265
+   },
+   "C5": {
+    "psnr_db": 11.51,
+    "strokes": 557
+   },
+   "C6": {
+    "psnr_db": 8.25,
+    "strokes": 562
+   },
+   "C7": {
+    "psnr_db": 10.96,
+    "strokes": 670
+   }
+  }
+ },
+ {
+  "id": "case-036",
+  "i": 36,
+  "task": "text_to_image",
+  "prompt": "Belgium waffle loaded with bananas topped with powdered sugar with syrup and more fruit as a garnish. The waffle has banana slices and a strawberry in the middle.",
+  "target": "img/case-036-target.jpg",
+  "width": 256,
+  "height": 256,
+  "steps": {
+   "C1": {
+    "psnr_db": 7.04,
+    "strokes": 1235
+   },
+   "C2": {
+    "psnr_db": 9.36,
+    "strokes": 1260
+   },
+   "C3": {
+    "psnr_db": 10.88,
+    "strokes": 381
+   },
+   "C4": {
+    "psnr_db": 8.09,
+    "strokes": 335
+   },
+   "C5": {
+    "psnr_db": 9.95,
+    "strokes": 600
+   },
+   "C6": {
+    "psnr_db": 8.97,
+    "strokes": 498
+   },
+   "C7": {
+    "psnr_db": 10.41,
+    "strokes": 794
+   }
+  }
+ },
+ {
+  "id": "case-037",
+  "i": 37,
+  "task": "text_to_image",
+  "prompt": "A computer keyboard sitting next to a mouse on a wooden table. there is a white keyboard and a white mouse",
+  "target": "img/case-037-target.jpg",
+  "width": 256,
+  "height": 192,
+  "steps": {
+   "C1": {
+    "psnr_db": 6.07,
+    "strokes": 288
+   },
+   "C2": {
+    "psnr_db": 10.75,
+    "strokes": 1585
+   },
+   "C3": {
+    "psnr_db": 9.1,
+    "strokes": 295
+   },
+   "C4": {
+    "psnr_db": 11.99,
+    "strokes": 309
+   },
+   "C5": {
+    "psnr_db": 9.08,
+    "strokes": 310
+   },
+   "C6": {
+    "psnr_db": 10.74,
+    "strokes": 368
+   },
+   "C7": {
+    "psnr_db": 10.16,
+    "strokes": 1574
+   }
+  }
+ },
+ {
+  "id": "case-038",
+  "i": 38,
+  "task": "text_to_image",
+  "prompt": "A chair sitting in the middle of the room, in a black and white photo. A room with chairs and a large mirror.",
+  "target": "img/case-038-target.jpg",
+  "width": 256,
+  "height": 256,
+  "steps": {
+   "C1": {
+    "psnr_db": 8.13,
+    "strokes": 224
+   },
+   "C2": {
+    "psnr_db": 8.46,
+    "strokes": 1691
+   },
+   "C3": {
+    "psnr_db": 7.31,
+    "strokes": 300
+   },
+   "C4": {
+    "psnr_db": 8.55,
+    "strokes": 484
+   },
+   "C5": {
+    "psnr_db": 7.75,
+    "strokes": 369
+   },
+   "C6": {
+    "psnr_db": 5.93,
+    "strokes": 582
+   },
+   "C7": {
+    "psnr_db": 9.98,
+    "strokes": 573
+   }
+  }
+ },
+ {
+  "id": "case-039",
+  "i": 39,
+  "task": "text_to_image",
+  "prompt": "Parking meters and signage are on the side of the street A row of parking meters in front of a stop sign.",
+  "target": "img/case-039-target.jpg",
+  "width": 256,
+  "height": 256,
+  "steps": {
+   "C1": {
+    "psnr_db": 6.94,
+    "strokes": 291
+   },
+   "C2": {
+    "psnr_db": 8.61,
+    "strokes": 1571
+   },
+   "C3": {
+    "psnr_db": 7.23,
+    "strokes": 297
+   },
+   "C4": {
+    "psnr_db": 7.23,
+    "strokes": 316
+   },
+   "C5": {
+    "psnr_db": 9.19,
+    "strokes": 511
+   },
+   "C6": {
+    "psnr_db": 8.9,
+    "strokes": 401
+   },
+   "C7": {
+    "psnr_db": 9.87,
+    "strokes": 503
+   }
+  }
+ },
+ {
+  "id": "case-040",
+  "i": 40,
+  "task": "text_to_image",
+  "prompt": "A person in a dry area with a sail high in the sky this is a man and a woman on a sandy beach",
+  "target": "img/case-040-target.jpg",
+  "width": 256,
+  "height": 256,
+  "steps": {
+   "C1": {
+    "psnr_db": 7.85,
+    "strokes": 227
+   },
+   "C2": {
+    "psnr_db": 9.02,
+    "strokes": 1458
+   },
+   "C3": {
+    "psnr_db": 7.04,
+    "strokes": 266
+   },
+   "C4": {
+    "psnr_db": 12.71,
+    "strokes": 1427
+   },
+   "C5": {
+    "psnr_db": 9.35,
+    "strokes": 423
+   },
+   "C6": {
+    "psnr_db": 10.39,
+    "strokes": 365
+   },
+   "C7": {
+    "psnr_db": 9.8,
+    "strokes": 327
+   }
+  }
+ }
+]
