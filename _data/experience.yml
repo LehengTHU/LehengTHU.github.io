@@ -53,7 +53,7 @@ work:
   - org: "ByteDance Seed"
     logo: "/images/seed-mark.png"
     url: "https://seed.bytedance.com/"
-    period: "2025 — 2026"
+    period: "2025 Summer"
     role: "Student Researcher, Pretrain Team"
     detail: "General & long-context LLM reasoning; pretrain-stage reasoning."
   - org: "NExT++ Lab, NUS"
