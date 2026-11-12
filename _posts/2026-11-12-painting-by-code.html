@@ -898,9 +898,12 @@ main .loss-card h4 { margin: 0 10px 12px; font-size: 1.1rem; }
 .pbc-ae .ae-trap { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
 .pbc-ae .ae-trap polygon { fill: var(--paper-2); stroke: var(--ink-3); stroke-width: 1; stroke-linejoin: round; }
 .pbc-ae .is-b .ae-trap polygon { fill: #F3F5F9; fill: color-mix(in srgb, var(--accent) 6%, var(--paper)); stroke: var(--accent); }
-.pbc-ae .ae-edge.is-trap.is-b .ae-sub { font-size: 12px; letter-spacing: 0; line-height: 1.3; }
+.pbc-ae .ae-edge.is-trap.is-b .ae-sub { font-size: 11px; letter-spacing: 0; line-height: 1.15; }
 .pbc-ae .ae-edge.is-trap .ae-name, .pbc-ae .ae-edge.is-trap .ae-sub { max-width: 92%; }
-.pbc-ae .ae-edge.is-trap.is-b .ae-name { font-size: 15px; white-space: nowrap; }
+.pbc-ae .ae-edge.is-trap.is-b .ae-name { font-size: 14px; white-space: nowrap; }
+/* labels lean toward the wide end so they stay clear of the slanted edges */
+.pbc-ae .ae-edge.is-trap.is-enc { padding-right: 6%; }
+.pbc-ae .ae-edge.is-trap.is-dec { padding-left: 6%; }
 .pbc-ae .ae-trap-v { display: none; }
 .pbc-ae .ae-arrow { position: relative; height: 1px; width: 100%; background: currentColor; }
 .pbc-ae .ae-arrow::after {
@@ -941,9 +944,10 @@ main .loss-card h4 { margin: 0 10px 12px; font-size: 1.1rem; }
   .pbc-ae .ae-edge.is-trap { height: 92px; margin: 12px 0 10px; padding: 0; }
   .pbc-ae .ae-trap-h { display: none; }
   .pbc-ae .ae-trap-v { display: block; }
-  .pbc-ae .ae-edge.is-trap.is-enc { justify-content: flex-start; padding-top: 12px; }
-  .pbc-ae .ae-edge.is-trap.is-dec { justify-content: flex-end; padding-bottom: 12px; }
+  .pbc-ae .ae-edge.is-trap.is-enc { justify-content: flex-start; padding-top: 12px; padding-right: 0; }
+  .pbc-ae .ae-edge.is-trap.is-dec { justify-content: flex-end; padding-bottom: 12px; padding-left: 0; }
   .pbc-ae .ae-edge.is-trap.is-b .ae-name { font-size: 14px; }
+  .pbc-ae .ae-edge.is-trap.is-b .ae-sub { font-size: 12px; line-height: 1.3; }
   .pbc-ae .ae-name { font-size: 15px; }
   .pbc-ae .ae-sub { font-size: 12px; }
   .pbc-ae .ae-cap { margin-top: 7px; }
@@ -962,7 +966,7 @@ main .loss-card h4 { margin: 0 10px 12px; font-size: 1.1rem; }
       <div class="ae-cap"><span class="ae-name"><span class="zh">输入图</span><span class="en">Input image</span></span></div>
     </div>
     <div class="ae-edge is-trap is-enc" data-a="a2">
-      <svg class="ae-trap ae-trap-h" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true" focusable="false"><polygon points="0,0 100,24 100,76 0,100" vector-effect="non-scaling-stroke"/></svg>
+      <svg class="ae-trap ae-trap-h" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true" focusable="false"><polygon points="0,0 100,14 100,86 0,100" vector-effect="non-scaling-stroke"/></svg>
       <svg class="ae-trap ae-trap-v" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true" focusable="false"><polygon points="0,0 100,0 76,100 24,100" vector-effect="non-scaling-stroke"/></svg>
       <span class="ae-name"><span class="zh">编码器</span><span class="en">Encoder</span></span>
       <span class="ae-sub"><span class="zh">可学习</span><span class="en">learned</span></span>
@@ -972,7 +976,7 @@ main .loss-card h4 { margin: 0 10px 12px; font-size: 1.1rem; }
       <div class="ae-cap"><span class="ae-name"><span class="zh">潜表示</span><span class="en">Latent</span></span><span class="ae-sub"><span class="zh">一个向量，不可读</span><span class="en">a vector, not readable</span></span></div>
     </div>
     <div class="ae-edge is-trap is-dec" data-a="a4">
-      <svg class="ae-trap ae-trap-h" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true" focusable="false"><polygon points="0,24 100,0 100,100 0,76" vector-effect="non-scaling-stroke"/></svg>
+      <svg class="ae-trap ae-trap-h" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true" focusable="false"><polygon points="0,14 100,0 100,100 0,86" vector-effect="non-scaling-stroke"/></svg>
       <svg class="ae-trap ae-trap-v" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true" focusable="false"><polygon points="24,0 76,0 100,100 0,100" vector-effect="non-scaling-stroke"/></svg>
       <span class="ae-name"><span class="zh">解码器</span><span class="en">Decoder</span></span>
       <span class="ae-sub"><span class="zh">可学习</span><span class="en">learned</span></span>
@@ -995,7 +999,7 @@ main .loss-card h4 { margin: 0 10px 12px; font-size: 1.1rem; }
       <div class="ae-cap"><span class="ae-name"><span class="zh">目标图</span><span class="en">Target</span></span></div>
     </div>
     <div class="ae-edge is-trap is-enc is-b" data-a="b2">
-      <svg class="ae-trap ae-trap-h" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true" focusable="false"><polygon points="0,0 100,24 100,76 0,100" vector-effect="non-scaling-stroke"/></svg>
+      <svg class="ae-trap ae-trap-h" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true" focusable="false"><polygon points="0,0 100,14 100,86 0,100" vector-effect="non-scaling-stroke"/></svg>
       <svg class="ae-trap ae-trap-v" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true" focusable="false"><polygon points="0,0 100,0 76,100 24,100" vector-effect="non-scaling-stroke"/></svg>
       <span class="ae-name"><span class="zh">代码拟合</span><span class="en">Code fitting</span></span>
       <span class="ae-sub"><span class="zh">优化求解</span><span class="en">solved by optimization</span></span>
@@ -1005,7 +1009,7 @@ main .loss-card h4 { margin: 0 10px 12px; font-size: 1.1rem; }
       <div class="ae-cap"><span class="ae-name"><span class="zh">代码</span><span class="en">Code</span></span><span class="ae-sub"><span class="zh">可读、可执行</span><span class="en">readable and executable</span></span></div>
     </div>
     <div class="ae-edge is-trap is-dec is-b" data-a="b4">
-      <svg class="ae-trap ae-trap-h" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true" focusable="false"><polygon points="0,24 100,0 100,100 0,76" vector-effect="non-scaling-stroke"/></svg>
+      <svg class="ae-trap ae-trap-h" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true" focusable="false"><polygon points="0,14 100,0 100,100 0,86" vector-effect="non-scaling-stroke"/></svg>
       <svg class="ae-trap ae-trap-v" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true" focusable="false"><polygon points="24,0 76,0 100,100 0,100" vector-effect="non-scaling-stroke"/></svg>
       <span class="ae-name"><span class="zh">执行代码</span><span class="en">Execute the code</span></span>
       <span class="ae-sub"><span class="zh">固定渲染器</span><span class="en">fixed renderer</span></span>
