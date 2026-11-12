@@ -1,5 +1,5 @@
 ---
-title: "LLMs Can Paint via Code Autoencoding"
+title: "Image Generation with LLMs via Code Autoencoding"
 description: "We decompile images into executable Python stroke programs through code autoencoding and train a language model to paint with next-token prediction (NTP)."
 excerpt: "We decompile images into executable Python stroke programs through code autoencoding and train a language model to paint with next-token prediction (NTP)."
 layout: none
@@ -13,26 +13,26 @@ preview_poster: /blog/2026/painting-by-code/assets/video/film-preview.jpg
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>LLMs Can Paint via Code Autoencoding - Leheng Sheng</title>
+<title>Image Generation with LLMs via Code Autoencoding - Leheng Sheng</title>
 <meta name="description" content="We decompile images into executable Python stroke programs through code autoencoding and train a language model to paint with next-token prediction (NTP).">
 <meta name="color-scheme" content="light">
 <meta name="theme-color" content="#FAFAFA">
 <link rel="canonical" href="https://lehengthu.github.io/blog/2026/painting-by-code/">
 <meta property="og:type" content="article">
 <meta property="og:site_name" content="Leheng Sheng">
-<meta property="og:title" content="LLMs Can Paint via Code Autoencoding">
+<meta property="og:title" content="Image Generation with LLMs via Code Autoencoding">
 <meta property="og:description" content="We decompile images into executable Python stroke programs through code autoencoding and train a language model to paint with next-token prediction (NTP).">
 <meta property="og:url" content="https://lehengthu.github.io/blog/2026/painting-by-code/">
-<meta property="og:image" content="https://lehengthu.github.io/blog/2026/painting-by-code/assets/og-cover.png">
+<meta property="og:image" content="https://lehengthu.github.io/blog/2026/painting-by-code/assets/og-cover.png?v=20261112-2310">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta property="article:published_time" content="2026-11-12">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="LLMs Can Paint via Code Autoencoding">
+<meta name="twitter:title" content="Image Generation with LLMs via Code Autoencoding">
 <meta name="twitter:description" content="We decompile images into executable Python stroke programs through code autoencoding and train a language model to paint with next-token prediction (NTP).">
-<meta name="twitter:image" content="https://lehengthu.github.io/blog/2026/painting-by-code/assets/og-cover.png">
+<meta name="twitter:image" content="https://lehengthu.github.io/blog/2026/painting-by-code/assets/og-cover.png?v=20261112-2310">
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"Article","headline":"LLMs Can Paint via Code Autoencoding","author":[{"@type":"Person","name":"Leheng Sheng","url":"https://lehengthu.github.io/"},{"@type":"Person","name":"Xiaosen Zheng","url":"https://xszheng2020.github.io/"},{"@type":"Person","name":"Wei Chow","url":"https://scholar.google.com/citations?user=br7-IGkAAAAJ"},{"@type":"Person","name":"Yuan Sui","url":"https://www.yuan-sui.com/"},{"@type":"Person","name":"Shizun Wang","url":"https://littlepure2333.github.io/home/"}],"datePublished":"2026-11-12","image":"https://lehengthu.github.io/blog/2026/painting-by-code/assets/og-cover.png","url":"https://lehengthu.github.io/blog/2026/painting-by-code/"}
+{"@context":"https://schema.org","@type":"Article","headline":"Image Generation with LLMs via Code Autoencoding","author":[{"@type":"Person","name":"Leheng Sheng","url":"https://lehengthu.github.io/"},{"@type":"Person","name":"Xiaosen Zheng","url":"https://xszheng2020.github.io/"},{"@type":"Person","name":"Wei Chow","url":"https://scholar.google.com/citations?user=br7-IGkAAAAJ"},{"@type":"Person","name":"Yuan Sui","url":"https://www.yuan-sui.com/"},{"@type":"Person","name":"Shizun Wang","url":"https://littlepure2333.github.io/home/"}],"datePublished":"2026-11-12","image":"https://lehengthu.github.io/blog/2026/painting-by-code/assets/og-cover.png","url":"https://lehengthu.github.io/blog/2026/painting-by-code/"}
 </script>
 <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32.png">
 <link rel="apple-touch-icon" href="/images/favicon-180.png">
@@ -705,7 +705,7 @@ main .loss-card h4 { margin: 0 10px 12px; font-size: 1.1rem; }
 <button id="btn-zh" type="button" aria-pressed="false">中文</button>
 </div>
 </div>
-<h1><span class="zh">大语言模型可以通过代码自编码学习绘画</span><span class="en">LLMs Can Paint via Code Autoencoding</span></h1>
+<h1><span class="zh">基于代码自编码的大语言模型图像生成</span><span class="en">Image Generation with LLMs via Code Autoencoding</span></h1>
 <p class="ar-standfirst zh">我们用代码自编码把图片批量反编译成可执行的 Python 笔触程序，再用下一词预测（NTP）训练语言模型逐笔作画。</p>
 <p class="ar-standfirst en">We decompile images into executable Python stroke programs through code autoencoding and train a language model to paint with next-token prediction (NTP).</p>
 <div class="pbc-byline">
@@ -751,7 +751,7 @@ main .loss-card h4 { margin: 0 10px 12px; font-size: 1.1rem; }
 <p class="zh kicker">2026 年 11 月 9 日 Fable 5.2 发布当天，“用代码画画”刷屏。@Mr_Salio 让它分五个阶段画 Anthropic CEO Dario Amodei；第二天，@SMK_12159 回帖“GPT 也能做这个”，画了 OpenAI CEO Sam Altman。两个前沿语言模型选了同一条生成路径：不调用图像模型，用代码一笔一笔地画。</p>
 <p class="en kicker">On November 9, 2026, the day Fable 5.2 launched, “painting with code” went viral. @Mr_Salio asked it to paint Anthropic CEO Dario Amodei in five passes. The next day, @SMK_12159 replied “GPT can do this too” with a painting of OpenAI CEO Sam Altman. Both frontier language models took the same generation path: they called no image model and painted with code, stroke by stroke.</p>
 <figure class="pbc-figure" id="fig-videos">
-<header class="pbc-figure-head"><div class="pbc-figure-title"><span class="zh">两个模型用代码画出肖像</span><span class="en">Two models paint portraits with code</span></div><p class="pbc-figure-claim"><span class="zh">两段视频都没有调用图像或视频模型，画面由代码笔触逐笔生成。</span><span class="en">Neither video calls an image or video model, and both generate each frame stroke by stroke in code.</span></p></header>
+<header class="pbc-figure-head"><div class="pbc-figure-title"><span class="zh">用代码生成图像</span><span class="en">Image Generation with Code</span></div><p class="pbc-figure-claim"><span class="zh">两段视频都没有调用图像或视频模型，画面由代码笔触逐笔生成。</span><span class="en">Neither video calls an image or video model, and both generate each frame stroke by stroke in code.</span></p></header>
 <div class="pbc-video-actions"><button type="button" class="btn primary" id="duo-play"><svg class="pbc-btn-icon" viewBox="0 0 12 12" aria-hidden="true" focusable="false"><path d="M3.2 1.8 10 6 3.2 10.2z" fill="currentColor"/></svg><span class="zh">同时播放两条</span><span class="en">Play both</span></button></div>
 <div class="pbc-video-pair">
 <video id="vid-fable" src="/blog/2026/painting-by-code/assets/video/fable-dario.mp4" poster="/blog/2026/painting-by-code/assets/video/fable-dario.jpg" preload="metadata" playsinline controls></video>
@@ -1107,7 +1107,7 @@ main .loss-card h4 { margin: 0 10px 12px; font-size: 1.1rem; }
 <p class="en">To cite this post, please use the following BibTeX entry:</p>
 <div class="pbc-citation">
 <pre id="bibtex">@misc{sheng2026paintingbycode,
-  title        = {LLMs Can Paint via Code Autoencoding},
+  title        = {Image Generation with LLMs via Code Autoencoding},
   author       = {Sheng, Leheng and Zheng, Xiaosen and Chow, Wei and Sui, Yuan and Wang, Shizun},
   year         = {2026},
   howpublished = {Blog post},
