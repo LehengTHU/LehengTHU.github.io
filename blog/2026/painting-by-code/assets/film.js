@@ -161,21 +161,8 @@
       return '<rect x="' + (8.1 + (i % 8) * 19.4).toFixed(1) + '" y="' + (18 + Math.floor(i / 8) * 30) + '" width="16" height="16" rx="2" fill="#' + c + '"/>';
     }).join('') + '</svg>';
   })();
-  // colored silhouettes on three baselines (the same ribbon as the post's figure): a picture, not code
-  var RIBBON_SVG = (function () {
-    var e = function (cx, cy, rx, ry, c, o, a) { return '<ellipse cx="' + cx + '" cy="' + cy + '" rx="' + rx + '" ry="' + ry + '" fill="#' + c + '" fill-opacity="' + o + '" transform="rotate(' + a + ' ' + cx + ' ' + cy + ')"/>'; };
-    var r = function (x, y, w, h, c, o, a) { return '<rect x="' + x + '" y="' + y + '" width="' + w + '" height="' + h + '" rx="' + (h / 2) + '" fill="#' + c + '" fill-opacity="' + o + '" transform="rotate(' + a + ' ' + (x + w / 2).toFixed(1) + ' ' + (y + h / 2).toFixed(1) + ')"/>'; };
-    var base = function (y) { return '<line x1="6" y1="' + y + '" x2="162" y2="' + y + '" stroke="rgba(0,0,0,.1)" stroke-width="1"/>'; };
-    return '<svg viewBox="0 0 168 112" aria-hidden="true">' +
-      base(35) + r(6.7, 17.3, 23.4, 10.6, '265485', .78, -60) + r(26.5, 18.4, 25.9, 10.6, '632e0a', .78, -35) + r(53.8, 18.4, 19.2, 12.2, '0d192b', 1, 90) +
-      e(83.1, 23.7, 13, 8.4, '265485', .94, 65) + e(105.9, 22.8, 13.1, 8.1, '394856', .78, -35) + e(127.5, 25.1, 11.7, 6.2, '4f6973', 1, 40) + e(149.8, 22.3, 15.2, 8.6, '394856', 1, 0) +
-      base(67) + e(17.6, 54.5, 7.5, 4.8, '1b4f8f', .94, 25) + e(33.7, 57.1, 8.4, 4.4, '352d15', .94, 90) + r(40.9, 50.8, 20.1, 6.9, '890c10', 1, -35) + r(55.7, 51.9, 21.9, 8.8, '890c10', 1, 40) +
-      e(83.7, 56.4, 10.4, 3.7, '0d192b', .86, 40) + e(100.6, 57.5, 8.7, 4.2, '1b4f8f', 1, -35) + e(117.6, 56.2, 11.3, 3.7, 'c81e1a', 1, 25) + e(134, 54.9, 8, 3.3, '1c2d2f', .86, 40) + r(142.3, 50.2, 17.9, 12.2, 'ffce79', .78, -20) +
-      base(97) + e(14.8, 86.2, 4.9, 3.3, 'be6c00', 1, 25) + r(19.6, 82.6, 12.7, 4.4, '265485', .94, -20) + e(39.8, 87.8, 7.1, 3.2, '0d192b', .78, 90) + r(46.8, 82.4, 9.8, 6, 'e1c130', .78, 12) +
-      r(58.2, 82.3, 13.5, 5.9, '265485', .94, -20) + r(71.1, 81, 13.2, 7.7, 'c81e1a', .86, 65) + e(89.8, 86.6, 6.1, 3.8, 'ffce79', .94, -35) + r(96, 82.6, 12.7, 7.2, 'c81e1a', .86, 65) +
-      r(109.8, 82, 10.3, 6, 'ffce79', .86, 25) + e(129.5, 87.2, 6.6, 3.9, '890c10', .86, 40) + e(142, 88, 4.9, 2.9, '265485', .86, 12) + r(147.6, 84.6, 12, 6.6, '1c2d2f', .78, 90) +
-      '</svg>';
-  })();
+  // a toy program (not the real stroke format): each line sits next to the stroke it draws
+  var CODE_SVG = '<svg viewBox="0 0 168 112" aria-hidden="true"><text x="12" y="22" text-anchor="end" style="font:8px var(--font-mono);fill:#C4C4C4">1</text><text x="12" y="41" text-anchor="end" style="font:8px var(--font-mono);fill:#C4C4C4">2</text><text x="12" y="60" text-anchor="end" style="font:8px var(--font-mono);fill:#C4C4C4">3</text><text x="12" y="79" text-anchor="end" style="font:8px var(--font-mono);fill:#C4C4C4">4</text><text x="12" y="98" text-anchor="end" style="font:8px var(--font-mono);fill:#C4C4C4">5</text><text x="19" y="22" style="font:11px var(--font-mono);fill:#8C8C8C"><tspan fill="#2456A6" font-weight="600">def</tspan> <tspan fill="#141414">draw</tspan>(c):</text><text x="32" y="41" style="font:11px var(--font-mono);fill:#8C8C8C">c.<tspan fill="#141414">ellipse</tspan>(...)</text><text x="32" y="60" style="font:11px var(--font-mono);fill:#8C8C8C">c.<tspan fill="#141414">capsule</tspan>(...)</text><text x="32" y="79" style="font:11px var(--font-mono);fill:#8C8C8C">c.<tspan fill="#141414">rect</tspan>(...)</text><text x="32" y="98" style="font:11px var(--font-mono);fill:#8C8C8C">...</text><ellipse cx="148" cy="37.5" rx="10" ry="5.5" fill="#265485" fill-opacity="0.9" transform="rotate(-20 148 37.5)"/><rect x="137" y="52.5" width="22" height="8" rx="4" fill="#c81e1a" fill-opacity="0.9" transform="rotate(24 148 56.5)"/><rect x="140.5" y="70.5" width="15" height="10" rx="1.5" fill="#e1c130" fill-opacity="0.95" transform="rotate(-12 148 75.5)"/></svg>';
   var TRAP = {enc: '0,0 100,14 100,86 0,100', dec: '0,14 100,0 100,100 0,86'};
   var TRAP_NARROW = {enc: '0,0 100,24 100,76 0,100', dec: '0,24 100,0 100,100 0,76'};
   function aeLane(k, title, cells, names, subs) {
@@ -262,7 +249,7 @@
           aeLane('b', bi('代码自编码', 'Code autoencoding'), [
             '<span class="pbc-film__aevis is-img"><img src="' + DIAGRAM_URL + 'target.jpg" alt="" loading="lazy"></span>',
             [bi('代码拟合', 'Code fitting'), bi('优化求解', 'solved by optimization')],
-            '<span class="pbc-film__aevis is-prog">' + RIBBON_SVG + '</span>',
+            '<span class="pbc-film__aevis is-prog">' + CODE_SVG + '</span>',
             [bi('执行代码', 'Execute the code'), bi('固定渲染器', 'fixed renderer')],
             '<span class="pbc-film__aevis is-img"><img src="' + DIAGRAM_URL + 'recon.jpg" alt="" loading="lazy"></span>'
           ], [bi('目标图', 'Target'), bi('代码', 'Code'), bi('重建图', 'Reconstruction')], ['', bi('可读、可执行', 'readable and executable'), '']) +
