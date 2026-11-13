@@ -1,5 +1,5 @@
 ---
-title: "Image Generation with LLMs via Code Autoencoding"
+title: "Code-Based Image Generation with LLMs via Autoencoding"
 description: "We decompile images into executable Python stroke programs through code autoencoding and train a language model to paint with next-token prediction (NTP)."
 excerpt: "We decompile images into executable Python stroke programs through code autoencoding and train a language model to paint with next-token prediction (NTP)."
 layout: none
@@ -13,26 +13,26 @@ preview_poster: /blog/2026/painting-by-code/assets/video/film-preview.jpg
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Image Generation with LLMs via Code Autoencoding - Leheng Sheng</title>
+<title>Code-Based Image Generation with LLMs via Autoencoding - Leheng Sheng</title>
 <meta name="description" content="We decompile images into executable Python stroke programs through code autoencoding and train a language model to paint with next-token prediction (NTP).">
 <meta name="color-scheme" content="light">
 <meta name="theme-color" content="#FAFAFA">
 <link rel="canonical" href="https://lehengthu.github.io/blog/2026/painting-by-code/">
 <meta property="og:type" content="article">
 <meta property="og:site_name" content="Leheng Sheng">
-<meta property="og:title" content="Image Generation with LLMs via Code Autoencoding">
+<meta property="og:title" content="Code-Based Image Generation with LLMs via Autoencoding">
 <meta property="og:description" content="We decompile images into executable Python stroke programs through code autoencoding and train a language model to paint with next-token prediction (NTP).">
 <meta property="og:url" content="https://lehengthu.github.io/blog/2026/painting-by-code/">
-<meta property="og:image" content="https://lehengthu.github.io/blog/2026/painting-by-code/assets/og-cover.png?v=20261112-2310">
+<meta property="og:image" content="https://lehengthu.github.io/blog/2026/painting-by-code/assets/og-cover.png?v=20261113-1000">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta property="article:published_time" content="2026-11-12">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Image Generation with LLMs via Code Autoencoding">
+<meta name="twitter:title" content="Code-Based Image Generation with LLMs via Autoencoding">
 <meta name="twitter:description" content="We decompile images into executable Python stroke programs through code autoencoding and train a language model to paint with next-token prediction (NTP).">
-<meta name="twitter:image" content="https://lehengthu.github.io/blog/2026/painting-by-code/assets/og-cover.png?v=20261112-2310">
+<meta name="twitter:image" content="https://lehengthu.github.io/blog/2026/painting-by-code/assets/og-cover.png?v=20261113-1000">
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"Article","headline":"Image Generation with LLMs via Code Autoencoding","author":[{"@type":"Person","name":"Leheng Sheng","url":"https://lehengthu.github.io/"},{"@type":"Person","name":"Xiaosen Zheng","url":"https://xszheng2020.github.io/"},{"@type":"Person","name":"Wei Chow","url":"https://scholar.google.com/citations?user=br7-IGkAAAAJ"},{"@type":"Person","name":"Yuan Sui","url":"https://www.yuan-sui.com/"},{"@type":"Person","name":"Shizun Wang","url":"https://littlepure2333.github.io/home/"}],"datePublished":"2026-11-12","image":"https://lehengthu.github.io/blog/2026/painting-by-code/assets/og-cover.png","url":"https://lehengthu.github.io/blog/2026/painting-by-code/"}
+{"@context":"https://schema.org","@type":"Article","headline":"Code-Based Image Generation with LLMs via Autoencoding","author":[{"@type":"Person","name":"Leheng Sheng","url":"https://lehengthu.github.io/"},{"@type":"Person","name":"Xiaosen Zheng","url":"https://xszheng2020.github.io/"},{"@type":"Person","name":"Wei Chow","url":"https://scholar.google.com/citations?user=br7-IGkAAAAJ"},{"@type":"Person","name":"Yuan Sui","url":"https://www.yuan-sui.com/"},{"@type":"Person","name":"Shizun Wang","url":"https://littlepure2333.github.io/home/"}],"datePublished":"2026-11-12","image":"https://lehengthu.github.io/blog/2026/painting-by-code/assets/og-cover.png","url":"https://lehengthu.github.io/blog/2026/painting-by-code/"}
 </script>
 <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32.png">
 <link rel="apple-touch-icon" href="/images/favicon-180.png">
@@ -229,6 +229,7 @@ button, input { font: inherit; }
   letter-spacing: -.02em;
   text-wrap: balance;
 }
+.ar-head h1 .nb { white-space: nowrap; }
 .ar-head h1 .zh, main h2 .zh { letter-spacing: .02em; }
 main h2, main h3, main h4, .pbc-figure-title { text-wrap: balance; }
 .ar-standfirst {
@@ -707,7 +708,7 @@ main .loss-card h4 { margin: 0 10px 12px; font-size: 1.1rem; }
 <button id="btn-zh" type="button" aria-pressed="false">中文</button>
 </div>
 </div>
-<h1><span class="zh">基于代码自编码的大语言模型图像生成</span><span class="en">Image Generation with LLMs via Code Autoencoding</span></h1>
+<h1><span class="zh"><span class="nb">基于自编码的</span><span class="nb">大语言模型</span><span class="nb">代码式图像生成</span></span><span class="en">Code-Based Image Generation with LLMs via Autoencoding</span></h1>
 <p class="ar-standfirst zh">我们用代码自编码把图片批量反编译成可执行的 Python 笔触程序，再用下一词预测（NTP）训练语言模型逐笔作画。</p>
 <p class="ar-standfirst en">We decompile images into executable Python stroke programs through code autoencoding and train a language model to paint with next-token prediction (NTP).</p>
 <div class="pbc-byline">
@@ -1118,7 +1119,7 @@ main .loss-card h4 { margin: 0 10px 12px; font-size: 1.1rem; }
 <p class="en">To cite this post, please use the following BibTeX entry:</p>
 <div class="pbc-citation">
 <pre id="bibtex">@misc{sheng2026paintingbycode,
-  title        = {Image Generation with LLMs via Code Autoencoding},
+  title        = {Code-Based Image Generation with LLMs via Autoencoding},
   author       = {Sheng, Leheng and Zheng, Xiaosen and Chow, Wei and Sui, Yuan and Wang, Shizun},
   year         = {2026},
   howpublished = {Blog post},
